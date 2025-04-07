@@ -25,6 +25,7 @@ namespace cpp_jcfu
 	};
 
 	//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4
+	//https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.4
 	enum class ConstPoolItmId : uint8_t
 	{
 		CLASS			= 7,
@@ -40,7 +41,7 @@ namespace cpp_jcfu
 		F64				= 6,
 
 		NAME_AND_DESC	= 12,
-		J_UTF8			= 1,
+		JUTF8			= 1,
 		FUNC_HANDLE		= 15,
 		FUNC_TYPE		= 16,
 		//TODO: does DYNAMIC exist in j7, even if its not in the spec?
@@ -138,4 +139,5 @@ namespace cpp_jcfu
 	// You can only rely on the ones you added to it.
 	// The writer might add some, but it will always be after your ones.
 	using ConstPool = std::vector<ConstPoolItm>;
+
 }
