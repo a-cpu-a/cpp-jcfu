@@ -135,4 +135,7 @@ namespace cpp_jcfu
 		ConstPoolItmType::FUNC_TYPE,
 		ConstPoolItmType::RUN_DYN
 	>;
+	// You can only rely on the ones you added to it.
+	// The writer might add some, but it will always be after your ones.
+	using ConstPool = std::vector<ConstPoolItm>;
 }
