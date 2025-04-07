@@ -20,13 +20,13 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cpp_jcf\Gen.hpp">
+    <ClInclude Include="cpp_jcfu\Gen.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cpp_jcf\Include.hpp">
+    <ClInclude Include="cpp_jcfu\Include.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="cpp_jcf\State.hpp">
+    <ClInclude Include="cpp_jcfu\State.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

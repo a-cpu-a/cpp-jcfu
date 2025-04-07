@@ -4,9 +4,8 @@
 #pragma once
 
 //hg
-#ifndef _CPP_JCF__INCLUDE_HPP
-#define _CPP_JCF__INCLUDE_HPP
-
+#ifndef _CPP_JCFU__INCLUDE_HPP
+#define _CPP_JCFU__INCLUDE_HPP
 
 
 
@@ -34,4 +33,4 @@
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************************************************************/
 
-#endif // _CPP_JCF__INCLUDE_HPP
+#endif // _CPP_JCFU__INCLUDE_HPP

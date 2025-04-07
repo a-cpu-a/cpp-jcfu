@@ -24,6 +24,7 @@
     <ProjectGuid>{5ac3b871-1597-48c7-a911-b0ca4e6f5e69}</ProjectGuid>
     <RootNamespace>cppjcf</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>cpp-jcfu</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -130,9 +131,9 @@
     <ClCompile Include="BuildTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="cpp_jcf\Gen.hpp" />
-    <ClInclude Include="cpp_jcf\Include.hpp" />
-    <ClInclude Include="cpp_jcf\State.hpp" />
+    <ClInclude Include="cpp_jcfu\Gen.hpp" />
+    <ClInclude Include="cpp_jcfu\Include.hpp" />
+    <ClInclude Include="cpp_jcfu\State.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

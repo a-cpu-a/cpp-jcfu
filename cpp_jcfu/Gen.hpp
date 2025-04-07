@@ -5,7 +5,9 @@
 
 #include <vector>
 
-namespace cpp_jcf
+#include "State.hpp"
+
+namespace cpp_jcfu
 {
 	inline void u32w(std::vector<uint8_t>& out,const uint32_t v)
 	{

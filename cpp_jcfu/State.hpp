@@ -7,7 +7,7 @@
 #include <string>
 #include <variant>
 
-namespace cpp_jcf
+namespace cpp_jcfu
 {
 	enum class FuncHandleKind : uint8_t
 	{
@@ -55,7 +55,7 @@ namespace cpp_jcf
 
 	namespace ConstPoolItmType
 	{
-		using JUTF8 = cpp_jcf::Jutf8;
+		using JUTF8 = Jutf8;
 		struct CLASS
 		{
 			Jutf8 name;
