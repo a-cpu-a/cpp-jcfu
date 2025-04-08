@@ -82,6 +82,18 @@ namespace cpp_jcfu
 			ConstPoolItmType::CLASS("java/lang/Object")
 		};
 		const ClassFlags thisClassFlags = ClassFlags_SUPER | ClassFlags_PUBLIC;
+		Functions funcs = {
+			FuncInfo{
+				.tags = {FuncTagType::CODE{
+					.bytecode = {0xb1}, //return
+					.maxStack = 1,
+					.maxLocals = 1
+				}},
+				.name = "main",
+				.desc = "([Ljava/lang/String;)V",
+				.flags = FuncFlags_PUBLIC | FuncFlags_STATIC
+			}
+		};
 
 
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4
@@ -203,6 +215,16 @@ namespace cpp_jcfu
 
 		u16w(out, thisClassFlags);
 
+		u16w(out, 1);//this
+		u16w(out, 2);//super
+
+		u16w(out, 0);//interface count
+		u16w(out, 0);//field count
+		u16w(out, 1);//method count
+
+
+
+		u16w(out, 0);//tag count
 
 		return out;
 	}

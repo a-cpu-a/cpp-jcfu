@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <variant>
+#include <optional>
 
 namespace cpp_jcfu
 {
@@ -114,6 +115,17 @@ namespace cpp_jcfu
 		FuncFlags_STRICTFP = AccessFlags_STRICTFP,
 
 		FuncFlags_SYNTHETIC = AccessFlags_SYNTHETIC,
+	};
+
+	using ParamFlags = uint16_t;
+	enum ParamFlags_ : uint16_t
+	{
+		ParamFlags_NONE = 0,
+
+		ParamFlags_FINAL = AccessFlags_FINAL,
+
+		ParamFlags_SYNTHETIC = AccessFlags_SYNTHETIC,
+		ParamFlags_MANDATED = AccessFlags_MOD_MANDATED,
 	};
 
 	enum class FuncHandleKind : uint8_t
@@ -243,5 +255,119 @@ namespace cpp_jcfu
 	// You can only rely on the ones you added to it.
 	// The writer might add some, but it will always be after your ones.
 	using ConstPool = std::vector<ConstPoolItm>;
+
+	namespace CommonTagType
+	{
+		struct DEPRECATED {};
+		struct SYNTHETIC {};
+		struct SIGNATURE {};				//TODO
+		struct SHOWN_ANNOTATIONS {};		//TODO
+		struct ANNOTATIONS {};				//TODO
+		struct SHOWN_TYPE_ANNOTATIONS {};	//TODO
+		struct TYPE_ANNOTATIONS {};			//TODO
+	}
+
+	struct LineNumEntry
+	{
+		uint16_t startPc;
+		uint16_t line;
+	};
+	struct LocalEntry
+	{
+		std::string name;
+		std::string desc;
+		uint16_t startPc;
+		uint16_t len;
+		uint16_t idx;
+	};
+	struct LocalTypeEntry
+	{
+		std::string name;
+		std::string sig;
+		uint16_t startPc;
+		uint16_t len;
+		uint16_t idx;
+	};
+
+	//https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
+	struct StackFrame
+	{
+		//TODO
+	};
+
+	namespace CodeTagType
+	{
+		using LINE_NUMS = std::vector<LineNumEntry>;
+		using LOCALS = std::vector<LocalEntry>;
+		using LOCAL_TYPES = std::vector<LocalTypeEntry>;
+		using STACK_FRAMES = std::vector<StackFrame>;
+	}
+	using CodeTag = std::variant<
+		CodeTagType::LINE_NUMS,
+		CodeTagType::LOCALS,
+		CodeTagType::LOCAL_TYPES,
+		CodeTagType::STACK_FRAMES
+	>;
+
+	struct ErrorHandler
+	{
+		std::optional<ConstPoolItmType::CLASS> catchType; // None -> catch all
+		uint16_t startPc;
+		uint16_t afterEndPc;
+		uint16_t handlerPc;
+	};
+	struct FuncParam
+	{
+		std::string name;
+		ParamFlags flags;
+	};
+	namespace FuncTagType
+	{
+		struct CODE {
+			std::vector<uint8_t> bytecode;
+			std::vector<ErrorHandler> errorHandlers;
+			std::vector<CodeTag> tags;
+			uint16_t maxStack;
+			uint16_t maxLocals;
+		};
+		struct EXCEPTIONS {};				//TODO
+		struct SHOWN_PARAM_ANNOTATIONS {};	//TODO
+		struct PARAM_ANNOTATIONS {};		//TODO
+		struct ANNOTATION_DEFAULT {};		//TODO
+		using PARAMS = std::vector<FuncParam>;
+
+		using SYNTHETIC = CommonTagType::SYNTHETIC;
+		using DEPRECATED = CommonTagType::DEPRECATED;
+		using SIGNATURE = CommonTagType::SIGNATURE;
+		using SHOWN_ANNOTATIONS = CommonTagType::SHOWN_ANNOTATIONS;
+		using ANNOTATIONS = CommonTagType::ANNOTATIONS;
+		using SHOWN_TYPE_ANNOTATIONS = CommonTagType::SHOWN_TYPE_ANNOTATIONS;
+		using TYPE_ANNOTATIONS = CommonTagType::TYPE_ANNOTATIONS;
+	}
+	using FuncTag = std::variant<
+		FuncTagType::CODE,
+		FuncTagType::EXCEPTIONS,
+		FuncTagType::SHOWN_PARAM_ANNOTATIONS,
+		FuncTagType::PARAM_ANNOTATIONS,
+		FuncTagType::ANNOTATION_DEFAULT,
+		FuncTagType::PARAMS,
+
+		FuncTagType::SYNTHETIC,
+		FuncTagType::DEPRECATED,
+		FuncTagType::SIGNATURE,
+		FuncTagType::SHOWN_ANNOTATIONS,
+		FuncTagType::ANNOTATIONS,
+		FuncTagType::SHOWN_TYPE_ANNOTATIONS,
+		FuncTagType::TYPE_ANNOTATIONS
+	>;
+
+	struct FuncInfo
+	{
+		std::vector<FuncTag> tags;
+		std::string name;
+		std::string desc;
+		FuncFlags flags;
+	};
+	using Functions = std::vector<FuncInfo>;
 
 }
