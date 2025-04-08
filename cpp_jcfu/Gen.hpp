@@ -52,7 +52,16 @@ namespace cpp_jcfu
 
 			for (const FuncInfo& func : funcs)
 			{
-				
+				u16w(funcOut, func.flags);
+				constPoolIdxPushW(funcOut, poolSize, consts, 
+					ConstPoolItmType::JUTF8(func.name));
+				constPoolIdxPushW(funcOut, poolSize, consts, 
+					ConstPoolItmType::JUTF8(func.desc));
+
+				_ASSERT(func.tags.size() < UINT16_MAX);
+				u16w(funcOut, (uint16_t)func.tags.size());
+				for (const FuncTag& tag : func.tags)
+					funcTagW(funcOut, poolSize, consts, tag);
 			}
 		}
 
@@ -65,7 +74,9 @@ namespace cpp_jcfu
 
 		u16w(out, 0);//interface count
 		u16w(out, 0);//field count
+
 		u16w(out, (uint16_t)funcs.size());//method count
+		out.insert(out.end(), funcOut.begin(), funcOut.end());
 
 
 
