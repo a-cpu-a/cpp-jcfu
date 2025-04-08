@@ -86,7 +86,7 @@ namespace cpp_jcfu
 			_ASSERT(!var.bytecode.empty() && var.bytecode.size() < UINT16_MAX);
 			u32w(tagOut, (uint32_t)var.bytecode.size());
 
-			out.insert(tagOut.end(), 
+			tagOut.insert(tagOut.end(),
 				var.bytecode.begin(), 
 				var.bytecode.end());
 
