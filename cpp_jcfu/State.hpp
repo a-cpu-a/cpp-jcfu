@@ -95,25 +95,25 @@ namespace cpp_jcfu
 		FieldFlags_ENUM = AccessFlags_ENUM,
 	};
 
-	using MethodFlags = uint16_t;
-	enum MethodFlags_ : uint16_t
+	using FuncFlags = uint16_t;
+	enum FuncFlags_ : uint16_t
 	{
-		MethodFlags_NONE = 0,
+		FuncFlags_NONE = 0,
 
-		MethodFlags_PUBLIC = AccessFlags_PUBLIC,
-		MethodFlags_PRIVATE = AccessFlags_PRIVATE,
-		MethodFlags_PROTECTED = AccessFlags_PROTECTED,
-		MethodFlags_STATIC = AccessFlags_STATIC,
-		MethodFlags_FINAL = AccessFlags_FINAL,
+		FuncFlags_PUBLIC = AccessFlags_PUBLIC,
+		FuncFlags_PRIVATE = AccessFlags_PRIVATE,
+		FuncFlags_PROTECTED = AccessFlags_PROTECTED,
+		FuncFlags_STATIC = AccessFlags_STATIC,
+		FuncFlags_FINAL = AccessFlags_FINAL,
 
-		MethodFlags_SYNC = AccessFlags_SUPER_OPEN_TRANSITIVE_SYNC,
-		MethodFlags_BRIDGE = AccessFlags_STATICPHASE_VOLATILE_BRIDGE,
-		MethodFlags_VARARGS = AccessFlags_TRANSIENT_VARARGS,
-		MethodFlags_NATIVE = AccessFlags_NATIVE,
-		MethodFlags_ABSTRACT = AccessFlags_ABSTRACT,
-		MethodFlags_STRICTFP = AccessFlags_STRICTFP,
+		FuncFlags_SYNC = AccessFlags_SUPER_OPEN_TRANSITIVE_SYNC,
+		FuncFlags_BRIDGE = AccessFlags_STATICPHASE_VOLATILE_BRIDGE,
+		FuncFlags_VARARGS = AccessFlags_TRANSIENT_VARARGS,
+		FuncFlags_NATIVE = AccessFlags_NATIVE,
+		FuncFlags_ABSTRACT = AccessFlags_ABSTRACT,
+		FuncFlags_STRICTFP = AccessFlags_STRICTFP,
 
-		MethodFlags_SYNTHETIC = AccessFlags_SYNTHETIC,
+		FuncFlags_SYNTHETIC = AccessFlags_SYNTHETIC,
 	};
 
 	enum class FuncHandleKind : uint8_t
