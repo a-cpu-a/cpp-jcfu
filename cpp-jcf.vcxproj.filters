@@ -29,5 +29,8 @@
     <ClInclude Include="cpp_jcfu\State.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cpp_jcfu\Utf8ToJutf8.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

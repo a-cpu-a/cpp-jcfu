@@ -89,7 +89,7 @@ namespace cpp_jcfu
 		struct RefBase
 		{
 			CLASS classIdx;
-			NAME_AND_DESC nameAndDesc;
+			NAME_AND_DESC refDesc;
 		};
 
 		struct FIELD_REF : RefBase
@@ -118,17 +118,17 @@ namespace cpp_jcfu
 		};
 	}
 	using ConstPoolItm = std::variant<
+		ConstPoolItmType::I32,
+		ConstPoolItmType::F32,
+		ConstPoolItmType::F64,
+		ConstPoolItmType::I64,
+		ConstPoolItmType::STR,
+
 		ConstPoolItmType::CLASS,
 
 		ConstPoolItmType::FIELD_REF,
 		ConstPoolItmType::FUNC_REF,
 		ConstPoolItmType::INTERFACE_FUNC_REF,
-
-		ConstPoolItmType::STR,
-		ConstPoolItmType::I32,
-		ConstPoolItmType::F32,
-		ConstPoolItmType::F64,
-		ConstPoolItmType::I64,
 
 		ConstPoolItmType::NAME_AND_DESC,
 		ConstPoolItmType::JUTF8,
