@@ -158,20 +158,17 @@ namespace cpp_jcfu
 
 	using ConstPoolIdx = uint16_t;
 
-	// Use normal utf8, it will be converted for you
-	using Jutf8 = std::string;
-
 	namespace ConstPoolItmType
 	{
-		using JUTF8 = Jutf8;
+		using JUTF8 = std::string;
 		struct CLASS
 		{
-			Jutf8 name;
+			std::string name;
 		};
 
 		struct STR
 		{
-			Jutf8 txt;
+			std::string txt;
 		};
 		using I32 = int32_t;
 		using F32 = float;
@@ -180,12 +177,12 @@ namespace cpp_jcfu
 
 		struct NAME_AND_DESC
 		{
-			Jutf8 name;
-			Jutf8 desc;
+			std::string name;
+			std::string desc;
 		};
 		struct FUNC_TYPE
 		{
-			Jutf8 desc;
+			std::string desc;
 		};
 		struct RUN_DYN
 		{
