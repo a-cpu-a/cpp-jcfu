@@ -8,16 +8,35 @@
 
 int main()
 {
-    std::cout << "Hello World!\n";
+	std::cout << "Hello World!\n";
 
-    const std::vector<uint8_t> out = cpp_jcfu::gen();
 
-    std::ofstream outF("out/HelloWorld.class", std::ios::binary);
+	const std::vector<uint8_t> out = cpp_jcfu::gen(
+		cpp_jcfu::ClassFlags_SUPER | cpp_jcfu::ClassFlags_PUBLIC,
+		{
+			cpp_jcfu::ConstPoolItmType::CLASS("HelloWorld"),
+			cpp_jcfu::ConstPoolItmType::CLASS("java/lang/Object")
+		},
+		{
+			cpp_jcfu::FuncInfo{
+				.tags = {cpp_jcfu::FuncTagType::CODE{
+					.bytecode = {0xb1}, //return
+					.maxStack = 1,
+					.maxLocals = 1
+				}},
+				.name = "main",
+				.desc = "([Ljava/lang/String;)V",
+				.flags = cpp_jcfu::FuncFlags_PUBLIC | cpp_jcfu::FuncFlags_STATIC
+			}
+		}
+	);
 
-    outF.write((const char*)out.data(), out.size());
-    outF.close();
+	std::ofstream outF("out/HelloWorld.class", std::ios::binary);
 
-    return 0;
+	outF.write((const char*)out.data(), out.size());
+	outF.close();
+
+	return 0;
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
