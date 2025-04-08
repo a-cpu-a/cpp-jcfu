@@ -78,8 +78,6 @@ namespace cpp_jcfu
 		u16w(out, (uint16_t)funcs.size());//method count
 		out.insert(out.end(), funcOut.begin(), funcOut.end());
 
-
-
 		u16w(out, 0);//tag count
 
 		return out;

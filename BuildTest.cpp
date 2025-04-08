@@ -2,6 +2,7 @@
 //
 
 #include <iostream>
+#include <fstream>
 
 #include "cpp_jcfu/Gen.hpp"
 
@@ -9,7 +10,13 @@ int main()
 {
     std::cout << "Hello World!\n";
 
-    cpp_jcfu::gen();
+    const std::vector<uint8_t> out = cpp_jcfu::gen();
+
+    std::ofstream outF("out/HelloWorld.class", std::ios::binary);
+
+    outF.write((const char*)out.data(), out.size());
+    outF.close();
+
     return 0;
 }
 

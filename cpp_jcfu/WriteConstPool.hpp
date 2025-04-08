@@ -18,44 +18,42 @@ namespace cpp_jcfu
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4
 		//const pool
 			std::vector<uint8_t> poolOut;
-			size_t poolSize = 1;// +1
+			size_t poolSize = calcConstPoolSize(consts)+1;
 
 			for (size_t i = 0; i < consts.size(); i++)
 			{
-				poolSize++;
-
 				ezmatch(consts[i])(
 					varcase(const ConstPoolItmType::CLASS&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::CLASS);
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::JUTF8(var.name));
 				},
 
 					varcase(const ConstPoolItmType::FIELD_REF&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::FIELD_REF);
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::CLASS(var.classIdx));
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::NAME_AND_DESC(var.refDesc));
 				},
 					varcase(const ConstPoolItmType::FUNC_REF&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::FUNC_REF);
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::CLASS(var.classIdx));
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::NAME_AND_DESC(var.refDesc));
 				},
 					varcase(const ConstPoolItmType::INTERFACE_FUNC_REF&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::INTERFACE_FUNC_REF);
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::CLASS(var.classIdx));
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::NAME_AND_DESC(var.refDesc));
 				},
 
 					varcase(const ConstPoolItmType::STR&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::STR);
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::JUTF8(var.txt));
 				},
 					varcase(const ConstPoolItmType::I32&) {
@@ -64,7 +62,6 @@ namespace cpp_jcfu
 				},
 					varcase(const ConstPoolItmType::I64&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::I64);
-					poolSize++;
 					u64w(poolOut, var);
 				},
 					varcase(const ConstPoolItmType::F32&) {
@@ -73,15 +70,14 @@ namespace cpp_jcfu
 				},
 					varcase(const ConstPoolItmType::F64&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::F64);
-					poolSize++;
 					u64w(poolOut, std::bit_cast<uint64_t>(var));
 				},
 
 					varcase(const ConstPoolItmType::NAME_AND_DESC&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::NAME_AND_DESC);
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::JUTF8(var.name));
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::JUTF8(var.desc));
 				},
 					varcase(const ConstPoolItmType::JUTF8&) {
@@ -109,18 +105,18 @@ namespace cpp_jcfu
 						res = ConstPoolItmType::INTERFACE_FUNC_REF(var.val);
 						break;
 					}
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						std::move(res));
 				},
 					varcase(const ConstPoolItmType::FUNC_TYPE&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::FUNC_TYPE);
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::JUTF8(var.desc));
 				},
 					varcase(const ConstPoolItmType::RUN_DYN&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::RUN_DYN);
 					u16w(poolOut, var.bootstrapIdx);
-					constPoolIdxW(poolOut, poolSize, consts,
+					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::NAME_AND_DESC(var.funcDesc));
 				}
 					);
