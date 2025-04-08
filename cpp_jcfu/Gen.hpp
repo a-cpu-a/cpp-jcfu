@@ -44,7 +44,7 @@ namespace cpp_jcfu
 			ConstPoolItmType::CLASS("java/lang/Object")
 		};
 		const ClassFlags thisClassFlags = ClassFlags_SUPER | ClassFlags_PUBLIC;
-		Functions funcs = {
+		const Functions funcs = {
 			FuncInfo{
 				.tags = {FuncTagType::CODE{
 					.bytecode = {0xb1}, //return
@@ -56,7 +56,20 @@ namespace cpp_jcfu
 				.flags = FuncFlags_PUBLIC | FuncFlags_STATIC
 			}
 		};
+		_ASSERT(funcs.size() < UINT16_MAX);
 
+		std::vector<uint8_t> funcOut;
+
+		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.6
+		//funcs
+		{
+			size_t poolSize = calcConstPoolSize(consts)+1;
+
+			for (const FuncInfo& func : funcs)
+			{
+				
+			}
+		}
 
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4
 		//const pool
@@ -182,7 +195,7 @@ namespace cpp_jcfu
 
 		u16w(out, 0);//interface count
 		u16w(out, 0);//field count
-		u16w(out, 1);//method count
+		u16w(out, (uint16_t)funcs.size());//method count
 
 
 

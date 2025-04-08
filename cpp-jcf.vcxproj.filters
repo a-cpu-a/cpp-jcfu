@@ -32,5 +32,8 @@
     <ClInclude Include="cpp_jcfu\Utf8ToJutf8.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cpp_jcfu\WriteBin.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

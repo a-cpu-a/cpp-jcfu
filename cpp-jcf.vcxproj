@@ -135,6 +135,7 @@
     <ClInclude Include="cpp_jcfu\Include.hpp" />
     <ClInclude Include="cpp_jcfu\State.hpp" />
     <ClInclude Include="cpp_jcfu\Utf8ToJutf8.hpp" />
+    <ClInclude Include="cpp_jcfu\WriteBin.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
