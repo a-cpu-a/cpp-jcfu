@@ -39,13 +39,15 @@ namespace cpp_jcfu
 	inline void jUtf8W(std::vector<uint8_t>& out,std::string v)
 	{
 		v = utf8ToJutf8(v);
-		u16w(out, v.size());
+		_ASSERT(v.size() < UINT16_MAX);
+		u16w(out, (uint16_t)v.size());
 		out.insert(out.end(), v.begin(), v.end());
 	}
 
 	inline void constPoolIdxW(std::vector<uint8_t>& out,size_t& poolSize,ConstPool& consts, ConstPoolItm&& itm)
 	{
-		u16w(out, poolSize);
+		_ASSERT(poolSize < UINT16_MAX);
+		u16w(out, (uint16_t)poolSize);
 		consts.emplace_back(itm);
 	}
 
@@ -187,7 +189,7 @@ namespace cpp_jcfu
 				);
 			}
 			_ASSERT(poolSize < UINT16_MAX);
-			u16w(out, poolSize);
+			u16w(out, (uint16_t)poolSize);
 
 			out.insert(out.end(), poolOut.begin(), poolOut.end());
 		}
