@@ -13,22 +13,6 @@
 namespace cpp_jcfu
 {
 
-	inline size_t calcConstPoolSize(const ConstPool& pool)
-	{
-		size_t ret = 0;
-		for (const ConstPoolItm& itm : pool)
-		{
-			if (
-				std::holds_alternative<ConstPoolItmType::I64>(itm)
-				|| std::holds_alternative<ConstPoolItmType::F64>(itm)
-				)
-				ret += 2;
-			else
-				ret++;
-		}
-		return ret;
-	}
-
 	inline std::vector<uint8_t> gen()
 	{
 		std::vector<uint8_t> out;
