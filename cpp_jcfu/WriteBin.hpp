@@ -142,4 +142,26 @@ namespace cpp_jcfu
 		}
 		);
 	}
+	inline void fieldTagW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, const FieldTag& itm)
+	{
+		ezmatch(itm)(
+		varcase(const FieldTagType::CONST_VAL&){
+		},
+
+		varcase(const FieldTagType::SYNTHETIC&){
+		},
+		varcase(const FieldTagType::DEPRECATED&){
+		},
+		varcase(const FieldTagType::SIGNATURE&){
+		},
+		varcase(const FieldTagType::SHOWN_ANNOTATIONS&){
+		},
+		varcase(const FieldTagType::ANNOTATIONS&){
+		},
+		varcase(const FieldTagType::SHOWN_TYPE_ANNOTATIONS&){
+		},
+		varcase(const FieldTagType::TYPE_ANNOTATIONS&){
+		}
+		);
+	}
 }

@@ -28,6 +28,14 @@ int main()
 				.desc = "([Ljava/lang/String;)V",
 				.flags = cpp_jcfu::FuncFlags_PUBLIC | cpp_jcfu::FuncFlags_STATIC
 			}
+		},
+		{
+			cpp_jcfu::FieldInfo{
+				.name = "var",
+				.desc = "[Ljava/lang/String;",
+				.flags = cpp_jcfu::FieldFlags_PUBLIC 
+					| cpp_jcfu::FieldFlags_FINAL
+			}
 		}
 	);
 

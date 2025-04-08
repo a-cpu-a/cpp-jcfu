@@ -17,9 +17,11 @@ namespace cpp_jcfu
 	inline std::vector<uint8_t> gen(
 		const ClassFlags thisClassFlags, 
 		ConstPool&& consts, 
-		const Functions& funcs)
+		const Functions& funcs, 
+		const Fields& fields)
 	{
 		_ASSERT(funcs.size() < UINT16_MAX);
+		_ASSERT(fields.size() < UINT16_MAX);
 
 		std::vector<uint8_t> out;
 
@@ -29,24 +31,46 @@ namespace cpp_jcfu
 		u16w(out, 0);
 		u16w(out, 51);
 
+		std::vector<uint8_t> fieldOut;
+
+		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.5
+		// Fields
+		{
+			size_t poolSize = calcConstPoolSize(consts) + 1;
+
+			for (const FieldInfo& info : fields)
+			{
+				u16w(fieldOut, info.flags);
+				constPoolIdxPushW(fieldOut, poolSize, consts,
+					ConstPoolItmType::JUTF8(info.name));
+				constPoolIdxPushW(fieldOut, poolSize, consts,
+					ConstPoolItmType::JUTF8(info.desc));
+
+				_ASSERT(info.tags.size() < UINT16_MAX);
+				u16w(fieldOut, (uint16_t)info.tags.size());
+				for (const FieldTag& tag : info.tags)
+					fieldTagW(fieldOut, poolSize, consts, tag);
+			}
+		}
+
 		std::vector<uint8_t> funcOut;
 
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.6
-		//funcs
+		// Funcs
 		{
 			size_t poolSize = calcConstPoolSize(consts)+1;
 
-			for (const FuncInfo& func : funcs)
+			for (const FuncInfo& info : funcs)
 			{
-				u16w(funcOut, func.flags);
+				u16w(funcOut, info.flags);
 				constPoolIdxPushW(funcOut, poolSize, consts, 
-					ConstPoolItmType::JUTF8(func.name));
+					ConstPoolItmType::JUTF8(info.name));
 				constPoolIdxPushW(funcOut, poolSize, consts, 
-					ConstPoolItmType::JUTF8(func.desc));
+					ConstPoolItmType::JUTF8(info.desc));
 
-				_ASSERT(func.tags.size() < UINT16_MAX);
-				u16w(funcOut, (uint16_t)func.tags.size());
-				for (const FuncTag& tag : func.tags)
+				_ASSERT(info.tags.size() < UINT16_MAX);
+				u16w(funcOut, (uint16_t)info.tags.size());
+				for (const FuncTag& tag : info.tags)
 					funcTagW(funcOut, poolSize, consts, tag);
 			}
 		}
@@ -59,7 +83,8 @@ namespace cpp_jcfu
 		u16w(out, 2);//super
 
 		u16w(out, 0);//interface count
-		u16w(out, 0);//field count
+		u16w(out, (uint16_t)fields.size());//field count
+		out.insert(out.end(), fieldOut.begin(), fieldOut.end());
 
 		u16w(out, (uint16_t)funcs.size());//method count
 		out.insert(out.end(), funcOut.begin(), funcOut.end());
