@@ -361,6 +361,31 @@ namespace cpp_jcfu
 		FuncTagType::TYPE_ANNOTATIONS
 	>;
 
+
+	namespace FieldTagType
+	{
+		using CONST_VAL = std::vector<LineNumEntry>;
+
+		using SYNTHETIC = CommonTagType::SYNTHETIC;
+		using DEPRECATED = CommonTagType::DEPRECATED;
+		using SIGNATURE = CommonTagType::SIGNATURE;
+		using SHOWN_ANNOTATIONS = CommonTagType::SHOWN_ANNOTATIONS;
+		using ANNOTATIONS = CommonTagType::ANNOTATIONS;
+		using SHOWN_TYPE_ANNOTATIONS = CommonTagType::SHOWN_TYPE_ANNOTATIONS;
+		using TYPE_ANNOTATIONS = CommonTagType::TYPE_ANNOTATIONS;
+	}
+	using FieldTag = std::variant<
+		FieldTagType::CONST_VAL,
+
+		FieldTagType::SYNTHETIC,
+		FieldTagType::DEPRECATED,
+		FieldTagType::SIGNATURE,
+		FieldTagType::SHOWN_ANNOTATIONS,
+		FieldTagType::ANNOTATIONS,
+		FieldTagType::SHOWN_TYPE_ANNOTATIONS,
+		FieldTagType::TYPE_ANNOTATIONS
+	>;
+
 	struct FuncInfo
 	{
 		std::vector<FuncTag> tags;
@@ -369,5 +394,14 @@ namespace cpp_jcfu
 		FuncFlags flags;
 	};
 	using Functions = std::vector<FuncInfo>;
+
+	struct FieldInfo
+	{
+		std::vector<FieldTag> tags;
+		std::string name;
+		std::string desc;
+		FieldFlags flags;
+	};
+	using Fields = std::vector<FieldInfo>;
 
 }
