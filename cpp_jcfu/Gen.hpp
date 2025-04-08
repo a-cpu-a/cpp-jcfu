@@ -83,6 +83,9 @@ namespace cpp_jcfu
 		};
 		const ClassFlags thisClassFlags = ClassFlags_SUPER | ClassFlags_PUBLIC;
 
+
+		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4
+		//const pool
 		{
 			std::vector<uint8_t> poolOut;
 			size_t poolSize = 1;// +1
@@ -201,7 +204,6 @@ namespace cpp_jcfu
 		u16w(out, thisClassFlags);
 
 
-		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4
-		//const pool
+		return out;
 	}
 }
