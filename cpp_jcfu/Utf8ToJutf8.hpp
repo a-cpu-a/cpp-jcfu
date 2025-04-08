@@ -65,8 +65,8 @@ namespace cpp_jcfu
 
 			if (ch == 0)
 			{
-				ret.push_back(0b11000000);
-				ret.push_back(0b10000000);
+				ret.push_back((uint8_t)0b11000000);
+				ret.push_back((uint8_t)0b10000000);
 				continue;
 			}
 
