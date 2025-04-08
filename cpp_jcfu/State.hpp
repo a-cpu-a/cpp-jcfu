@@ -9,6 +9,113 @@
 
 namespace cpp_jcfu
 {
+	using AccessFlags = uint16_t;
+	enum AccessFlags_ : uint16_t
+	{
+		// I - inner class
+		// C - class
+		// L - module
+		// R - requires
+		// O - opens & exports
+		// F - field
+		// M - func/method
+
+		AccessFlags_NONE = 0,
+
+		AccessFlags_PUBLIC						= 0x0001,//	IC, ___, FM
+		AccessFlags_PRIVATE						= 0x0002,//	I_, ___, FM
+		AccessFlags_PROTECTED					= 0x0004,//	I_, ___, FM
+		AccessFlags_STATIC						= 0x0008,//	I_, ___, FM
+		AccessFlags_FINAL						= 0x0010,//	IC, ___, FMP
+		AccessFlags_SUPER_OPEN_TRANSITIVE_SYNC	= 0x0020,//	_C, LR_, _M
+		AccessFlags_STATICPHASE_VOLATILE_BRIDGE = 0x0040,//	__, _R_, FM
+		AccessFlags_TRANSIENT_VARARGS			= 0x0080,//	__, ___, FM
+		AccessFlags_NATIVE						= 0x0100,//	__, ___, _M
+		AccessFlags_INTERFACE					= 0x0200,//	IC
+		AccessFlags_ABSTRACT					= 0x0400,//	IC, ___, _M
+		AccessFlags_STRICTFP					= 0x0800,//	__, ___, _M
+		AccessFlags_SYNTHETIC					= 0x1000,//	IC, LRO, FMP
+		AccessFlags_ANNOTATION					= 0x2000,//	IC
+		AccessFlags_ENUM						= 0x4000,//	IC, ___, F
+
+		AccessFlags_MOD_MANDATED				= 0x8000,//	_C, LRO, __P
+	};
+
+	using ClassFlags = uint16_t;
+	enum ClassFlags_ : uint16_t
+	{
+		ClassFlags_NONE = 0,
+
+		ClassFlags_PUBLIC = AccessFlags_PUBLIC,
+		ClassFlags_FINAL = AccessFlags_FINAL,
+
+		ClassFlags_SUPER = AccessFlags_SUPER_OPEN_TRANSITIVE_SYNC,
+		ClassFlags_INTERFACE = AccessFlags_INTERFACE,
+		ClassFlags_ABSTRACT = AccessFlags_ABSTRACT,
+		ClassFlags_SYNTHETIC = AccessFlags_SYNTHETIC,
+		ClassFlags_ANNOTATION = AccessFlags_ANNOTATION,
+		ClassFlags_ENUM = AccessFlags_ENUM,
+
+		ClassFlags_MOD = AccessFlags_MOD_MANDATED,
+	};
+
+	using InnerClassFlags = uint16_t;
+	enum InnerClassFlags_ : uint16_t
+	{
+		InnerClassFlags_NONE = 0,
+
+		InnerClassFlags_PUBLIC = AccessFlags_PUBLIC,
+		InnerClassFlags_PRIVATE = AccessFlags_PRIVATE,
+		InnerClassFlags_PROTECTED = AccessFlags_PROTECTED,
+		InnerClassFlags_STATIC = AccessFlags_STATIC,
+		InnerClassFlags_FINAL = AccessFlags_FINAL,
+
+		InnerClassFlags_INTERFACE = AccessFlags_INTERFACE,
+		InnerClassFlags_ABSTRACT = AccessFlags_ABSTRACT,
+		InnerClassFlags_SYNTHETIC = AccessFlags_SYNTHETIC,
+		InnerClassFlags_ANNOTATION = AccessFlags_ANNOTATION,
+		InnerClassFlags_ENUM = AccessFlags_ENUM,
+	};
+
+	using FieldFlags = uint16_t;
+	enum FieldFlags_ : uint16_t
+	{
+		FieldFlags_NONE = 0,
+
+		FieldFlags_PUBLIC = AccessFlags_PUBLIC,
+		FieldFlags_PRIVATE = AccessFlags_PRIVATE,
+		FieldFlags_PROTECTED = AccessFlags_PROTECTED,
+		FieldFlags_STATIC = AccessFlags_STATIC,
+		FieldFlags_FINAL = AccessFlags_FINAL,
+
+		FieldFlags_VOLATILE = AccessFlags_STATICPHASE_VOLATILE_BRIDGE,
+		FieldFlags_TRANSIENT = AccessFlags_TRANSIENT_VARARGS,
+
+		FieldFlags_SYNTHETIC = AccessFlags_SYNTHETIC,
+		FieldFlags_ENUM = AccessFlags_ENUM,
+	};
+
+	using MethodFlags = uint16_t;
+	enum MethodFlags_ : uint16_t
+	{
+		MethodFlags_NONE = 0,
+
+		MethodFlags_PUBLIC = AccessFlags_PUBLIC,
+		MethodFlags_PRIVATE = AccessFlags_PRIVATE,
+		MethodFlags_PROTECTED = AccessFlags_PROTECTED,
+		MethodFlags_STATIC = AccessFlags_STATIC,
+		MethodFlags_FINAL = AccessFlags_FINAL,
+
+		MethodFlags_SYNC = AccessFlags_SUPER_OPEN_TRANSITIVE_SYNC,
+		MethodFlags_BRIDGE = AccessFlags_STATICPHASE_VOLATILE_BRIDGE,
+		MethodFlags_VARARGS = AccessFlags_TRANSIENT_VARARGS,
+		MethodFlags_NATIVE = AccessFlags_NATIVE,
+		MethodFlags_ABSTRACT = AccessFlags_ABSTRACT,
+		MethodFlags_STRICTFP = AccessFlags_STRICTFP,
+
+		MethodFlags_SYNTHETIC = AccessFlags_SYNTHETIC,
+	};
+
 	enum class FuncHandleKind : uint8_t
 	{
 		GET_FIELD		= 1, //getfield	 C.f : T

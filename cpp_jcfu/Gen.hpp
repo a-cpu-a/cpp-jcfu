@@ -77,7 +77,11 @@ namespace cpp_jcfu
 		u16w(out, 0);
 		u16w(out, 51);
 
-		ConstPool consts(10);
+		ConstPool consts = {
+			ConstPoolItmType::CLASS("HelloWorld"),
+			ConstPoolItmType::CLASS("java/lang/Object")
+		};
+		const ClassFlags thisClassFlags = ClassFlags_SUPER | ClassFlags_PUBLIC;
 
 		{
 			std::vector<uint8_t> poolOut;
@@ -193,6 +197,8 @@ namespace cpp_jcfu
 
 			out.insert(out.end(), poolOut.begin(), poolOut.end());
 		}
+
+		u16w(out, thisClassFlags);
 
 
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4
