@@ -1,4 +1,4 @@
-# C++ Java Class File Utitlities
+# C++ Utilities for java class files
 
  WIP class file generation utils.  
  Use c++ 20 or above.  
