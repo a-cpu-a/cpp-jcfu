@@ -34,6 +34,10 @@ namespace cpp_jcfu
 		{
 			uint8_t varIdx;
 		};
+		struct BaseVar16Instr
+		{
+			uint16_t varIdx;
+		};
 		struct BaseBranch
 		{
 			int16_t jmpOffset;
@@ -307,6 +311,22 @@ namespace cpp_jcfu
 
 		struct WIDE {};
 
+		struct PUSH_I32_VAR_U16 : BaseVar16Instr {};
+		struct PUSH_F32_VAR_U16 : BaseVar16Instr {};
+		struct PUSH_I64_VAR_U16 : BaseVar16Instr {};
+		struct PUSH_F64_VAR_U16 : BaseVar16Instr {};
+		struct PUSH_OBJ_VAR_U16 : BaseVar16Instr {};
+
+		struct SAVE_I32_VAR_U16 : BaseVar16Instr {};
+		struct SAVE_F32_VAR_U16 : BaseVar16Instr {};
+		struct SAVE_I64_VAR_U16 : BaseVar16Instr {};
+		struct SAVE_F64_VAR_U16 : BaseVar16Instr {};
+		struct SAVE_OBJ_VAR_U16 : BaseVar16Instr {};
+
+		struct DEPR_GOTO_VAR_U16 :BaseVar16Instr {};
+
+		struct ADD_I32_VAR_U16_CI16 :BaseVar16Instr { int16_t val; };
+
 		struct IF_NIL :BaseBranch {};
 		struct IF_NNIL :BaseBranch {};
 
@@ -562,8 +582,24 @@ namespace cpp_jcfu
 		InstrType::IF_NNIL,
 
 		InstrType::GOTO32,
-		InstrType::DEPR_JSR32
+		InstrType::DEPR_JSR32,
 
-		//TODO: wide instrs
+		// Wide + ...
+
+		InstrType::PUSH_I32_VAR_U16,//wide iload
+		InstrType::PUSH_I64_VAR_U16,//wide lload
+		InstrType::PUSH_F32_VAR_U16,//wide fload
+		InstrType::PUSH_F64_VAR_U16,//wide dload
+		InstrType::PUSH_OBJ_VAR_U16,//wide aload
+
+		InstrType::SAVE_I32_VAR_U16,
+		InstrType::SAVE_I64_VAR_U16,
+		InstrType::SAVE_F32_VAR_U16,
+		InstrType::SAVE_F64_VAR_U16,
+		InstrType::SAVE_OBJ_VAR_U16,
+
+		InstrType::DEPR_GOTO_VAR_U16,
+
+		InstrType::ADD_I32_VAR_U16_CI16
 	> ;
 }
