@@ -514,8 +514,8 @@ namespace cpp_jcfu
 		InstrType::IF_OBJ_EQL,
 		InstrType::IF_OBJ_NEQ,
 
-		InstrType::GOTO,
-		InstrType::DEPR_JSR,
+		InstrType::GOTO32,
+		InstrType::DEPR_JSR32,
 		InstrType::DEPR_GOTO_VAR_U8,
 
 		InstrType::TABLE_SWITCH,
