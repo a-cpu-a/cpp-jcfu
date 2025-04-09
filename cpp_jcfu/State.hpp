@@ -403,5 +403,4 @@ namespace cpp_jcfu
 		FieldFlags flags;
 	};
 	using Fields = std::vector<FieldInfo>;
-
 }
