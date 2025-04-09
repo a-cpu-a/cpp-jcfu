@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <variant>
+#include <memory>
 
 #include "State.hpp"
 
@@ -43,11 +44,11 @@ namespace cpp_jcfu
 		};
 		struct BaseFieldRef
 		{
-			ConstPoolItmType::FIELD_REF field;
+			std::unique_ptr<ConstPoolItmType::FIELD_REF> field;
 		};
 		struct BaseFuncRef
 		{
-			ConstPoolItmType::FUNC_REF func;
+			std::unique_ptr<ConstPoolItmType::FUNC_REF> func;
 		};
 		struct BaseClassRef
 		{
