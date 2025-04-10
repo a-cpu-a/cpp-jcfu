@@ -40,7 +40,11 @@ namespace cpp_jcfu
 		};
 		struct BaseBranch16
 		{
-			int16_t jmpOffset;//In instructions, not bytes
+			int16_t jmpOffsetBytes;//In bytes
+		};
+		struct BaseBranch32
+		{
+			int32_t jmpOffsetBytes;//In bytes
 		};
 		struct BaseBranch
 		{
@@ -84,11 +88,9 @@ namespace cpp_jcfu
 		struct PUSH_F64_0 {};
 		struct PUSH_F64_1 {};
 
-		using PUSH_CONST = std::unique_ptr<ConstPoolItm>;
-
-		struct PUSH_CONST_U8 { uint8_t poolIdx; };
-		struct PUSH_CONST_U16 { uint16_t poolIdx; };
-		struct PUSH_CONST2_U16 { uint16_t poolIdx; };
+		struct I_PUSH_CONST_U8 { uint8_t poolIdx; };
+		struct I_PUSH_CONST_U16 { uint16_t poolIdx; };
+		struct I_PUSH_CONST2_U16 { uint16_t poolIdx; };
 
 		struct PUSH_I32_VAR_U8 : BaseVarInstr {};
 		struct PUSH_F32_VAR_U8 : BaseVarInstr {};
@@ -337,8 +339,33 @@ namespace cpp_jcfu
 		struct I_IF_NIL :BaseBranch16 {};
 		struct I_IF_NNIL :BaseBranch16 {};
 
-		struct GOTO32 :BaseBranch {};
-		struct I_DEPR_JSR32 :BaseBranch {};
+		struct I_GOTO32 :BaseBranch32 {};
+		struct I_DEPR_JSR32 :BaseBranch32 {};
+
+		// Utility
+
+		using PUSH_CONST = std::unique_ptr<ConstPoolItm>;
+
+		struct GOTO :BaseBranch {};
+
+		struct IF_EQL :BaseBranch {};
+		struct IF_NEQ :BaseBranch {};
+		struct IF_LT :BaseBranch {};
+		struct IF_GT :BaseBranch {};
+		struct IF_LTE :BaseBranch {};
+		struct IF_GTE :BaseBranch {};
+
+		struct IF_I32_EQL :BaseBranch {};
+		struct IF_I32_NEQ :BaseBranch {};
+		struct IF_I32_LT :BaseBranch {};
+		struct IF_I32_GT :BaseBranch {};
+		struct IF_I32_LTE :BaseBranch {};
+		struct IF_I32_GTE :BaseBranch {};
+
+		struct IF_OBJ_EQL :BaseBranch {};
+		struct IF_OBJ_NEQ :BaseBranch {};
+		struct IF_NIL :BaseBranch {};
+		struct IF_NNIL :BaseBranch {};
 	}
 	using Instr = std::variant<
 		InstrType::NOP,
@@ -365,9 +392,9 @@ namespace cpp_jcfu
 		InstrType::PUSH_I32_I8,
 		InstrType::PUSH_I32_I16,
 
-		InstrType::PUSH_CONST_U8,//ldc
-		InstrType::PUSH_CONST_U16,//ldc_w(for constants > ff)
-		InstrType::PUSH_CONST2_U16,//ldc2_w (for long / double)
+		InstrType::I_PUSH_CONST_U8,//ldc
+		InstrType::I_PUSH_CONST_U16,//ldc_w(for constants > ff)
+		InstrType::I_PUSH_CONST2_U16,//ldc2_w (for long / double)
 
 		InstrType::PUSH_I32_VAR_U8,//iload
 		InstrType::PUSH_I64_VAR_U8,//lload
@@ -590,7 +617,7 @@ namespace cpp_jcfu
 		InstrType::I_IF_NIL,
 		InstrType::I_IF_NNIL,
 
-		InstrType::GOTO32,
+		InstrType::I_GOTO32,
 		InstrType::I_DEPR_JSR32,
 
 		// Wide + ...
@@ -611,7 +638,33 @@ namespace cpp_jcfu
 
 		InstrType::ADD_I32_VAR_U16_CI16,
 
-		InstrType::PUSH_CONST//ldc, ldc_w(for constants > ff), ldc2_w (for long / double)
+		// Utility
+
+		InstrType::PUSH_CONST,//ldc, ldc_w(for constants > ff), ldc2_w (for long / double)
+
+		InstrType::GOTO, //Either goto, or goto_w
+
+		InstrType::IF_EQL,
+		InstrType::IF_NEQ,
+		InstrType::IF_LT,
+		InstrType::IF_GT,
+		InstrType::IF_LTE,
+		InstrType::IF_GTE,
+
+
+		InstrType::IF_I32_EQL,
+		InstrType::IF_I32_NEQ,
+		InstrType::IF_I32_LT,
+		InstrType::IF_I32_GT,
+		InstrType::IF_I32_LTE,
+		InstrType::IF_I32_GTE,
+
+
+		InstrType::IF_OBJ_EQL,
+		InstrType::IF_OBJ_NEQ,
+		InstrType::IF_NIL,
+		InstrType::IF_NNIL
+
 	>;
 
 	//TODO: switch to something better than variant, as it is not optimal (no packing, uses short tag)
