@@ -28,6 +28,8 @@ namespace cpp_jcfu
 	concept BaseBranched16 = std::derived_from<T, InstrType::BaseBranch16>;
 	template<class T>
 	concept BaseBranched32 = std::derived_from<T, InstrType::BaseBranch32>;
+	template<class T>
+	concept BaseFieldRefed = std::derived_from<T, InstrType::BaseFieldRef>;
 
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
@@ -118,16 +120,7 @@ namespace cpp_jcfu
 				//TODO
 			},
 
-			varcase(const InstrType::PUSH_GET_STATIC&) {
-				//TODO
-			},
-			varcase(const InstrType::PUSH_GET_FIELD&) {
-				//TODO
-			},
-			varcase(const InstrType::SAVE_STATIC&) {
-				//TODO
-			},
-			varcase(const InstrType::SAVE_FIELD&) {
+			varcase(const BaseFieldRefed auto&) {
 				//TODO
 			},
 
@@ -210,6 +203,8 @@ namespace cpp_jcfu
 			varcase(const BaseBranched32 auto) {
 				//TODO
 			},
+
+				//Utilities
 
 			varcase(const InstrType::PUSH_CONST&) {
 				//TODO
