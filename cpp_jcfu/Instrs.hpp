@@ -92,11 +92,11 @@ namespace cpp_jcfu
 		struct I_PUSH_CONST_U16 { uint16_t poolIdx; };
 		struct I_PUSH_CONST2_U16 { uint16_t poolIdx; };
 
-		struct PUSH_I32_VAR_U8 : BaseVarInstr {};
-		struct PUSH_F32_VAR_U8 : BaseVarInstr {};
-		struct PUSH_I64_VAR_U8 : BaseVarInstr {};
-		struct PUSH_F64_VAR_U8 : BaseVarInstr {};
-		struct PUSH_OBJ_VAR_U8 : BaseVarInstr {};
+		struct I_PUSH_I32_VAR_U8 : BaseVarInstr {};
+		struct I_PUSH_F32_VAR_U8 : BaseVarInstr {};
+		struct I_PUSH_I64_VAR_U8 : BaseVarInstr {};
+		struct I_PUSH_F64_VAR_U8 : BaseVarInstr {};
+		struct I_PUSH_OBJ_VAR_U8 : BaseVarInstr {};
 
 		struct I_PUSH_I32_VAR_0 {};
 		struct I_PUSH_I32_VAR_1 {};
@@ -131,11 +131,11 @@ namespace cpp_jcfu
 		struct PUSH_CHR_ARR {};
 		struct PUSH_I16_ARR {};
 
-		struct SAVE_I32_VAR_U8 : BaseVarInstr {};
-		struct SAVE_F32_VAR_U8 : BaseVarInstr {};
-		struct SAVE_I64_VAR_U8 : BaseVarInstr {};
-		struct SAVE_F64_VAR_U8 : BaseVarInstr {};
-		struct SAVE_OBJ_VAR_U8 : BaseVarInstr {};
+		struct I_SAVE_I32_VAR_U8 : BaseVarInstr {};
+		struct I_SAVE_F32_VAR_U8 : BaseVarInstr {};
+		struct I_SAVE_I64_VAR_U8 : BaseVarInstr {};
+		struct I_SAVE_F64_VAR_U8 : BaseVarInstr {};
+		struct I_SAVE_OBJ_VAR_U8 : BaseVarInstr {};
 
 		struct SAVE_I32_VAR_0 {};
 		struct SAVE_I32_VAR_1 {};
@@ -223,7 +223,7 @@ namespace cpp_jcfu
 		struct XOR_I32 {};
 		struct XOR_I64 {};
 
-		struct ADD_I32_VAR_U8_CI8 :BaseVarInstr { int8_t val; };
+		struct I_ADD_I32_VAR_U8_CI8 :BaseVarInstr { int8_t val; };
 
 		struct CAST_I32_I8 {};
 		struct CAST_I32_CHR {};
@@ -401,11 +401,11 @@ namespace cpp_jcfu
 		InstrType::I_PUSH_CONST_U16,//ldc_w(for constants > ff)
 		InstrType::I_PUSH_CONST2_U16,//ldc2_w (for long / double)
 
-		InstrType::PUSH_I32_VAR_U8,//iload
-		InstrType::PUSH_I64_VAR_U8,//lload
-		InstrType::PUSH_F32_VAR_U8,//fload
-		InstrType::PUSH_F64_VAR_U8,//dload
-		InstrType::PUSH_OBJ_VAR_U8,//aload
+		InstrType::I_PUSH_I32_VAR_U8,//iload
+		InstrType::I_PUSH_I64_VAR_U8,//lload
+		InstrType::I_PUSH_F32_VAR_U8,//fload
+		InstrType::I_PUSH_F64_VAR_U8,//dload
+		InstrType::I_PUSH_OBJ_VAR_U8,//aload
 
 		InstrType::I_PUSH_I32_VAR_0,
 		InstrType::I_PUSH_I32_VAR_1,
@@ -440,11 +440,11 @@ namespace cpp_jcfu
 		InstrType::PUSH_CHR_ARR,
 		InstrType::PUSH_I16_ARR,
 
-		InstrType::SAVE_I32_VAR_U8,
-		InstrType::SAVE_I64_VAR_U8,
-		InstrType::SAVE_F32_VAR_U8,
-		InstrType::SAVE_F64_VAR_U8,
-		InstrType::SAVE_OBJ_VAR_U8,
+		InstrType::I_SAVE_I32_VAR_U8,
+		InstrType::I_SAVE_I64_VAR_U8,
+		InstrType::I_SAVE_F32_VAR_U8,
+		InstrType::I_SAVE_F64_VAR_U8,
+		InstrType::I_SAVE_OBJ_VAR_U8,
 
 		InstrType::SAVE_I32_VAR_0,
 		InstrType::SAVE_I32_VAR_1,
@@ -534,7 +534,7 @@ namespace cpp_jcfu
 		InstrType::XOR_I32,
 		InstrType::XOR_I64,
 
-		InstrType::ADD_I32_VAR_U8_CI8,
+		InstrType::I_ADD_I32_VAR_U8_CI8,
 
 		InstrType::CAST_I32_I64,
 		InstrType::CAST_I32_F32,
