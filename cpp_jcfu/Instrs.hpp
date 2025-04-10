@@ -247,24 +247,24 @@ namespace cpp_jcfu
 		struct CMP_F64_M {};
 		struct CMP_F64_P {};
 
-		struct IF_EQL :BaseBranch16 {};
-		struct IF_NEQ :BaseBranch16 {};
-		struct IF_LT :BaseBranch16 {};
-		struct IF_GT :BaseBranch16 {};
-		struct IF_LTE :BaseBranch16 {};
-		struct IF_GTE :BaseBranch16 {};
+		struct I_IF_EQL :BaseBranch16 {};
+		struct I_IF_NEQ :BaseBranch16 {};
+		struct I_IF_LT :BaseBranch16 {};
+		struct I_IF_GT :BaseBranch16 {};
+		struct I_IF_LTE :BaseBranch16 {};
+		struct I_IF_GTE :BaseBranch16 {};
 
-		struct IF_I32_EQL :BaseBranch16 {};
-		struct IF_I32_NEQ :BaseBranch16 {};
-		struct IF_I32_LT :BaseBranch16 {};
-		struct IF_I32_GT :BaseBranch16 {};
-		struct IF_I32_LTE :BaseBranch16 {};
-		struct IF_I32_GTE :BaseBranch16 {};
+		struct I_IF_I32_EQL :BaseBranch16 {};
+		struct I_IF_I32_NEQ :BaseBranch16 {};
+		struct I_IF_I32_LT :BaseBranch16 {};
+		struct I_IF_I32_GT :BaseBranch16 {};
+		struct I_IF_I32_LTE :BaseBranch16 {};
+		struct I_IF_I32_GTE :BaseBranch16 {};
 
-		struct IF_OBJ_EQL :BaseBranch16 {};
-		struct IF_OBJ_NEQ :BaseBranch16 {};
+		struct I_IF_OBJ_EQL :BaseBranch16 {};
+		struct I_IF_OBJ_NEQ :BaseBranch16 {};
 
-		struct GOTO16 :BaseBranch16 {};
+		struct I_GOTO16 :BaseBranch16 {};
 		struct I_DEPR_JSR16 :BaseBranch16 {};
 		struct I_DEPR_GOTO_VAR_U8 :BaseVarInstr {};
 
@@ -316,7 +316,7 @@ namespace cpp_jcfu
 		struct SYNC_ON {};
 		struct SYNC_OFF {};
 
-		struct WIDE {};
+		struct I_WIDE {};
 
 		struct PUSH_I32_VAR_U16 : BaseVar16Instr {};
 		struct PUSH_F32_VAR_U16 : BaseVar16Instr {};
@@ -334,8 +334,8 @@ namespace cpp_jcfu
 
 		struct ADD_I32_VAR_U16_CI16 :BaseVar16Instr { int16_t val; };
 
-		struct IF_NIL :BaseBranch16 {};
-		struct IF_NNIL :BaseBranch16 {};
+		struct I_IF_NIL :BaseBranch16 {};
+		struct I_IF_NNIL :BaseBranch16 {};
 
 		struct GOTO32 :BaseBranch {};
 		struct I_DEPR_JSR32 :BaseBranch {};
@@ -528,23 +528,23 @@ namespace cpp_jcfu
 		InstrType::CMP_F64_M,
 		InstrType::CMP_F64_P,
 
-		InstrType::IF_EQL,
-		InstrType::IF_NEQ,
-		InstrType::IF_LT,
-		InstrType::IF_GTE,
-		InstrType::IF_GT,
-		InstrType::IF_LTE,
-		InstrType::IF_I32_EQL,
-		InstrType::IF_I32_NEQ,
-		InstrType::IF_I32_LT,
-		InstrType::IF_I32_GTE,
-		InstrType::IF_I32_GT,
-		InstrType::IF_I32_LTE,
+		InstrType::I_IF_EQL,
+		InstrType::I_IF_NEQ,
+		InstrType::I_IF_LT,
+		InstrType::I_IF_GTE,
+		InstrType::I_IF_GT,
+		InstrType::I_IF_LTE,
+		InstrType::I_IF_I32_EQL,
+		InstrType::I_IF_I32_NEQ,
+		InstrType::I_IF_I32_LT,
+		InstrType::I_IF_I32_GTE,
+		InstrType::I_IF_I32_GT,
+		InstrType::I_IF_I32_LTE,
 
-		InstrType::IF_OBJ_EQL,
-		InstrType::IF_OBJ_NEQ,
+		InstrType::I_IF_OBJ_EQL,
+		InstrType::I_IF_OBJ_NEQ,
 
-		InstrType::GOTO16,
+		InstrType::I_GOTO16,
 		InstrType::I_DEPR_JSR16,
 		InstrType::I_DEPR_GOTO_VAR_U8,
 
@@ -583,12 +583,12 @@ namespace cpp_jcfu
 		InstrType::SYNC_ON,
 		InstrType::SYNC_OFF,
 
-		InstrType::WIDE,
+		InstrType::I_WIDE,
 
 		InstrType::PUSH_OBJARR_U8,
 
-		InstrType::IF_NIL,
-		InstrType::IF_NNIL,
+		InstrType::I_IF_NIL,
+		InstrType::I_IF_NNIL,
 
 		InstrType::GOTO32,
 		InstrType::I_DEPR_JSR32,
