@@ -348,10 +348,10 @@ namespace cpp_jcfu
 
 		struct GOTO :BaseBranch {};
 
-		using PUSH_I32_I32 = int32_t;//Will be converted
-		using PUSH_F32_F32 = float;//Will be converted
-		using PUSH_I64_I64 = int64_t;//Will be converted
-		using PUSH_F64_F64 = double;//Will be converted
+		using PUSH_I32_I32 = int32_t;	//Will be converted
+		using PUSH_F32_F32 = float;		//Will be converted
+		using PUSH_I64_I64 = int64_t;	//Will be converted
+		using PUSH_F64_F64 = double;	//Will be converted
 
 		struct IF_EQL :BaseBranch {};
 		struct IF_NEQ :BaseBranch {};
@@ -647,10 +647,12 @@ namespace cpp_jcfu
 
 		InstrType::GOTO, //Either goto, or goto_w
 
-		InstrType::PUSH_I32_I32,
-		InstrType::PUSH_F32_F32,
-		InstrType::PUSH_I64_I64,
-		InstrType::PUSH_F64_F64,
+		InstrType::PUSH_I32_I32, //Will be converted
+		InstrType::PUSH_F32_F32, //Will be converted
+		InstrType::PUSH_I64_I64, //Will be converted
+		InstrType::PUSH_F64_F64, //Will be converted
+
+		//Note: BaseBranch based if's may build a jump pad, to achive >16 bit jumps
 
 		InstrType::IF_EQL,
 		InstrType::IF_NEQ,
