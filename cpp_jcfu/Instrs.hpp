@@ -265,6 +265,8 @@ namespace cpp_jcfu
 
 		struct I_IF_OBJ_EQL :BaseBranch16 {};
 		struct I_IF_OBJ_NEQ :BaseBranch16 {};
+		struct I_IF_NIL :BaseBranch16 {};
+		struct I_IF_NNIL :BaseBranch16 {};
 
 		struct I_GOTO16 :BaseBranch16 {};
 		struct I_DEPR_JSR16 :BaseBranch16 {};
@@ -336,9 +338,6 @@ namespace cpp_jcfu
 
 		struct ADD_I32_VAR_U16_CI16 :BaseVar16Instr { int16_t val; };
 
-		struct I_IF_NIL :BaseBranch16 {};
-		struct I_IF_NNIL :BaseBranch16 {};
-
 		struct I_GOTO32 :BaseBranch32 {};
 		struct I_DEPR_JSR32 :BaseBranch32 {};
 
@@ -346,12 +345,12 @@ namespace cpp_jcfu
 
 		using PUSH_CONST = std::unique_ptr<ConstPoolItm>;
 
-		struct GOTO :BaseBranch {};
-
 		using PUSH_I32_I32 = int32_t;	//Will be converted
 		using PUSH_F32_F32 = float;		//Will be converted
 		using PUSH_I64_I64 = int64_t;	//Will be converted
 		using PUSH_F64_F64 = double;	//Will be converted
+
+		struct GOTO :BaseBranch {};
 
 		struct IF_EQL :BaseBranch {};
 		struct IF_NEQ :BaseBranch {};
@@ -645,15 +644,14 @@ namespace cpp_jcfu
 
 		InstrType::PUSH_CONST,//ldc, ldc_w(for constants > ff), ldc2_w (for long / double)
 
-		InstrType::GOTO, //Either goto, or goto_w
-
 		InstrType::PUSH_I32_I32, //Will be converted
 		InstrType::PUSH_F32_F32, //Will be converted
 		InstrType::PUSH_I64_I64, //Will be converted
 		InstrType::PUSH_F64_F64, //Will be converted
 
-		//Note: BaseBranch based if's may build a jump pad, to achive >16 bit jumps
+		InstrType::GOTO, //Either goto, or goto_w
 
+		//Note: BaseBranch based if's may build a jump pad, to achive >16 bit jumps
 		InstrType::IF_EQL,
 		InstrType::IF_NEQ,
 		InstrType::IF_LT,
