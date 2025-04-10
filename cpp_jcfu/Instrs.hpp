@@ -38,13 +38,13 @@ namespace cpp_jcfu
 		{
 			uint16_t varIdx;
 		};
+		struct BaseBranch16
+		{
+			int16_t jmpOffset;//In instructions, not bytes
+		};
 		struct BaseBranch
 		{
-			int16_t jmpOffset;
-		};
-		struct BaseBranch32
-		{
-			int32_t jmpOffset;
+			int32_t jmpOffset;//In instructions, not bytes
 		};
 		struct BaseFieldRef
 		{
@@ -56,7 +56,7 @@ namespace cpp_jcfu
 		};
 		struct BaseClassRef
 		{
-			ConstPoolItmType::CLASS func;
+			std::unique_ptr<ConstPoolItmType::CLASS> func;
 		};
 
 		using NOP = std::monostate;
@@ -84,7 +84,11 @@ namespace cpp_jcfu
 		struct PUSH_F64_0 {};
 		struct PUSH_F64_1 {};
 
-		using PUSH_CONST = ConstPoolItm;
+		using PUSH_CONST = std::unique_ptr<ConstPoolItm>;
+
+		struct PUSH_CONST_U8 { uint8_t poolIdx; };
+		struct PUSH_CONST_U16 { uint16_t poolIdx; };
+		struct PUSH_CONST2_U16 { uint16_t poolIdx; };
 
 		struct PUSH_I32_VAR_U8 : BaseVarInstr {};
 		struct PUSH_F32_VAR_U8 : BaseVarInstr {};
@@ -243,39 +247,42 @@ namespace cpp_jcfu
 		struct CMP_F64_M {};
 		struct CMP_F64_P {};
 
-		struct IF_EQL :BaseBranch {};
-		struct IF_NEQ :BaseBranch {};
-		struct IF_LT :BaseBranch {};
-		struct IF_GT :BaseBranch {};
-		struct IF_LTE :BaseBranch {};
-		struct IF_GTE :BaseBranch {};
+		struct IF_EQL :BaseBranch16 {};
+		struct IF_NEQ :BaseBranch16 {};
+		struct IF_LT :BaseBranch16 {};
+		struct IF_GT :BaseBranch16 {};
+		struct IF_LTE :BaseBranch16 {};
+		struct IF_GTE :BaseBranch16 {};
 
-		struct IF_I32_EQL :BaseBranch {};
-		struct IF_I32_NEQ :BaseBranch {};
-		struct IF_I32_LT :BaseBranch {};
-		struct IF_I32_GT :BaseBranch {};
-		struct IF_I32_LTE :BaseBranch {};
-		struct IF_I32_GTE :BaseBranch {};
+		struct IF_I32_EQL :BaseBranch16 {};
+		struct IF_I32_NEQ :BaseBranch16 {};
+		struct IF_I32_LT :BaseBranch16 {};
+		struct IF_I32_GT :BaseBranch16 {};
+		struct IF_I32_LTE :BaseBranch16 {};
+		struct IF_I32_GTE :BaseBranch16 {};
 
-		struct IF_OBJ_EQL :BaseBranch {};
-		struct IF_OBJ_NEQ :BaseBranch {};
+		struct IF_OBJ_EQL :BaseBranch16 {};
+		struct IF_OBJ_NEQ :BaseBranch16 {};
 
-		struct GOTO16 :BaseBranch {};
-		struct DEPR_JSR16 :BaseBranch {};
-		struct DEPR_GOTO_VAR_U8 :BaseVarInstr {};
+		struct GOTO16 :BaseBranch16 {};
+		struct I_DEPR_JSR16 :BaseBranch16 {};
+		struct I_DEPR_GOTO_VAR_U8 :BaseVarInstr {};
 
-		struct TABLE_SWITCH
+		struct TableSwitchData
 		{
 			std::vector<int32_t> jmpOffsets;
 			int32_t defaultJmpOffset;
 			int32_t min;
 			//max - calc from min + jmpOffsets.size()
 		};
-		struct LOOKUP_SWITCH
+		using TABLE_SWITCH = std::unique_ptr<TableSwitchData>;
+
+		struct LookupSwitchData
 		{
 			std::vector<SwitchCase> cases;
 			int32_t defaultJmpOffset;
 		};
+		using LOOKUP_SWITCH = std::unique_ptr<LookupSwitchData>;
 
 		struct RET_I32 {};
 		struct RET_F32 {};
@@ -323,17 +330,17 @@ namespace cpp_jcfu
 		struct SAVE_F64_VAR_U16 : BaseVar16Instr {};
 		struct SAVE_OBJ_VAR_U16 : BaseVar16Instr {};
 
-		struct DEPR_GOTO_VAR_U16 :BaseVar16Instr {};
+		struct I_DEPR_GOTO_VAR_U16 :BaseVar16Instr {};
 
 		struct ADD_I32_VAR_U16_CI16 :BaseVar16Instr { int16_t val; };
 
-		struct IF_NIL :BaseBranch {};
-		struct IF_NNIL :BaseBranch {};
+		struct IF_NIL :BaseBranch16 {};
+		struct IF_NNIL :BaseBranch16 {};
 
-		struct GOTO32 :BaseBranch32 {};
-		struct DEPR_JSR32 :BaseBranch32 {};
+		struct GOTO32 :BaseBranch {};
+		struct I_DEPR_JSR32 :BaseBranch {};
 	}
-	using Instr = std::variant <
+	using Instr = std::variant<
 		InstrType::NOP,
 		InstrType::PUSH_OBJ_NULL,
 
@@ -358,7 +365,9 @@ namespace cpp_jcfu
 		InstrType::PUSH_I32_I8,
 		InstrType::PUSH_I32_I16,
 
-		InstrType::PUSH_CONST,//ldc, ldc_w(for constants > ff), ldc2_w (for long / double)
+		InstrType::PUSH_CONST_U8,//ldc
+		InstrType::PUSH_CONST_U16,//ldc_w(for constants > ff)
+		InstrType::PUSH_CONST2_U16,//ldc2_w (for long / double)
 
 		InstrType::PUSH_I32_VAR_U8,//iload
 		InstrType::PUSH_I64_VAR_U8,//lload
@@ -535,9 +544,9 @@ namespace cpp_jcfu
 		InstrType::IF_OBJ_EQL,
 		InstrType::IF_OBJ_NEQ,
 
-		InstrType::GOTO32,
-		InstrType::DEPR_JSR32,
-		InstrType::DEPR_GOTO_VAR_U8,
+		InstrType::GOTO16,
+		InstrType::I_DEPR_JSR16,
+		InstrType::I_DEPR_GOTO_VAR_U8,
 
 		InstrType::TABLE_SWITCH,
 		InstrType::LOOKUP_SWITCH,
@@ -582,7 +591,7 @@ namespace cpp_jcfu
 		InstrType::IF_NNIL,
 
 		InstrType::GOTO32,
-		InstrType::DEPR_JSR32,
+		InstrType::I_DEPR_JSR32,
 
 		// Wide + ...
 
@@ -598,8 +607,13 @@ namespace cpp_jcfu
 		InstrType::SAVE_F64_VAR_U16,
 		InstrType::SAVE_OBJ_VAR_U16,
 
-		InstrType::DEPR_GOTO_VAR_U16,
+		InstrType::I_DEPR_GOTO_VAR_U16,
 
-		InstrType::ADD_I32_VAR_U16_CI16
-	> ;
+		InstrType::ADD_I32_VAR_U16_CI16,
+
+		InstrType::PUSH_CONST//ldc, ldc_w(for constants > ff), ldc2_w (for long / double)
+	>;
+
+	//TODO: switch to something better than variant, as it is not optimal (no packing, uses short tag)
+	static_assert(((Instr)InstrType::I_DEPR_JSR32()).index() == 0xc9);
 }
