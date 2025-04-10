@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClInclude Include="cpp_jcfu\Gen.hpp" />
     <ClInclude Include="cpp_jcfu\Include.hpp" />
+    <ClInclude Include="cpp_jcfu\InstrCompiler.hpp" />
     <ClInclude Include="cpp_jcfu\Instrs.hpp" />
     <ClInclude Include="cpp_jcfu\State.hpp" />
     <ClInclude Include="cpp_jcfu\StateUtils.hpp" />

@@ -5,7 +5,7 @@
 #include <fstream>
 
 #include "cpp_jcfu/Gen.hpp"
-#include "cpp_jcfu/Instrs.hpp"
+#include "cpp_jcfu/InstrCompiler.hpp"
 
 int main()
 {
