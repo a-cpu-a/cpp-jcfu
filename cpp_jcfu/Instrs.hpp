@@ -323,6 +323,11 @@ namespace cpp_jcfu
 
 		struct I_WIDE {};
 
+		struct I_GOTO32 :BaseBranch32 {};
+		struct I_DEPR_JSR32 :BaseBranch32 {};
+
+		// Wide ones
+
 		struct PUSH_I32_VAR_U16 : BaseVar16Instr {};
 		struct PUSH_F32_VAR_U16 : BaseVar16Instr {};
 		struct PUSH_I64_VAR_U16 : BaseVar16Instr {};
@@ -338,9 +343,6 @@ namespace cpp_jcfu
 		struct I_DEPR_GOTO_VAR_U16 :BaseVar16Instr {};
 
 		struct ADD_I32_VAR_U16_CI16 :BaseVar16Instr { int16_t val; };
-
-		struct I_GOTO32 :BaseBranch32 {};
-		struct I_DEPR_JSR32 :BaseBranch32 {};
 
 		// Utility
 
