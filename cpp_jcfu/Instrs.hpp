@@ -75,8 +75,8 @@ namespace cpp_jcfu
 		struct PUSH_I32_4 {};
 		struct PUSH_I32_5 {};
 
-		using PUSH_I32_I8 = int8_t;
-		using PUSH_I32_I16 = int16_t;
+		using I_PUSH_I32_I8 = int8_t;
+		using I_PUSH_I32_I16 = int16_t;
 
 		struct PUSH_F32_0 {};
 		struct PUSH_F32_1 {};
@@ -348,6 +348,11 @@ namespace cpp_jcfu
 
 		struct GOTO :BaseBranch {};
 
+		using PUSH_I32_I32 = int32_t;//Will be converted
+		using PUSH_F32_F32 = float;//Will be converted
+		using PUSH_I64_I64 = int64_t;//Will be converted
+		using PUSH_F64_F64 = double;//Will be converted
+
 		struct IF_EQL :BaseBranch {};
 		struct IF_NEQ :BaseBranch {};
 		struct IF_LT :BaseBranch {};
@@ -389,8 +394,8 @@ namespace cpp_jcfu
 		InstrType::PUSH_F64_0,
 		InstrType::PUSH_F64_1,
 
-		InstrType::PUSH_I32_I8,
-		InstrType::PUSH_I32_I16,
+		InstrType::I_PUSH_I32_I8,
+		InstrType::I_PUSH_I32_I16,
 
 		InstrType::I_PUSH_CONST_U8,//ldc
 		InstrType::I_PUSH_CONST_U16,//ldc_w(for constants > ff)
@@ -644,6 +649,11 @@ namespace cpp_jcfu
 
 		InstrType::GOTO, //Either goto, or goto_w
 
+		InstrType::PUSH_I32_I32,
+		InstrType::PUSH_F32_F32,
+		InstrType::PUSH_I64_I64,
+		InstrType::PUSH_F64_F64,
+
 		InstrType::IF_EQL,
 		InstrType::IF_NEQ,
 		InstrType::IF_LT,
@@ -651,14 +661,12 @@ namespace cpp_jcfu
 		InstrType::IF_LTE,
 		InstrType::IF_GTE,
 
-
 		InstrType::IF_I32_EQL,
 		InstrType::IF_I32_NEQ,
 		InstrType::IF_I32_LT,
 		InstrType::IF_I32_GT,
 		InstrType::IF_I32_LTE,
 		InstrType::IF_I32_GTE,
-
 
 		InstrType::IF_OBJ_EQL,
 		InstrType::IF_OBJ_NEQ,
