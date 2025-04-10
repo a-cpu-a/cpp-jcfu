@@ -137,28 +137,28 @@ namespace cpp_jcfu
 		struct I_SAVE_F64_VAR_U8 : BaseVarInstr {};
 		struct I_SAVE_OBJ_VAR_U8 : BaseVarInstr {};
 
-		struct SAVE_I32_VAR_0 {};
-		struct SAVE_I32_VAR_1 {};
-		struct SAVE_I32_VAR_2 {};
-		struct SAVE_I32_VAR_3 {};
-		struct SAVE_I64_VAR_0 {};
-		struct SAVE_I64_VAR_1 {};
-		struct SAVE_I64_VAR_2 {};
-		struct SAVE_I64_VAR_3 {};
+		struct I_SAVE_I32_VAR_0 {};
+		struct I_SAVE_I32_VAR_1 {};
+		struct I_SAVE_I32_VAR_2 {};
+		struct I_SAVE_I32_VAR_3 {};
+		struct I_SAVE_I64_VAR_0 {};
+		struct I_SAVE_I64_VAR_1 {};
+		struct I_SAVE_I64_VAR_2 {};
+		struct I_SAVE_I64_VAR_3 {};
 
-		struct SAVE_F32_VAR_0 {};
-		struct SAVE_F32_VAR_1 {};
-		struct SAVE_F32_VAR_2 {};
-		struct SAVE_F32_VAR_3 {};
-		struct SAVE_F64_VAR_0 {};
-		struct SAVE_F64_VAR_1 {};
-		struct SAVE_F64_VAR_2 {};
-		struct SAVE_F64_VAR_3 {};
+		struct I_SAVE_F32_VAR_0 {};
+		struct I_SAVE_F32_VAR_1 {};
+		struct I_SAVE_F32_VAR_2 {};
+		struct I_SAVE_F32_VAR_3 {};
+		struct I_SAVE_F64_VAR_0 {};
+		struct I_SAVE_F64_VAR_1 {};
+		struct I_SAVE_F64_VAR_2 {};
+		struct I_SAVE_F64_VAR_3 {};
 
-		struct SAVE_OBJ_VAR_0 {};
-		struct SAVE_OBJ_VAR_1 {};
-		struct SAVE_OBJ_VAR_2 {};
-		struct SAVE_OBJ_VAR_3 {};
+		struct I_SAVE_OBJ_VAR_0 {};
+		struct I_SAVE_OBJ_VAR_1 {};
+		struct I_SAVE_OBJ_VAR_2 {};
+		struct I_SAVE_OBJ_VAR_3 {};
 
 		struct SAVE_I32_ARR {};
 		struct SAVE_F32_ARR {};
@@ -446,30 +446,28 @@ namespace cpp_jcfu
 		InstrType::I_SAVE_F64_VAR_U8,
 		InstrType::I_SAVE_OBJ_VAR_U8,
 
-		InstrType::SAVE_I32_VAR_0,
-		InstrType::SAVE_I32_VAR_1,
-		InstrType::SAVE_I32_VAR_2,
-		InstrType::SAVE_I32_VAR_3,
+		InstrType::I_SAVE_I32_VAR_0,
+		InstrType::I_SAVE_I32_VAR_1,
+		InstrType::I_SAVE_I32_VAR_2,
+		InstrType::I_SAVE_I32_VAR_3,
+		InstrType::I_SAVE_I64_VAR_0,
+		InstrType::I_SAVE_I64_VAR_1,
+		InstrType::I_SAVE_I64_VAR_2,
+		InstrType::I_SAVE_I64_VAR_3,
 
-		InstrType::SAVE_I64_VAR_0,
-		InstrType::SAVE_I64_VAR_1,
-		InstrType::SAVE_I64_VAR_2,
-		InstrType::SAVE_I64_VAR_3,
+		InstrType::I_SAVE_F32_VAR_0,
+		InstrType::I_SAVE_F32_VAR_1,
+		InstrType::I_SAVE_F32_VAR_2,
+		InstrType::I_SAVE_F32_VAR_3,
+		InstrType::I_SAVE_F64_VAR_0,
+		InstrType::I_SAVE_F64_VAR_1,
+		InstrType::I_SAVE_F64_VAR_2,
+		InstrType::I_SAVE_F64_VAR_3,
 
-		InstrType::SAVE_F32_VAR_0,
-		InstrType::SAVE_F32_VAR_1,
-		InstrType::SAVE_F32_VAR_2,
-		InstrType::SAVE_F32_VAR_3,
-
-		InstrType::SAVE_F64_VAR_0,
-		InstrType::SAVE_F64_VAR_1,
-		InstrType::SAVE_F64_VAR_2,
-		InstrType::SAVE_F64_VAR_3,
-
-		InstrType::SAVE_OBJ_VAR_0,
-		InstrType::SAVE_OBJ_VAR_1,
-		InstrType::SAVE_OBJ_VAR_2,
-		InstrType::SAVE_OBJ_VAR_3,
+		InstrType::I_SAVE_OBJ_VAR_0,
+		InstrType::I_SAVE_OBJ_VAR_1,
+		InstrType::I_SAVE_OBJ_VAR_2,
+		InstrType::I_SAVE_OBJ_VAR_3,
 
 		InstrType::SAVE_I32_ARR,
 		InstrType::SAVE_I64_ARR,
