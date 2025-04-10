@@ -36,6 +36,8 @@ namespace cpp_jcfu
 	template<class T>
 	concept BaseVar16Instred = sizeof(T) == 2
 		&& std::derived_from<T, InstrType::BaseVar16Instr>;
+	template<class T>
+	concept BaseBranched = std::derived_from<T, InstrType::BaseBranch> && !std::same_as<T, InstrType::GOTO>;
 
 	template<class T>
 	concept BasicOpCode = sizeof(T)==1
@@ -43,7 +45,8 @@ namespace cpp_jcfu
 		&& !BaseBranched32<T>
 		&& !BaseFieldRefed<T>
 		&& !BaseVarInstred<T>
-		&& !BaseVar16Instred<T>;
+		&& !BaseVar16Instred<T>
+		&& !BaseBranched<T>;
 
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
@@ -63,7 +66,13 @@ namespace cpp_jcfu
 
 		for (size_t i = 0; i < instrs.size(); i++)
 		{
-			ezmatch(instrs[i])(
+			const Instr& instr = instrs[i];
+
+			std::visit([out](const auto& v) mutable {out.push_back(INSTR_OP_CODE<decltype(v)>); }, instr);
+			_ASSERT(curInstrOffset < UINT16_MAX);
+			instrOffsets[i] = uint16_t(curInstrOffset++);
+
+			ezmatch(instr)(
 
 				//TODO: hard ones (has data -> hard)
 				//		or, isnt basic op code			
@@ -181,66 +190,12 @@ namespace cpp_jcfu
 				//TODO
 			},
 
-			varcase(const InstrType::IF_EQL) {
+			varcase(const BaseBranched auto) {
 				//TODO
 			},
-			varcase(const InstrType::IF_NEQ) {
-				//TODO
-			},
-			varcase(const InstrType::IF_LT) {
-				//TODO
-			},
-			varcase(const InstrType::IF_GT) {
-				//TODO
-			},
-			varcase(const InstrType::IF_LTE) {
-				//TODO
-			},
-			varcase(const InstrType::IF_GTE) {
-				//TODO
-			},
-
-			varcase(const InstrType::IF_I32_EQL) {
-				//TODO
-			},
-			varcase(const InstrType::IF_I32_NEQ) {
-				//TODO
-			},
-			varcase(const InstrType::IF_I32_LT) {
-				//TODO
-			},
-			varcase(const InstrType::IF_I32_GT) {
-				//TODO
-			},
-			varcase(const InstrType::IF_I32_LTE) {
-				//TODO
-			},
-			varcase(const InstrType::IF_I32_GTE) {
-				//TODO
-			},
-
-			varcase(const InstrType::IF_OBJ_EQL) {
-				//TODO
-			},
-			varcase(const InstrType::IF_OBJ_NEQ) {
-				//TODO
-			},
-			varcase(const InstrType::IF_NIL) {
-				//TODO
-			},
-			varcase(const InstrType::IF_NNIL) {
-				//TODO
-			},
-
-
-
 
 				// Easy 1 byte instructions
-			varcase(const BasicOpCode auto) {
-				out.push_back(INSTR_OP_CODE<decltype(var)>);
-				_ASSERT(curInstrOffset < UINT16_MAX);
-				instrOffsets[i] = uint16_t(curInstrOffset++);
-			}
+			varcase(const BasicOpCode auto) {}
 			);
 		}
 
