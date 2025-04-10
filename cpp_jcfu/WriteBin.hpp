@@ -50,14 +50,8 @@ namespace cpp_jcfu
 		u16w(out, (uint16_t)poolSize);
 		consts.emplace_back(itm);
 	}
-	inline void constPoolIdxPushW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, ConstPoolItm&& itm)
-	{
-		const bool is2x = isPoolItemBig(itm);
-		constPoolIdxW(out, poolSize, consts, std::move(itm));
-
-		poolSize++;
-		if (is2x)
-			poolSize++;
+	inline void constPoolIdxPushW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, ConstPoolItm&& itm) {
+		u16w(out, constPoolPush(poolSize, consts, std::move(itm)));
 	}
 	inline void pushJutf8IdxW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, const std::string& str)
 	{
@@ -69,6 +63,7 @@ namespace cpp_jcfu
 		constPoolIdxPushW(out, poolSize, consts,
 			ConstPoolItmType::CLASS(className));
 	}
+
 	inline void codeTagW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, const CodeTag& itm)
 	{
 		//TODO
