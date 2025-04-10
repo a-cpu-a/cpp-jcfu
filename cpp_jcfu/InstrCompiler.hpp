@@ -15,7 +15,7 @@ namespace cpp_jcfu
 {
 	template<class T>
 	consteval uint8_t getInstrOpCode() {
-		const uint8_t idx = (uint8_t)Instr(T()).index();
+		const uint8_t idx = aca::variant_index_v<T, Instr>;
 		if (idx > 0xc9)
 			throw "Error, not a valid op code!";
 		return idx;
@@ -31,6 +31,12 @@ namespace cpp_jcfu
 	template<class T>
 	concept BaseFieldRefed = std::derived_from<T, InstrType::BaseFieldRef>;
 
+	template<class T>
+	concept BasicOpCode = sizeof(T)==1
+		&& !BaseBranched16<T>
+		&& !BaseBranched32<T>
+		&& !BaseFieldRefed<T>;
+
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
 		const std::vector<Instr>& instrs
@@ -45,6 +51,7 @@ namespace cpp_jcfu
 
 		std::vector<uint8_t> out;
 		out.reserve(instrs.size() + (instrs.size() >> 3)); // 1.125X scaling
+
 
 		for (size_t i = 0; i < instrs.size(); i++)
 		{
@@ -282,12 +289,14 @@ namespace cpp_jcfu
 
 
 				// Easy 1 byte instructions
-			varcase(const auto) {
+			varcase(const BasicOpCode auto) {
 				out.push_back(INSTR_OP_CODE<decltype(var)>);
 				_ASSERT(curInstrOffset < UINT16_MAX);
 				instrOffsets[i] = uint16_t(curInstrOffset++);
 			}
 			);
 		}
+
+		return out;
 	}
 }

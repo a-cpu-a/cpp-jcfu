@@ -8,6 +8,7 @@
 #include <memory>
 
 #include "State.hpp"
+#include "ext/ExtendVariant.hpp"
 
 namespace cpp_jcfu
 {
@@ -674,5 +675,8 @@ namespace cpp_jcfu
 	>;
 
 	//TODO: switch to something better than variant, as it is not optimal (no packing, uses short tag)
-	static_assert(((Instr)InstrType::I_DEPR_JSR32()).index() == 0xc9);
+
+	static_assert(
+		aca::variant_index_v<InstrType::I_DEPR_JSR32, Instr>
+		== 0xc9);
 }

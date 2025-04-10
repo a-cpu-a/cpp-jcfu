@@ -41,5 +41,18 @@ namespace aca {
 
     template <typename Variant, typename... ExtraTypes>
     using ExtendVariant = typename _ExtendVariantHelper<Variant, ExtraTypes...>::type;
+
+    //https://stackoverflow.com/questions/52303316/get-index-by-type-in-stdvariant#answer-52305530
+
+    template <typename T, typename V, std::size_t... Is>
+    constexpr size_t _variant_index_impl(std::index_sequence<Is...>)
+    {
+        return ((std::is_same_v<T, std::variant_alternative_t<Is, V>> *Is) + ...);
+    }
+
+    template <typename T, typename V>
+    constexpr size_t variant_index_v = _variant_index_impl<T, V>(std::make_index_sequence<std::variant_size_v<V>>{});
+
+
 }
 #endif
