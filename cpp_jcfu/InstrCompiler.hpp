@@ -24,6 +24,9 @@ namespace cpp_jcfu
 	template<class T>
 	constexpr uint8_t INSTR_OP_CODE = getInstrOpCode<T>();
 
+	template<class T>
+	concept BaseBranched16 = std::derived_from<T, InstrType::BaseBranch16>;
+
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
 		const std::vector<Instr>& instrs
@@ -99,61 +102,7 @@ namespace cpp_jcfu
 				//TODO
 			},
 
-			varcase(const InstrType::I_IF_EQL) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_NEQ) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_LT) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_GT) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_LTE) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_GTE) {
-				//TODO
-			},
-
-			varcase(const InstrType::I_IF_I32_EQL) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_I32_NEQ) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_I32_LT) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_I32_GT) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_I32_LTE) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_I32_GTE) {
-				//TODO
-			},
-
-			varcase(const InstrType::I_IF_OBJ_EQL) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_OBJ_NEQ) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_NIL) {
-				//TODO
-			},
-			varcase(const InstrType::I_IF_NNIL) {
-				//TODO
-			},
-
-			varcase(const InstrType::I_GOTO16) {
-				//TODO
-			},
-			varcase(const InstrType::I_DEPR_JSR16) {
+			varcase(const BaseBranched16 auto) {
 				//TODO
 			},
 			varcase(const InstrType::I_DEPR_GOTO_VAR_U8) {
