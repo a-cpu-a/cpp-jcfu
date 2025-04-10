@@ -98,28 +98,28 @@ namespace cpp_jcfu
 		struct PUSH_F64_VAR_U8 : BaseVarInstr {};
 		struct PUSH_OBJ_VAR_U8 : BaseVarInstr {};
 
-		struct PUSH_I32_VAR_0 {};
-		struct PUSH_I32_VAR_1 {};
-		struct PUSH_I32_VAR_2 {};
-		struct PUSH_I32_VAR_3 {};
-		struct PUSH_F32_VAR_0 {};
-		struct PUSH_F32_VAR_1 {};
-		struct PUSH_F32_VAR_2 {};
-		struct PUSH_F32_VAR_3 {};
+		struct I_PUSH_I32_VAR_0 {};
+		struct I_PUSH_I32_VAR_1 {};
+		struct I_PUSH_I32_VAR_2 {};
+		struct I_PUSH_I32_VAR_3 {};
+		struct I_PUSH_F32_VAR_0 {};
+		struct I_PUSH_F32_VAR_1 {};
+		struct I_PUSH_F32_VAR_2 {};
+		struct I_PUSH_F32_VAR_3 {};
 
-		struct PUSH_I64_VAR_0 {};
-		struct PUSH_I64_VAR_1 {};
-		struct PUSH_I64_VAR_2 {};
-		struct PUSH_I64_VAR_3 {};
-		struct PUSH_F64_VAR_0 {};
-		struct PUSH_F64_VAR_1 {};
-		struct PUSH_F64_VAR_2 {};
-		struct PUSH_F64_VAR_3 {};
+		struct I_PUSH_I64_VAR_0 {};
+		struct I_PUSH_I64_VAR_1 {};
+		struct I_PUSH_I64_VAR_2 {};
+		struct I_PUSH_I64_VAR_3 {};
+		struct I_PUSH_F64_VAR_0 {};
+		struct I_PUSH_F64_VAR_1 {};
+		struct I_PUSH_F64_VAR_2 {};
+		struct I_PUSH_F64_VAR_3 {};
 
-		struct PUSH_OBJ_VAR_0 {};
-		struct PUSH_OBJ_VAR_1 {};
-		struct PUSH_OBJ_VAR_2 {};
-		struct PUSH_OBJ_VAR_3 {};
+		struct I_PUSH_OBJ_VAR_0 {};
+		struct I_PUSH_OBJ_VAR_1 {};
+		struct I_PUSH_OBJ_VAR_2 {};
+		struct I_PUSH_OBJ_VAR_3 {};
 
 		struct PUSH_I32_ARR {};
 		struct PUSH_F32_ARR {};
@@ -402,28 +402,28 @@ namespace cpp_jcfu
 		InstrType::PUSH_F64_VAR_U8,//dload
 		InstrType::PUSH_OBJ_VAR_U8,//aload
 
-		InstrType::PUSH_I32_VAR_0,
-		InstrType::PUSH_I32_VAR_1,
-		InstrType::PUSH_I32_VAR_2,
-		InstrType::PUSH_I32_VAR_3,
-		InstrType::PUSH_I64_VAR_0,
-		InstrType::PUSH_I64_VAR_1,
-		InstrType::PUSH_I64_VAR_2,
-		InstrType::PUSH_I64_VAR_3,
+		InstrType::I_PUSH_I32_VAR_0,
+		InstrType::I_PUSH_I32_VAR_1,
+		InstrType::I_PUSH_I32_VAR_2,
+		InstrType::I_PUSH_I32_VAR_3,
+		InstrType::I_PUSH_I64_VAR_0,
+		InstrType::I_PUSH_I64_VAR_1,
+		InstrType::I_PUSH_I64_VAR_2,
+		InstrType::I_PUSH_I64_VAR_3,
 
-		InstrType::PUSH_F32_VAR_0,
-		InstrType::PUSH_F32_VAR_1,
-		InstrType::PUSH_F32_VAR_2,
-		InstrType::PUSH_F32_VAR_3,
-		InstrType::PUSH_F64_VAR_0,
-		InstrType::PUSH_F64_VAR_1,
-		InstrType::PUSH_F64_VAR_2,
-		InstrType::PUSH_F64_VAR_3,
+		InstrType::I_PUSH_F32_VAR_0,
+		InstrType::I_PUSH_F32_VAR_1,
+		InstrType::I_PUSH_F32_VAR_2,
+		InstrType::I_PUSH_F32_VAR_3,
+		InstrType::I_PUSH_F64_VAR_0,
+		InstrType::I_PUSH_F64_VAR_1,
+		InstrType::I_PUSH_F64_VAR_2,
+		InstrType::I_PUSH_F64_VAR_3,
 
-		InstrType::PUSH_OBJ_VAR_0,
-		InstrType::PUSH_OBJ_VAR_1,
-		InstrType::PUSH_OBJ_VAR_2,
-		InstrType::PUSH_OBJ_VAR_3,
+		InstrType::I_PUSH_OBJ_VAR_0,
+		InstrType::I_PUSH_OBJ_VAR_1,
+		InstrType::I_PUSH_OBJ_VAR_2,
+		InstrType::I_PUSH_OBJ_VAR_3,
 
 		InstrType::PUSH_I32_ARR,
 		InstrType::PUSH_I64_ARR,
