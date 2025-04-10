@@ -26,6 +26,8 @@ namespace cpp_jcfu
 
 	template<class T>
 	concept BaseBranched16 = std::derived_from<T, InstrType::BaseBranch16>;
+	template<class T>
+	concept BaseBranched32 = std::derived_from<T, InstrType::BaseBranch32>;
 
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
@@ -205,10 +207,7 @@ namespace cpp_jcfu
 				//TODO
 			},
 
-			varcase(const InstrType::I_GOTO32) {
-				//TODO
-			},
-			varcase(const InstrType::I_DEPR_JSR32) {
+			varcase(const BaseBranched32 auto) {
 				//TODO
 			},
 
