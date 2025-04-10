@@ -30,12 +30,16 @@ namespace cpp_jcfu
 	concept BaseBranched32 = std::derived_from<T, InstrType::BaseBranch32>;
 	template<class T>
 	concept BaseFieldRefed = std::derived_from<T, InstrType::BaseFieldRef>;
+	template<class T>
+	concept BaseVarInstred = sizeof(T) == 1
+		&& std::derived_from<T, InstrType::BaseVarInstr>;
 
 	template<class T>
 	concept BasicOpCode = sizeof(T)==1
 		&& !BaseBranched16<T>
 		&& !BaseBranched32<T>
-		&& !BaseFieldRefed<T>;
+		&& !BaseFieldRefed<T>
+		&& !BaseVarInstred<T>;
 
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
@@ -77,35 +81,7 @@ namespace cpp_jcfu
 				//TODO
 			},
 
-			varcase(const InstrType::I_PUSH_I32_VAR_U8) {
-				//TODO
-			},
-			varcase(const InstrType::I_PUSH_F32_VAR_U8) {
-				//TODO
-			},
-			varcase(const InstrType::I_PUSH_I64_VAR_U8) {
-				//TODO
-			},
-			varcase(const InstrType::I_PUSH_F64_VAR_U8) {
-				//TODO
-			},
-			varcase(const InstrType::I_PUSH_OBJ_VAR_U8) {
-				//TODO
-			},
-
-			varcase(const InstrType::I_SAVE_I32_VAR_U8) {
-				//TODO
-			},
-			varcase(const InstrType::I_SAVE_F32_VAR_U8) {
-				//TODO
-			},
-			varcase(const InstrType::I_SAVE_I64_VAR_U8) {
-				//TODO
-			},
-			varcase(const InstrType::I_SAVE_F64_VAR_U8) {
-				//TODO
-			},
-			varcase(const InstrType::I_SAVE_OBJ_VAR_U8) {
+			varcase(const BaseVarInstred auto) {
 				//TODO
 			},
 
@@ -114,9 +90,6 @@ namespace cpp_jcfu
 			},
 
 			varcase(const BaseBranched16 auto) {
-				//TODO
-			},
-			varcase(const InstrType::I_DEPR_GOTO_VAR_U8) {
 				//TODO
 			},
 
