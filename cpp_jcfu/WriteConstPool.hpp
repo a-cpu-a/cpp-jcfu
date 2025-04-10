@@ -99,6 +99,7 @@ namespace cpp_jcfu
 					case FuncHandleKind::RUN_DYN:
 					case FuncHandleKind::RUN_STATIC:
 					case FuncHandleKind::RUN_SPECIAL:
+					case FuncHandleKind::NEW_RUN_SPECIAL:
 						res = ConstPoolItmType::FUNC_REF(var.val);
 						break;
 					case FuncHandleKind::RUN_INTERFACE:
