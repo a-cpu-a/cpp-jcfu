@@ -29,4 +29,18 @@ namespace cpp_jcfu
 		}
 		return ret;
 	}
+
+	inline uint16_t constPoolPush(size_t& poolSize, ConstPool& consts, ConstPoolItm&& itm)
+	{
+		const bool is2x = isPoolItemBig(itm);
+		_ASSERT(poolSize < (UINT16_MAX - (is2x ? 1 : 0)));
+		consts.emplace_back(itm);
+		const uint16_t res = (uint16_t)poolSize;
+
+		poolSize++;
+		if (is2x)
+			poolSize++;
+
+		return res;
+	}
 }
