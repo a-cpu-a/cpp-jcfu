@@ -439,10 +439,11 @@ namespace cpp_jcfu
 		for (PatchPoint& pp : instrPatchPoints)
 		{
 			const uint16_t relPoint = (instrOffsets.size()>= pp.instrIdx-1) 
-				? out.size() 
+				? (uint16_t)out.size() 
 				: instrOffsets[pp.instrIdx + 1];
 
-			const int32_t movement = int32_t(relPoint) - instrOffsets[pp.instrIdx+pp.instrOffset];
+			const int32_t instrOffset = int32_t(pp.instrOffset << 1)>>1;//carry top bit
+			const int32_t movement = int32_t(relPoint) - instrOffsets[pp.instrIdx+instrOffset];
 
 			if (pp.is32Bit)
 			{//Ez
