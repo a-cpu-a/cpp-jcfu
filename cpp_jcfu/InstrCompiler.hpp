@@ -192,11 +192,19 @@ namespace cpp_jcfu
 
 			varcase(const InstrType::TABLE_SWITCH&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+				const uint8_t padBytes = (4 - (out.size() % 4)) % 4;
+				out.insert(out.end(), padBytes, 0);
 				//TODO
+
+				curInstrOffset += padBytes;
 			},
 			varcase(const InstrType::LOOKUP_SWITCH&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+				const uint8_t padBytes = (4 - (out.size() % 4))%4;
+				out.insert(out.end(), padBytes, 0);
 				//TODO
+
+				curInstrOffset += padBytes;
 			},
 
 			varcase(const BaseRefed auto&) {
