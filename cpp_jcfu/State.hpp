@@ -309,7 +309,7 @@ namespace cpp_jcfu
 		CodeTagType::STACK_FRAMES
 	>;
 
-	struct ErrorHandler
+	struct CodeTagErrorHandler
 	{
 		std::optional<ConstPoolItmType::CLASS> catchType; // None -> catch all
 		uint16_t startPc;
@@ -325,7 +325,7 @@ namespace cpp_jcfu
 	{
 		struct CODE {
 			std::vector<uint8_t> bytecode;
-			std::vector<ErrorHandler> errorHandlers;
+			std::vector<CodeTagErrorHandler> errorHandlers;
 			std::vector<CodeTag> tags;
 			uint16_t maxStack;
 			uint16_t maxLocals;

@@ -99,7 +99,7 @@ namespace cpp_jcfu
 
 			_ASSERT(var.errorHandlers.size() < UINT16_MAX);
 			u16w(tagOut, (uint16_t)var.errorHandlers.size());
-			for (const ErrorHandler& eh : var.errorHandlers)
+			for (const CodeTagErrorHandler& eh : var.errorHandlers)
 			{
 				u16w(tagOut, eh.startPc);
 				u16w(tagOut, eh.afterEndPc);
