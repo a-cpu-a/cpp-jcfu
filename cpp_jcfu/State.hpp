@@ -312,9 +312,9 @@ namespace cpp_jcfu
 	struct CodeTagErrorHandler
 	{
 		std::optional<ConstPoolItmType::CLASS> catchType; // None -> catch all
-		uint16_t startPc;
-		uint16_t afterEndPc;
-		uint16_t handlerPc;
+		uint16_t startByte;
+		uint16_t afterEndByte;
+		uint16_t handlerByte;
 	};
 	struct FuncParam
 	{

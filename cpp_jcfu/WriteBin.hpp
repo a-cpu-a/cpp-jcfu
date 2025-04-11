@@ -101,9 +101,9 @@ namespace cpp_jcfu
 			u16w(tagOut, (uint16_t)var.errorHandlers.size());
 			for (const CodeTagErrorHandler& eh : var.errorHandlers)
 			{
-				u16w(tagOut, eh.startPc);
-				u16w(tagOut, eh.afterEndPc);
-				u16w(tagOut, eh.handlerPc);
+				u16w(tagOut, eh.startByte);
+				u16w(tagOut, eh.afterEndByte);
+				u16w(tagOut, eh.handlerByte);
 				if (eh.catchType.has_value())
 				{
 					pushClassIdxW(tagOut, poolSize, consts,
