@@ -81,8 +81,12 @@ namespace cpp_jcfu
 
 			ezmatch(instr)(
 
-				//TODO: hard ones (has data -> hard)
-				//		or, isnt basic op code			
+			// Easy 1 byte instructions
+			varcase(const BasicOpCode auto) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+			},
+
+			// Hard ones
 
 			varcase(const InstrType::I_PUSH_I32_I8) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
@@ -221,11 +225,6 @@ namespace cpp_jcfu
 
 			varcase(const BaseBranched auto) {
 				//TODO
-			},
-
-				// Easy 1 byte instructions
-			varcase(const BasicOpCode auto) {
-				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 			}
 			);
 		}
