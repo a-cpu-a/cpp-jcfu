@@ -14,15 +14,7 @@
 namespace cpp_jcfu
 {
 	template<class T>
-	consteval uint8_t getInstrOpCode() {
-		const uint8_t idx = aca::variant_index_v<T, Instr>;
-		if (idx > 0xc9)
-			throw "Error, not a valid op code!";
-		return idx;
-	}
-
-	template<class T>
-	constexpr uint8_t INSTR_OP_CODE = getInstrOpCode<T>();
+	constexpr uint8_t INSTR_OP_CODE = aca::variant_index_v<T, Instr>;
 
 	template<class T>
 	concept BaseBranched16 = std::derived_from<T, InstrType::BaseBranch16>;
@@ -68,9 +60,9 @@ namespace cpp_jcfu
 		{
 			const Instr& instr = instrs[i];
 
-			std::visit([out](const auto& v) mutable {out.push_back(INSTR_OP_CODE<decltype(v)>); }, instr);
-			_ASSERT(curInstrOffset < UINT16_MAX);
-			instrOffsets[i] = uint16_t(curInstrOffset++);
+			//std::visit([out](const auto& v) mutable {out.push_back(INSTR_OP_CODE<decltype(v)>); }, instr);
+			//_ASSERT(curInstrOffset < UINT16_MAX);
+			//instrOffsets[i] = uint16_t(curInstrOffset++);
 
 			ezmatch(instr)(
 
@@ -195,7 +187,13 @@ namespace cpp_jcfu
 			},
 
 				// Easy 1 byte instructions
-			varcase(const BasicOpCode auto) {}
+			varcase(const BasicOpCode auto) {
+				constexpr uint8_t op = INSTR_OP_CODE<decltype(var)>;
+				static_assert(op <= 0xc9);
+				out.push_back(op);
+				_ASSERT(curInstrOffset < UINT16_MAX);
+				instrOffsets[i] = uint16_t(curInstrOffset++);
+			}
 			);
 		}
 
