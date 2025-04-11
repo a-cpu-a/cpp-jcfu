@@ -692,5 +692,5 @@ namespace cpp_jcfu
 
 	static_assert(
 		aca::variant_index_v<InstrType::I_DEPR_JSR32, Instr>
-		== (uint8_t)InstrId::DEPR_JSR32);
+		== (uint8_t)InstrId::I_DEPR_JSR32);
 }

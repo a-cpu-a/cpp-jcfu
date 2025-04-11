@@ -35,7 +35,7 @@ namespace cpp_jcfu
 		const auto& var)
 	{
 		constexpr uint8_t op = INSTR_OP_CODE<decltype(var)>;
-		static_assert(op <= (uint8_t)InstrId::DEPR_JSR32);
+		static_assert(op <= (uint8_t)InstrId::I_DEPR_JSR32);
 		pushOpCodeId(out, instrOffsets, curInstrOffset, i, (InstrId)op);
 	}
 	inline void pushWideOpCodeId(
