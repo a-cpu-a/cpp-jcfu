@@ -11,13 +11,14 @@ int main()
 {
 	std::cout << "Hello World!\n";
 
+	cpp_jcfu::ConstPool consts{};
+	size_t poolSize = 1;
 
 	const std::vector<uint8_t> out = cpp_jcfu::gen(
 		cpp_jcfu::ClassFlags_SUPER | cpp_jcfu::ClassFlags_PUBLIC,
-		{
-			cpp_jcfu::ConstPoolItmType::CLASS("HelloWorld"),
-			cpp_jcfu::ConstPoolItmType::CLASS("java/lang/Object")
-		},
+		"HelloWorld",
+		"java/lang/Object",
+		std::move(consts),
 		{
 			cpp_jcfu::FuncInfo{
 				.tags = {cpp_jcfu::FuncTagType::CODE{

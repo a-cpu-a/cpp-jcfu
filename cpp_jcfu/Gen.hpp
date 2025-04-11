@@ -16,6 +16,8 @@ namespace cpp_jcfu
 
 	inline std::vector<uint8_t> gen(
 		const ClassFlags thisClassFlags, 
+		const std::string& thisClass,
+		const std::string& superClass,
 		ConstPool&& consts, 
 		const Functions& funcs, 
 		const Fields& fields)
@@ -33,10 +35,11 @@ namespace cpp_jcfu
 
 		std::vector<uint8_t> fieldOut;
 
+		size_t poolSize = calcConstPoolSize(consts) + 1;
+
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.5
 		// Fields
 		{
-			size_t poolSize = calcConstPoolSize(consts) + 1;
 
 			for (const FieldInfo& info : fields)
 			{
@@ -58,8 +61,6 @@ namespace cpp_jcfu
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.6
 		// Funcs
 		{
-			size_t poolSize = calcConstPoolSize(consts)+1;
-
 			for (const FuncInfo& info : funcs)
 			{
 				u16w(funcOut, info.flags);
@@ -75,12 +76,16 @@ namespace cpp_jcfu
 			}
 		}
 
+		//Do next to last, to optimize small op-code stuff
+		const uint16_t thisClassIdx = constPoolPush(poolSize, consts, ConstPoolItmType::CLASS(thisClass));
+		const uint16_t superClassIdx = constPoolPush(poolSize, consts, ConstPoolItmType::CLASS(superClass));
+
 		constPoolW(out, std::move(consts));
 
 		u16w(out, thisClassFlags);
 
-		u16w(out, 1);//this
-		u16w(out, 2);//super
+		u16w(out, thisClassIdx);//this
+		u16w(out, superClassIdx);//super
 
 		u16w(out, 0);//interface count
 		u16w(out, (uint16_t)fields.size());//field count
