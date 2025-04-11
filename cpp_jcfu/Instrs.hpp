@@ -853,7 +853,7 @@ namespace cpp_jcfu
 	//TODO: switch to something better than variant, as it is not optimal (no packing, uses short tag)
 
 	template<class T>
-	constexpr InstrId INSTR_OP_CODE = (InstrId)aca::variant_index_v<T, Instr>;
+	constexpr InstrId INSTR_OP_CODE = (InstrId)aca::variant_index_v<std::remove_cvref_t<T>, Instr>;
 
 	static_assert( 
 		INSTR_OP_CODE<InstrType::I_DEPR_JSR32> == InstrId::I_DEPR_JSR32
