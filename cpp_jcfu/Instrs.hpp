@@ -669,6 +669,10 @@ namespace cpp_jcfu
 	);
 
 	constexpr InstrId invertIfInstr(const InstrId id) {
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wswitch"
+#endif
 		switch (id)
 		{
 		case InstrId::IF_EQL:        return InstrId::IF_NEQ;
@@ -691,7 +695,11 @@ namespace cpp_jcfu
 		case InstrId::IF_NIL:        return InstrId::IF_NNIL;
 		case InstrId::IF_NNIL:       return InstrId::IF_NIL;
 		}
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 		_ASSERT(false && "Invalid instruction, expected IF_*");
 		std::abort();//Error lol
 	}
+
 }
