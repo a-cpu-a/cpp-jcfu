@@ -691,7 +691,7 @@ namespace cpp_jcfu
 		case InstrId::IF_NIL:        return InstrId::IF_NNIL;
 		case InstrId::IF_NNIL:       return InstrId::IF_NIL;
 		}
-		_ASSERT(false);
+		_ASSERT(false && "Invalid instruction, expected IF_*");
 		std::abort();//Error lol
 	}
 }
