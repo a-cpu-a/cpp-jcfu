@@ -165,11 +165,28 @@ namespace cpp_jcfu
 		&& !BaseBranched<T>
 		&& !PushConstXed<T>;
 
-	inline std::vector<uint8_t> compileInstrs(
+	struct ErrorHandler
+	{
+		std::optional<ConstPoolItmType::CLASS> catchType; // None -> catch all
+		uint16_t startInstr;
+		uint16_t endInstr;
+		uint16_t handlerInstr;
+	};
+	struct CodeCompileData
+	{
+		std::span<const Instr> instrs;
+		std::span<const ErrorHandler> errorHandlers;
+		std::vector<CodeTag> extraTags;
+		uint16_t maxStack;
+		uint16_t maxLocals;
+	};
+	inline FuncTagType::CODE compileCode(
 		size_t& poolSize, ConstPool& consts,
-		std::span<const Instr> instrs
+		const CodeCompileData& data
 	)
 	{
+		const std::span<const Instr> instrs = data.instrs;
+
 		_ASSERT(instrs.size() < UINT16_MAX);
 
 		std::vector<PatchPoint> instrPatchPoints;
@@ -436,12 +453,13 @@ namespace cpp_jcfu
 			}
 			);
 		}
+
+		instrOffsets.push_back(curInstrOffset);//Prevent oob
+
 		size_t ppOffset = 0;
 		for (const PatchPoint& pp : instrPatchPoints)
 		{
-			const uint16_t relPoint = (instrOffsets.size()<= uint32_t(pp.instrIdx) + 1)
-				? (uint16_t)out.size() 
-				: instrOffsets[pp.instrIdx + 1];
+			const uint16_t relPoint = instrOffsets[pp.instrIdx + 1];
 
 			const int32_t instrOffset = int32_t(pp.instrOffset << 1)>>1;//carry top bit
 			const int32_t movement = instrOffsets[pp.instrIdx+instrOffset] - int32_t(relPoint);
@@ -490,6 +508,25 @@ namespace cpp_jcfu
 			ppOffset += 5;
 		}
 
-		return out;
+		FuncTagType::CODE ret;
+		ret.bytecode = std::move(out);
+		ret.maxLocals = data.maxLocals;
+		ret.maxStack = data.maxStack;
+
+		ret.tags = data.extraTags;
+
+		ret.errorHandlers.resize(data.errorHandlers.size());
+		for (size_t i = 0; i < data.errorHandlers.size(); i++)
+		{
+			const ErrorHandler& mh = data.errorHandlers[i];
+			CodeTagErrorHandler& eh = ret.errorHandlers[i];
+
+			eh.catchType = mh.catchType;
+			eh.startByte = instrOffsets[mh.startInstr];
+			eh.afterEndByte = instrOffsets[mh.endInstr+1];
+			eh.handlerByte = instrOffsets[mh.handlerInstr];
+		}
+
+		return ret;
 	}
 }

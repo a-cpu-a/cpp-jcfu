@@ -15,7 +15,7 @@ namespace cpp_jcfu
 {
 
 	inline std::vector<uint8_t> gen(
-		const ClassFlags thisClassFlags, 
+		const ClassFlags thisClassFlags,
 		const std::string& thisClass,
 		const std::string& superClass,
 		ConstPool&& consts, 

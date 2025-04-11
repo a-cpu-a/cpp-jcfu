@@ -21,11 +21,15 @@ int main()
 		std::move(consts),
 		{
 			cpp_jcfu::FuncInfo{
-				.tags = {cpp_jcfu::FuncTagType::CODE{
-					.bytecode = {0xb1}, //return
-					.maxStack = 1,
+				.tags = {cpp_jcfu::compileCode(poolSize, consts, {
+					.instrs = {{
+							cpp_jcfu::InstrType::GOTO{0},
+							cpp_jcfu::InstrType::RET{}
+					}},
+					.maxStack = 0,
 					.maxLocals = 1
-				}},
+				})
+				},
 				.name = "main",
 				.desc = "([Ljava/lang/String;)V",
 				.flags = cpp_jcfu::FuncFlags_PUBLIC | cpp_jcfu::FuncFlags_STATIC
