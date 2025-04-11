@@ -35,6 +35,18 @@ namespace cpp_jcfu
 		out.push_back((v >> 8) & 0xFF);
 		out.push_back(v & 0xFF);
 	}
+	inline void u32Patch(std::vector<uint8_t>& out,const size_t offset, const uint32_t v)
+	{
+		out[offset] = (v >> 24) & 0xFF;
+		out[offset+1] = (v >> 16) & 0xFF;
+		out[offset+2] = (v >> 8) & 0xFF;
+		out[offset+3] = v & 0xFF;
+	}
+	inline void u16Patch(std::vector<uint8_t>& out, const size_t offset, const uint16_t v)
+	{
+		out[offset] = (v >> 8) & 0xFF;
+		out[offset + 1] = v & 0xFF;
+	}
 	//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.4.7
 	inline void jUtf8W(std::vector<uint8_t>& out, std::string v)
 	{
