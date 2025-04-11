@@ -13,9 +13,6 @@
 
 namespace cpp_jcfu
 {
-	template<class T>
-	constexpr uint8_t INSTR_OP_CODE = aca::variant_index_v<T, Instr>;
-
 	inline void pushOpCodeId(
 		std::vector<uint8_t>& out,
 		std::vector<uint16_t>& instrOffsets,
@@ -34,9 +31,9 @@ namespace cpp_jcfu
 		const uint16_t i,
 		const auto& var)
 	{
-		constexpr uint8_t op = INSTR_OP_CODE<decltype(var)>;
-		static_assert(op <= (uint8_t)InstrId::I_DEPR_JSR32);
-		pushOpCodeId(out, instrOffsets, curInstrOffset, i, (InstrId)op);
+		constexpr InstrId op = INSTR_OP_CODE<decltype(var)>;
+		static_assert((uint8_t)op <= (uint8_t)InstrId::I_DEPR_JSR32);
+		pushOpCodeId(out, instrOffsets, curInstrOffset, i, op);
 	}
 	inline void pushWideOpCodeId(
 		std::vector<uint8_t>& out,
@@ -58,9 +55,9 @@ namespace cpp_jcfu
 		const uint16_t i,
 		const auto& var)
 	{
-		constexpr uint8_t op = INSTR_OP_CODE<decltype(var)>;
-		static_assert(op <= (uint8_t)InstrId::I_DEPR_JSR32);
-		pushWideOpCodeId(out, instrOffsets, curInstrOffset, i, (InstrId)op);
+		constexpr InstrId op = INSTR_OP_CODE<decltype(var)>;
+		static_assert((uint8_t)op <= (uint8_t)InstrId::I_DEPR_JSR32);
+		pushWideOpCodeId(out, instrOffsets, curInstrOffset, i, op);
 	}
 
 	inline void pushConstPoolInstrW(
@@ -243,7 +240,7 @@ namespace cpp_jcfu
 
 				writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, var->defaultJmpOffset);
 				u32w(out, var->min);
-				u32w(out, var->min+var->jmpOffsets.size()-1);
+				u32w(out, uint32_t(uint32_t(var->min) + var->jmpOffsets.size() - 1));
 				curInstrOffset += 8;
 
 				for (const int32_t jmpOffset : var->jmpOffsets)
@@ -260,7 +257,9 @@ namespace cpp_jcfu
 				curInstrOffset += padBytes;
 
 				writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, var->defaultJmpOffset);
-				u32w(out, var->cases.size());
+
+				_ASSERT(var->cases.size() < UINT32_MAX);
+				u32w(out, uint32_t(var->cases.size()));
 				curInstrOffset += 4;
 
 				for (const SwitchCase& kase : var->cases)
@@ -446,9 +445,8 @@ namespace cpp_jcfu
 
 				if (var.jmpOffset > INT16_MAX || var.jmpOffset < INT16_MIN)
 				{// Always 32
-					//TODO: flip condition!!!
-					pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-					_ASSERT(false && "TODO");//TODO
+
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i, invertIfInstr(INSTR_OP_CODE<decltype(var)>));
 					u16w(out, 1+4);//skip goto32
 
 					out.push_back((uint8_t)InstrId::I_GOTO32);

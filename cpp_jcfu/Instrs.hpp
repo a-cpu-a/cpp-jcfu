@@ -41,9 +41,34 @@ namespace cpp_jcfu
 
 		I_ADD_I32_VAR_U8_CI8 = 0x84,
 
+		// Basic comparisons (stack value)
+		IF_EQL = 0x99, // ifeq
+		IF_NEQ = 0x9A, // ifne
+		IF_LT = 0x9B, // iflt
+		IF_GTE = 0x9C, // ifge
+		IF_GT = 0x9D, // ifgt
+		IF_LTE = 0x9E, // ifle
+
+		// Integer comparisons (stack: value1, value2)
+		IF_I32_EQL = 0x9F, // if_icmpeq
+		IF_I32_NEQ = 0xA0, // if_icmpne
+		IF_I32_LT = 0xA1, // if_icmplt
+		IF_I32_GTE = 0xA2, // if_icmpge
+		IF_I32_GT = 0xA3, // if_icmpgt
+		IF_I32_LTE = 0xA4, // if_icmple
+
+		// Object comparisons
+		IF_OBJ_EQL = 0xA5, // if_acmpeq
+		IF_OBJ_NEQ = 0xA6, // if_acmpne
+
 		I_GOTO16 = 0xa7,
 
 		I_WIDE = 0xc4,
+
+
+		// Null checks
+		IF_NIL = 0xC6, // ifnull
+		IF_NNIL = 0xC7,  // ifnonnull
 
 		I_GOTO32 = 0xc8,
 		I_DEPR_JSR32 = 0xc9,
@@ -638,7 +663,39 @@ namespace cpp_jcfu
 
 	//TODO: switch to something better than variant, as it is not optimal (no packing, uses short tag)
 
+	template<class T>
+	constexpr InstrId INSTR_OP_CODE = (InstrId)aca::variant_index_v<T, Instr>;
+
 	static_assert(
-		aca::variant_index_v<InstrType::I_DEPR_JSR32, Instr>
-		== (uint8_t)InstrId::I_DEPR_JSR32);
+		INSTR_OP_CODE<InstrType::I_DEPR_JSR32>
+		== InstrId::I_DEPR_JSR32);
+
+
+	constexpr InstrId invertIfInstr(const InstrId id) {
+		switch (id)
+		{
+		case InstrId::IF_EQL:        return InstrId::IF_NEQ;
+		case InstrId::IF_NEQ:        return InstrId::IF_EQL;
+		case InstrId::IF_LT:         return InstrId::IF_GTE;
+		case InstrId::IF_GTE:        return InstrId::IF_LT;
+		case InstrId::IF_GT:         return InstrId::IF_LTE;
+		case InstrId::IF_LTE:        return InstrId::IF_GT;
+
+		case InstrId::IF_I32_EQL:    return InstrId::IF_I32_NEQ;
+		case InstrId::IF_I32_NEQ:    return InstrId::IF_I32_EQL;
+		case InstrId::IF_I32_LT:     return InstrId::IF_I32_GTE;
+		case InstrId::IF_I32_GTE:    return InstrId::IF_I32_LT;
+		case InstrId::IF_I32_GT:     return InstrId::IF_I32_LTE;
+		case InstrId::IF_I32_LTE:    return InstrId::IF_I32_GT;
+
+		case InstrId::IF_OBJ_EQL:    return InstrId::IF_OBJ_NEQ;
+		case InstrId::IF_OBJ_NEQ:    return InstrId::IF_OBJ_EQL;
+
+		case InstrId::IF_NIL:        return InstrId::IF_NNIL;
+		case InstrId::IF_NNIL:       return InstrId::IF_NIL;
+		}
+		_ASSERT(false);
+		std::abort();//Error lol
+
+	}
 }
