@@ -89,8 +89,9 @@ namespace cpp_jcfu
 
 	struct PatchPoint
 	{
-		int32_t instrOffset : 31;
-		int32_t is32Bit : 1 = false;
+		uint32_t instrOffset : 31;//Packed!!!
+		uint32_t is32Bit : 1 = false;
+
 		uint16_t instrIdx;
 		uint16_t byteOffset;
 	};
@@ -259,7 +260,7 @@ namespace cpp_jcfu
 						InstrId::I_GOTO32);
 					u32w(out, 0);
 					instrPatchPoints.push_back(PatchPoint{
-						.instrOffset=var.jmpOffset,
+						.instrOffset = (uint32_t)var.jmpOffset,
 						.is32Bit=true,
 						.instrIdx=i,
 						.byteOffset=(uint16_t)curInstrOffset
@@ -272,7 +273,7 @@ namespace cpp_jcfu
 						InstrId::I_GOTO16);
 					u16w(out, 0);
 					instrPatchPoints.push_back(PatchPoint{
-						.instrOffset = var.jmpOffset,
+						.instrOffset = (uint32_t)var.jmpOffset,
 						.is32Bit = false,
 						.instrIdx = i,
 						.byteOffset = (uint16_t)curInstrOffset
