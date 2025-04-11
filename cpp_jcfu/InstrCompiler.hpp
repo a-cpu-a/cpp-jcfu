@@ -232,7 +232,30 @@ namespace cpp_jcfu
 			// Utilities
 
 			varcase(const InstrType::PUSH_CONST&) {
-				//TODO
+				const uint16_t idx = constPoolPush(poolSize, consts, ConstPoolItm(*var));
+
+				if (isPoolItemBig(*var))
+				{
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+						InstrId::I_PUSH_CONST2_U16);
+					u16w(out, idx);
+					curInstrOffset += 2;
+					return;
+				}
+
+				if (idx <= UINT8_MAX)
+				{
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+						InstrId::I_PUSH_CONST_U8);
+					out.push_back(idx);
+					curInstrOffset++;
+					return;
+				}
+
+				pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+					InstrId::I_PUSH_CONST_U16);
+				u16w(out, idx);
+				curInstrOffset += 2;
 			},
 
 			varcase(const InstrType::PUSH_I32_I32) {

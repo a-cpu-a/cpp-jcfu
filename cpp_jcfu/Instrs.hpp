@@ -14,6 +14,10 @@ namespace cpp_jcfu
 {
 	enum class InstrId : uint8_t
 	{
+		I_PUSH_CONST_U8 = 0x12,
+		I_PUSH_CONST_U16 = 0x13,
+		I_PUSH_CONST2_U16 = 0x14,
+
 		I_ADD_I32_VAR_U8_CI8 = 0x84,
 
 		I_GOTO16 = 0xa7,
