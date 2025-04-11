@@ -51,6 +51,40 @@ namespace cpp_jcfu
 		instrOffsets[i] = uint16_t(curInstrOffset);
 		curInstrOffset += 2;
 	}
+	inline void pushConstPoolInstrW(
+		std::vector<uint8_t>& out,
+		std::vector<uint16_t>& instrOffsets,
+		size_t& curInstrOffset,
+		const uint16_t i,
+		size_t& poolSize, ConstPool& consts,
+		ConstPoolItm&& itm)
+	{
+		const bool isBig = isPoolItemBig(itm);
+		const uint16_t idx = constPoolPush(poolSize, consts, std::move(itm));
+
+		if (isBig)
+		{
+			pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+				InstrId::I_PUSH_CONST2_U16);
+			u16w(out, idx);
+			curInstrOffset += 2;
+			return;
+		}
+
+		if (idx <= UINT8_MAX)
+		{
+			pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+				InstrId::I_PUSH_CONST_U8);
+			out.push_back((uint8_t)idx);
+			curInstrOffset++;
+			return;
+		}
+
+		pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+			InstrId::I_PUSH_CONST_U16);
+		u16w(out, idx);
+		curInstrOffset += 2;
+	}
 
 
 	template<class T>
@@ -232,34 +266,46 @@ namespace cpp_jcfu
 			// Utilities
 
 			varcase(const InstrType::PUSH_CONST&) {
-				const uint16_t idx = constPoolPush(poolSize, consts, ConstPoolItm(*var));
-
-				if (isPoolItemBig(*var))
-				{
-					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
-						InstrId::I_PUSH_CONST2_U16);
-					u16w(out, idx);
-					curInstrOffset += 2;
-					return;
-				}
-
-				if (idx <= UINT8_MAX)
-				{
-					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
-						InstrId::I_PUSH_CONST_U8);
-					out.push_back(idx);
-					curInstrOffset++;
-					return;
-				}
-
-				pushOpCodeId(out, instrOffsets, curInstrOffset, i,
-					InstrId::I_PUSH_CONST_U16);
-				u16w(out, idx);
-				curInstrOffset += 2;
+				pushConstPoolInstrW(out, 
+					instrOffsets,curInstrOffset, i, 
+					poolSize, consts, 
+					ConstPoolItm(*var));
 			},
 
 			varcase(const InstrType::PUSH_I32_I32) {
-				//TODO
+				if (var <= INT8_MAX
+					&& var >= INT8_MIN)
+				{// Small, so opcode, or i8
+					if (var <= 5
+						&& var >= -1)
+					{// Tiny, so use a opcode
+						pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+							InstrId((int8_t)InstrId::PUSH_I32_0 + var));
+						return;
+					}
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+						InstrId::PUSH_I32_I8);
+					out.push_back((int8_t)var);
+					curInstrOffset++;
+					return;
+				}
+				// Not i8
+				if (var <= INT16_MAX
+					&& var >= INT16_MIN)
+				{// Short, so i16
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+						InstrId::PUSH_I32_I16);
+					u16w(out, (int16_t)var);
+					curInstrOffset += 2;
+					return;
+				}
+				// Not i16 !!
+
+				pushConstPoolInstrW(out,
+					instrOffsets, curInstrOffset, i,
+					poolSize, consts,
+					ConstPoolItmType::I32(var));
+
 			},
 			varcase(const InstrType::PUSH_F32_F32) {
 				//TODO
