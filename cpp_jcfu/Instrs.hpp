@@ -656,8 +656,8 @@ namespace cpp_jcfu
 		InstrType::PUSH_CONST,//ldc, ldc_w(for constants > ff), ldc2_w (for long / double)
 
 		InstrType::PUSH_I32_I32, //Will be converted
-		InstrType::PUSH_F32_F32, //Will be converted
 		InstrType::PUSH_I64_I64, //Will be converted
+		InstrType::PUSH_F32_F32, //Will be converted
 		InstrType::PUSH_F64_F64, //Will be converted
 
 		InstrType::GOTO, //Either goto, or goto_w
@@ -666,16 +666,16 @@ namespace cpp_jcfu
 		InstrType::IF_EQL,
 		InstrType::IF_NEQ,
 		InstrType::IF_LT,
+		InstrType::IF_GTE,
 		InstrType::IF_GT,
 		InstrType::IF_LTE,
-		InstrType::IF_GTE,
 
 		InstrType::IF_I32_EQL,
 		InstrType::IF_I32_NEQ,
 		InstrType::IF_I32_LT,
+		InstrType::IF_I32_GTE,
 		InstrType::IF_I32_GT,
 		InstrType::IF_I32_LTE,
-		InstrType::IF_I32_GTE,
 
 		InstrType::IF_OBJ_EQL,
 		InstrType::IF_OBJ_NEQ,
