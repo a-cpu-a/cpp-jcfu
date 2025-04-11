@@ -443,13 +443,21 @@ namespace cpp_jcfu
 			},
 
 			varcase(const BaseBranched auto) {
+
 				if (var.jmpOffset > INT16_MAX || var.jmpOffset < INT16_MIN)
 				{// Always 32
+					//TODO: flip condition!!!
+					pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 					_ASSERT(false && "TODO");//TODO
+					u16w(out, 1+4);//skip goto32
+
+					out.push_back((uint8_t)InstrId::I_GOTO32);
+					curInstrOffset += 3;
+					writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, var.jmpOffset);
 					return;
 				}
-				// Hope for 16
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+				// Hope for 16
 				writePatchPoint16(out,curInstrOffset,i, instrPatchPoints,var.jmpOffset);
 
 			}
