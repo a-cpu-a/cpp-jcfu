@@ -51,6 +51,18 @@ namespace cpp_jcfu
 		instrOffsets[i] = uint16_t(curInstrOffset);
 		curInstrOffset += 2;
 	}
+	inline void pushWideOpCodeByte(
+		std::vector<uint8_t>& out,
+		std::vector<uint16_t>& instrOffsets,
+		size_t& curInstrOffset,
+		const uint16_t i,
+		const auto& var)
+	{
+		constexpr uint8_t op = INSTR_OP_CODE<decltype(var)>;
+		static_assert(op <= (uint8_t)InstrId::I_DEPR_JSR32);
+		pushWideOpCodeId(out, instrOffsets, curInstrOffset, i, (InstrId)op);
+	}
+
 	inline void pushConstPoolInstrW(
 		std::vector<uint8_t>& out,
 		std::vector<uint16_t>& instrOffsets,
@@ -249,7 +261,16 @@ namespace cpp_jcfu
 			// Wide
 
 			varcase(const BaseVar16Instred auto) {
-				//TODO
+				if (var.varIdx <= UINT8_MAX)
+				{
+					pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+					out.push_back((uint8_t)var.varIdx);
+					curInstrOffset++;
+					return;
+				}
+				pushWideOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+				u16w(out, var.varIdx);
+				curInstrOffset += 2;
 			},
 
 			varcase(const InstrType::ADD_I32_VAR_U16_CI16) {
