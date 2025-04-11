@@ -51,13 +51,19 @@ namespace cpp_jcfu
 	concept BaseBranched = std::derived_from<T, InstrType::BaseBranch> && !std::same_as<T, InstrType::GOTO>;
 
 	template<class T>
+	concept PushConstXed = 
+		std::same_as<T, InstrType::I_PUSH_CONST_U16>
+		|| std::same_as<T, InstrType::I_PUSH_CONST2_U16>;
+
+	template<class T>
 	concept BasicOpCode = sizeof(T)==1
 		&& !BaseBranched16<T>
 		&& !BaseBranched32<T>
 		&& !BaseRefed<T>
 		&& !BaseVarInstred<T>
 		&& !BaseVar16Instred<T>
-		&& !BaseBranched<T>;
+		&& !BaseBranched<T>
+		&& !PushConstXed<T>;
 
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
@@ -105,11 +111,7 @@ namespace cpp_jcfu
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				out.push_back(var.poolIdx);
 			},
-			varcase(const InstrType::I_PUSH_CONST_U16) {
-				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-				u16w(out, var.poolIdx);
-			},
-			varcase(const InstrType::I_PUSH_CONST2_U16) {
+			varcase(const PushConstXed auto) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				u16w(out, var.poolIdx);
 			},
