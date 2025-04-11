@@ -228,10 +228,22 @@ namespace cpp_jcfu
 			},
 
 			varcase(const InstrType::ADD_I32_VAR_U16_CI16) {
-				//TODO: check if it fits in non-wide form
+				if (var.varIdx <= UINT8_MAX
+					&& var.val <= INT8_MAX
+					&& var.val >= INT8_MIN)
+				{
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+						InstrId::I_ADD_I32_VAR_U8_CI8);
+					out.push_back((uint8_t)var.varIdx);
+					out.push_back((int8_t)var.val);
+					curInstrOffset += 2;
+					return;
+				}
 				pushWideOpCodeId(out, instrOffsets, curInstrOffset, i,
 					InstrId::I_ADD_I32_VAR_U8_CI8);
-				//TODO
+				u16w(out,var.varIdx);
+				u16w(out,var.val);
+				curInstrOffset += 4;
 			},
 
 			// Utilities
