@@ -280,7 +280,7 @@ namespace cpp_jcfu
 						&& var >= -1)
 					{// Tiny, so use a opcode
 						pushOpCodeId(out, instrOffsets, curInstrOffset, i,
-							InstrId((int8_t)InstrId::PUSH_I32_0 + var));
+							InstrId((int8_t)InstrId::PUSH_I32_0 + (int8_t)var));
 						return;
 					}
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
@@ -308,13 +308,43 @@ namespace cpp_jcfu
 
 			},
 			varcase(const InstrType::PUSH_F32_F32) {
-				//TODO
+				if (var == 0.0f || var == 1.0f || var == 2.0f)
+				{
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+						InstrId((uint8_t)InstrId::PUSH_F32_0 + (uint8_t)var));
+					return;
+				}
+
+				pushConstPoolInstrW(out,
+					instrOffsets, curInstrOffset, i,
+					poolSize, consts,
+					ConstPoolItmType::F32(var));
 			},
 			varcase(const InstrType::PUSH_I64_I64) {
-				//TODO
+				if (var == 0 || var==1)
+				{
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+						InstrId((uint8_t)InstrId::PUSH_I64_0 + (uint8_t)var));
+					return;
+				}
+
+				pushConstPoolInstrW(out,
+					instrOffsets, curInstrOffset, i,
+					poolSize, consts,
+					ConstPoolItmType::I64(var));
 			},
 			varcase(const InstrType::PUSH_F64_F64) {
-				//TODO
+				if (var == 0.0 || var == 1.0)
+				{
+					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+						InstrId((uint8_t)InstrId::PUSH_F64_0 + (uint8_t)var));
+					return;
+				}
+
+				pushConstPoolInstrW(out,
+					instrOffsets, curInstrOffset, i,
+					poolSize, consts,
+					ConstPoolItmType::F64(var));
 			},
 
 			varcase(const InstrType::GOTO) {

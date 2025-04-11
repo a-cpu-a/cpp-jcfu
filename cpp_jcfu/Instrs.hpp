@@ -22,6 +22,16 @@ namespace cpp_jcfu
 		PUSH_I32_4 = 0x7,
 		PUSH_I32_5 = 0x8,
 
+		PUSH_I64_0 = 0x9,
+		PUSH_I64_1 = 0xA,
+
+		PUSH_F32_0 = 0xB,
+		PUSH_F32_1 = 0xC,
+		PUSH_F32_2 = 0xD,
+
+		PUSH_F64_0 = 0xE,
+		PUSH_F64_1 = 0xF,
+
 		PUSH_I32_I8 = 0x10,
 		PUSH_I32_I16 = 0x11,
 
