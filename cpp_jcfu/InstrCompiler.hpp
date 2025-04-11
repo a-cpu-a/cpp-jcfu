@@ -436,7 +436,7 @@ namespace cpp_jcfu
 			);
 		}
 		size_t ppOffset = 0;
-		for (PatchPoint& pp : instrPatchPoints)
+		for (const PatchPoint& pp : instrPatchPoints)
 		{
 			const uint16_t relPoint = (instrOffsets.size()>= pp.instrIdx-1) 
 				? (uint16_t)out.size() 
@@ -458,10 +458,6 @@ namespace cpp_jcfu
 			}
 			// Uh oh!!! need to upsize!
 
-			//TODO: upscale instruction
-
-			//TODO: if__ -> if!__+goto32
-
 			InstrId& instr = reinterpret_cast<InstrId&>(out[pp.byteOffset + ppOffset - 1]);
 
 			if (instr == InstrId::I_GOTO16)
@@ -469,13 +465,28 @@ namespace cpp_jcfu
 				instr = InstrId::I_GOTO32;
 
 				out.insert(out.begin() + (pp.byteOffset + ppOffset), 2, 0);
+				u32Patch(out, pp.byteOffset + ppOffset, movement+2);//+2, for added size, since calculation
+
 				for (size_t i = pp.instrIdx+1; i < instrOffsets.size(); i++)
 					instrOffsets[i] += 2;
-				u32Patch(out, pp.byteOffset + ppOffset, movement+2);//+2, for added size, since calculation
 				ppOffset += 2;
 				continue;
 			}
 			// Its an if
+
+			instr = invertIfInstr(instr);
+			u16Patch(out, pp.byteOffset + ppOffset, 1+4);//skip injected goto32
+
+			out.insert(out.begin() + (pp.byteOffset + ppOffset+2), 5, 
+				(uint8_t)InstrId::I_GOTO32);//use goto32, to auto fill in the opcode
+
+			u32Patch(out, 
+				pp.byteOffset + ppOffset+3, //+3, cuz we writing to the goto32's offset
+				movement + 5);//+5, for added size, since calculation
+
+			for (size_t i = pp.instrIdx + 1; i < instrOffsets.size(); i++)
+				instrOffsets[i] += 5;
+			ppOffset += 5;
 		}
 
 		return out;
