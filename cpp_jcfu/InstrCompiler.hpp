@@ -98,6 +98,48 @@ namespace cpp_jcfu
 		curInstrOffset += 2;
 	}
 
+	struct PatchPoint
+	{
+		uint32_t instrOffset : 31;//Packed!!!
+		uint32_t is32Bit : 1 = false;
+
+		uint16_t instrIdx;
+		uint16_t byteOffset;
+	};
+
+	inline void writePatchPoint32(
+		std::vector<uint8_t>& out,
+		size_t& curInstrOffset,
+		const uint16_t i,
+		std::vector<PatchPoint>& instrPatchPoints,
+		const int32_t jmpOffset)
+	{
+		_ASSERT(curInstrOffset <= UINT16_MAX - 4);
+		u32w(out, 0);
+		instrPatchPoints.emplace_back(
+			(uint32_t)jmpOffset,
+			true, i,
+			(uint16_t)curInstrOffset
+		);
+		curInstrOffset += 4;
+	}
+
+	inline void writePatchPoint16(
+		std::vector<uint8_t>& out,
+		size_t& curInstrOffset,
+		const uint16_t i,
+		std::vector<PatchPoint>& instrPatchPoints,
+		const int32_t jmpOffset)
+	{
+		_ASSERT(curInstrOffset <= UINT16_MAX - 2);
+		u16w(out, 0);
+		instrPatchPoints.emplace_back(
+			(uint32_t)jmpOffset,
+			false, i,
+			(uint16_t)curInstrOffset
+		);
+		curInstrOffset += 2;
+	}
 
 	template<class T>
 	concept BaseBranched16 = std::derived_from<T, InstrType::BaseBranch16>;
@@ -129,15 +171,6 @@ namespace cpp_jcfu
 		&& !BaseBranched<T>
 		&& !PushConstXed<T>;
 
-	struct PatchPoint
-	{
-		uint32_t instrOffset : 31;//Packed!!!
-		uint32_t is32Bit : 1 = false;
-
-		uint16_t instrIdx;
-		uint16_t byteOffset;
-	};
-
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
 		const std::vector<Instr>& instrs
@@ -145,8 +178,7 @@ namespace cpp_jcfu
 	{
 		_ASSERT(instrs.size() < UINT16_MAX);
 
-		//TODO: build list of instr offsets
-		//TODO: build list of bytes to patch into relative instr offsets
+		//TODO: build list of bytes to patch into relative instr offsets: (switch, 32bit if's)
 		//TODO: solve relative instr sizes
 
 		std::vector<PatchPoint> instrPatchPoints;
@@ -381,30 +413,25 @@ namespace cpp_jcfu
 				{// Always 32
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i, 
 						InstrId::I_GOTO32);
-					u32w(out, 0);
-					instrPatchPoints.emplace_back(
-						(uint32_t)var.jmpOffset,
-						true, i,
-						(uint16_t)curInstrOffset
-					);
-					curInstrOffset += 4;
+					writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, var.jmpOffset);
+					return;
 				}
-				else
-				{// Hope for 16
-					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
-						InstrId::I_GOTO16);
-					u16w(out, 0);
-					instrPatchPoints.emplace_back(
-						(uint32_t)var.jmpOffset,
-						false, i,
-						(uint16_t)curInstrOffset
-					);
-					curInstrOffset += 2;
-				}
+				// Hope for 16
+				pushOpCodeId(out, instrOffsets, curInstrOffset, i,
+					InstrId::I_GOTO16);
+				writePatchPoint16(out, curInstrOffset, i, instrPatchPoints, var.jmpOffset);
 			},
 
 			varcase(const BaseBranched auto) {
-				//TODO
+				if (var.jmpOffset > INT16_MAX || var.jmpOffset < INT16_MIN)
+				{// Always 32
+					_ASSERT(false && "TODO");//TODO
+					return;
+				}
+				// Hope for 16
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+				writePatchPoint16(out,curInstrOffset,i, instrPatchPoints,var.jmpOffset);
+
 			}
 			);
 		}
