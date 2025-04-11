@@ -236,19 +236,39 @@ namespace cpp_jcfu
 
 			varcase(const InstrType::TABLE_SWITCH&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+
 				const uint8_t padBytes = (4 - (out.size() % 4)) % 4;
 				out.insert(out.end(), padBytes, 0);
 				curInstrOffset += padBytes;
-				//TODO
+
+				writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, var->defaultJmpOffset);
+				u32w(out, var->min);
+				u32w(out, var->min+var->jmpOffsets.size()-1);
+				curInstrOffset += 8;
+
+				for (const int32_t jmpOffset : var->jmpOffsets)
+				{
+					writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, jmpOffset);
+				}
 
 			},
 			varcase(const InstrType::LOOKUP_SWITCH&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
+
 				const uint8_t padBytes = (4 - (out.size() % 4))%4;
 				out.insert(out.end(), padBytes, 0);
 				curInstrOffset += padBytes;
-				//TODO
 
+				writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, var->defaultJmpOffset);
+				u32w(out, var->cases.size());
+				curInstrOffset += 4;
+
+				for (const SwitchCase& kase : var->cases)
+				{
+					u32w(out, kase.k);
+					curInstrOffset += 4;
+					writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, kase.jmpOffset);
+				}
 			},
 
 			varcase(const BaseRefed auto&) {
