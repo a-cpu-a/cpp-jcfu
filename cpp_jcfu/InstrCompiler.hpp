@@ -16,18 +16,27 @@ namespace cpp_jcfu
 	template<class T>
 	constexpr uint8_t INSTR_OP_CODE = aca::variant_index_v<T, Instr>;
 
+	inline void pushOpCodeId(
+		std::vector<uint8_t>& out,
+		std::vector<uint16_t>& instrOffsets,
+		size_t& curInstrOffset,
+		const uint16_t i,
+		const InstrId id)
+	{
+		out.push_back((uint8_t)id);
+		_ASSERT(curInstrOffset < UINT16_MAX);
+		instrOffsets[i] = uint16_t(curInstrOffset++);
+	}
 	inline void pushOpCodeByte(
 		std::vector<uint8_t>& out,
 		std::vector<uint16_t>& instrOffsets,
 		size_t& curInstrOffset,
-		const size_t i,
+		const uint16_t i,
 		const auto& var)
 	{
 		constexpr uint8_t op = INSTR_OP_CODE<decltype(var)>;
-		static_assert(op <= 0xc9);
-		out.push_back(op);
-		_ASSERT(curInstrOffset < UINT16_MAX);
-		instrOffsets[i] = uint16_t(curInstrOffset++);
+		static_assert(op <= (uint8_t)InstrId::DEPR_JSR32);
+		pushOpCodeId(out, instrOffsets, curInstrOffset, i, (InstrId)op);
 	}
 
 
