@@ -85,78 +85,100 @@ namespace cpp_jcfu
 				//		or, isnt basic op code			
 
 			varcase(const InstrType::I_PUSH_I32_I8) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::I_PUSH_I32_I16) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const InstrType::I_PUSH_CONST_U8) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::I_PUSH_CONST_U16) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::I_PUSH_CONST2_U16) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const BaseVarInstred auto) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const InstrType::I_ADD_I32_VAR_U8_CI8) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const BaseBranched16 auto) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const InstrType::TABLE_SWITCH&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::LOOKUP_SWITCH&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const BaseFieldRefed auto&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const InstrType::PUSH_RUN_VIRTUAL&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::PUSH_RUN_SPECIAL&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::PUSH_RUN_STATIC&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::PUSH_RUN_INTERFACE&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::PUSH_RUN_DYN&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const InstrType::PUSH_OBJ&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::PUSH_ARR) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::PUSH_OBJARR_1&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::PUSH_OBJARR_U8&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
 			varcase(const InstrType::CHECK_CAST&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 			varcase(const InstrType::IS_OF&) {
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				//TODO
 			},
 
