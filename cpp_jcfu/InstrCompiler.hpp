@@ -361,12 +361,11 @@ namespace cpp_jcfu
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i, 
 						InstrId::I_GOTO32);
 					u32w(out, 0);
-					instrPatchPoints.push_back(PatchPoint{
-						.instrOffset = (uint32_t)var.jmpOffset,
-						.is32Bit=true,
-						.instrIdx=i,
-						.byteOffset=(uint16_t)curInstrOffset
-						});
+					instrPatchPoints.emplace_back(
+						(uint32_t)var.jmpOffset,
+						true, i,
+						(uint16_t)curInstrOffset
+					);
 					curInstrOffset += 4;
 				}
 				else
@@ -374,12 +373,11 @@ namespace cpp_jcfu
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
 						InstrId::I_GOTO16);
 					u16w(out, 0);
-					instrPatchPoints.push_back(PatchPoint{
-						.instrOffset = (uint32_t)var.jmpOffset,
-						.is32Bit = false,
-						.instrIdx = i,
-						.byteOffset = (uint16_t)curInstrOffset
-						});
+					instrPatchPoints.emplace_back(
+						(uint32_t)var.jmpOffset,
+						false, i,
+						(uint16_t)curInstrOffset
+					);
 					curInstrOffset += 2;
 				}
 			},
