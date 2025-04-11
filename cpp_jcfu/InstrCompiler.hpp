@@ -165,6 +165,45 @@ namespace cpp_jcfu
 		&& !BaseBranched<T>
 		&& !PushConstXed<T>;
 
+
+	//https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
+	namespace StackFrameType
+	{
+		using STACK_0 = std::monostate;
+
+		struct STACK_1
+		{
+			SlotKind stack[1];
+		};
+		struct LOCAL_REM_1_STACK_0 {};
+		struct LOCAL_REM_2_STACK_0 {};
+		struct LOCAL_REM_3_STACK_0 {};
+
+		struct LOCAL_ADD1_STACK_0 { SlotKind locals[1]; };
+		struct LOCAL_ADD2_STACK_0 { SlotKind locals[2]; };
+		struct LOCAL_ADD3_STACK_0 { SlotKind locals[3]; };
+
+		struct LOCAL_STACK
+		{
+			std::vector<SlotKind> stack;
+			std::vector<SlotKind> local;
+		};
+	}
+	using StackFrame = std::variant<
+		StackFrameType::STACK_0,
+		StackFrameType::STACK_1,
+
+		StackFrameType::LOCAL_REM_1_STACK_0,
+		StackFrameType::LOCAL_REM_2_STACK_0,
+		StackFrameType::LOCAL_REM_3_STACK_0,
+
+		StackFrameType::LOCAL_ADD1_STACK_0,
+		StackFrameType::LOCAL_ADD2_STACK_0,
+		StackFrameType::LOCAL_ADD3_STACK_0,
+
+		StackFrameType::LOCAL_STACK
+	>;
+
 	struct ErrorHandler
 	{
 		std::optional<ConstPoolItmType::CLASS> catchType; // None -> catch all
@@ -364,7 +403,7 @@ namespace cpp_jcfu
 						return;
 					}
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
-						InstrId::PUSH_I32_I8);
+						InstrId::I_PUSH_I32_I8);
 					out.push_back((int8_t)var);
 					curInstrOffset++;
 					return;
@@ -374,7 +413,7 @@ namespace cpp_jcfu
 					&& var >= INT16_MIN)
 				{// Short, so i16
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
-						InstrId::PUSH_I32_I16);
+						InstrId::I_PUSH_I32_I16);
 					u16w(out, (int16_t)var);
 					curInstrOffset += 2;
 					return;

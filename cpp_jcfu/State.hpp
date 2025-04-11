@@ -311,18 +311,12 @@ namespace cpp_jcfu
 		SlotKindType::RAW_OBJ
 	>;
 
-	//https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
-	struct StackFrame
-	{
-		//TODO
-	};
-
 	namespace CodeTagType
 	{
 		using LINE_NUMS = std::vector<LineNumEntry>;
 		using LOCALS = std::vector<LocalEntry>;
 		using LOCAL_TYPES = std::vector<LocalTypeEntry>;
-		using STACK_FRAMES = std::vector<StackFrame>;
+		using STACK_FRAMES = std::vector<int>;	//TODO
 	}
 	using CodeTag = std::variant<
 		CodeTagType::LINE_NUMS,

@@ -14,64 +14,255 @@ namespace cpp_jcfu
 {
 	enum class InstrId : uint8_t
 	{
-		PUSH_I32_M1 = 0x2,
-		PUSH_I32_0 = 0x3,
-		PUSH_I32_1 = 0x4,
-		PUSH_I32_2 = 0x5,
-		PUSH_I32_3 = 0x6,
-		PUSH_I32_4 = 0x7,
-		PUSH_I32_5 = 0x8,
+		NOP,
+		PUSH_OBJ_NULL,
 
-		PUSH_I64_0 = 0x9,
-		PUSH_I64_1 = 0xA,
+		PUSH_I32_M1,
+		PUSH_I32_0,
+		PUSH_I32_1,
+		PUSH_I32_2,
+		PUSH_I32_3,
+		PUSH_I32_4,
+		PUSH_I32_5,
 
-		PUSH_F32_0 = 0xB,
-		PUSH_F32_1 = 0xC,
-		PUSH_F32_2 = 0xD,
+		PUSH_I64_0,
+		PUSH_I64_1,
 
-		PUSH_F64_0 = 0xE,
-		PUSH_F64_1 = 0xF,
+		PUSH_F32_0,
+		PUSH_F32_1,
+		PUSH_F32_2,
 
-		PUSH_I32_I8 = 0x10,
-		PUSH_I32_I16 = 0x11,
+		PUSH_F64_0,
+		PUSH_F64_1,
 
-		I_PUSH_CONST_U8 = 0x12,
-		I_PUSH_CONST_U16 = 0x13,
-		I_PUSH_CONST2_U16 = 0x14,
+		I_PUSH_I32_I8,
+		I_PUSH_I32_I16,
 
-		I_ADD_I32_VAR_U8_CI8 = 0x84,
+		I_PUSH_CONST_U8,
+		I_PUSH_CONST_U16,
+		I_PUSH_CONST2_U16,
 
-		// Basic comparisons (stack value)
-		IF_EQL = 0x99, // ifeq
-		IF_NEQ = 0x9A, // ifne
-		IF_LT = 0x9B, // iflt
-		IF_GTE = 0x9C, // ifge
-		IF_GT = 0x9D, // ifgt
-		IF_LTE = 0x9E, // ifle
+		PUSH_I32_VAR_U16,
+		PUSH_I64_VAR_U16,
+		PUSH_F32_VAR_U16,
+		PUSH_F64_VAR_U16,
+		PUSH_OBJ_VAR_U16,
 
-		// Integer comparisons (stack: value1, value2)
-		IF_I32_EQL = 0x9F, // if_icmpeq
-		IF_I32_NEQ = 0xA0, // if_icmpne
-		IF_I32_LT = 0xA1, // if_icmplt
-		IF_I32_GTE = 0xA2, // if_icmpge
-		IF_I32_GT = 0xA3, // if_icmpgt
-		IF_I32_LTE = 0xA4, // if_icmple
+		I_PUSH_I32_VAR_0,
+		I_PUSH_I32_VAR_1,
+		I_PUSH_I32_VAR_2,
+		I_PUSH_I32_VAR_3,
+		I_PUSH_I64_VAR_0,
+		I_PUSH_I64_VAR_1,
+		I_PUSH_I64_VAR_2,
+		I_PUSH_I64_VAR_3,
 
-		// Object comparisons
-		IF_OBJ_EQL = 0xA5, // if_acmpeq
-		IF_OBJ_NEQ = 0xA6, // if_acmpne
+		I_PUSH_F32_VAR_0,
+		I_PUSH_F32_VAR_1,
+		I_PUSH_F32_VAR_2,
+		I_PUSH_F32_VAR_3,
+		I_PUSH_F64_VAR_0,
+		I_PUSH_F64_VAR_1,
+		I_PUSH_F64_VAR_2,
+		I_PUSH_F64_VAR_3,
 
-		I_GOTO16 = 0xa7,
+		I_PUSH_OBJ_VAR_0,
+		I_PUSH_OBJ_VAR_1,
+		I_PUSH_OBJ_VAR_2,
+		I_PUSH_OBJ_VAR_3,
 
-		I_WIDE = 0xc4,
+		PUSH_I32_ARR,
+		PUSH_I64_ARR,
+		PUSH_F32_ARR,
+		PUSH_F64_ARR,
+		PUSH_OBJ_ARR,
 
+		PUSH_BI8_ARR,
+		PUSH_CHR_ARR,
+		PUSH_I16_ARR,
 
-		// Null checks
-		IF_NIL = 0xC6, // ifnull
-		IF_NNIL = 0xC7,  // ifnonnull
+		SAVE_I32_VAR_U16,
+		SAVE_I64_VAR_U16,
+		SAVE_F32_VAR_U16,
+		SAVE_F64_VAR_U16,
+		SAVE_OBJ_VAR_U16,
 
-		I_GOTO32 = 0xc8,
-		I_DEPR_JSR32 = 0xc9,
+		I_SAVE_I32_VAR_0,
+		I_SAVE_I32_VAR_1,
+		I_SAVE_I32_VAR_2,
+		I_SAVE_I32_VAR_3,
+		I_SAVE_I64_VAR_0,
+		I_SAVE_I64_VAR_1,
+		I_SAVE_I64_VAR_2,
+		I_SAVE_I64_VAR_3,
+
+		I_SAVE_F32_VAR_0,
+		I_SAVE_F32_VAR_1,
+		I_SAVE_F32_VAR_2,
+		I_SAVE_F32_VAR_3,
+		I_SAVE_F64_VAR_0,
+		I_SAVE_F64_VAR_1,
+		I_SAVE_F64_VAR_2,
+		I_SAVE_F64_VAR_3,
+
+		I_SAVE_OBJ_VAR_0,
+		I_SAVE_OBJ_VAR_1,
+		I_SAVE_OBJ_VAR_2,
+		I_SAVE_OBJ_VAR_3,
+
+		SAVE_I32_ARR,
+		SAVE_I64_ARR,
+		SAVE_F32_ARR,
+		SAVE_F64_ARR,
+		SAVE_OBJ_ARR,
+
+		SAVE_BI8_ARR,
+		SAVE_CHR_ARR,
+		SAVE_I16_ARR,
+
+		POP_1,
+		POP_2,
+
+		DUP_1,
+		DUP_1_X,
+		DUP_1_X2,
+		DUP_2,
+		DUP_2_X,
+		DUP_2_X2,
+
+		SWAP,
+
+		ADD_I32,
+		ADD_I64,
+		ADD_F32,
+		ADD_F64,
+		SUB_I32,
+		SUB_I64,
+		SUB_F32,
+		SUB_F64,
+
+		MUL_I32,
+		MUL_I64,
+		MUL_F32,
+		MUL_F64,
+		DIV_I32,
+		DIV_I64,
+		DIV_F32,
+		DIV_F64,
+		REM_I32,
+		REM_I64,
+		REM_F32,
+		REM_F64,
+
+		NEG_I32,
+		NEG_I64,
+		NEG_F32,
+		NEG_F64,
+
+		SHL_I32,
+		SHL_I64,
+		SRC_I32,
+		SRC_I64,
+		SHR_I32,
+		SHR_I64,
+
+		AND_I32,
+		AND_I64,
+		OR_I32,
+		OR_I64,
+		XOR_I32,
+		XOR_I64,
+
+		I_ADD_I32_VAR_U8_CI8,
+
+		CAST_I32_I64,
+		CAST_I32_F32,
+		CAST_I32_F64,
+		CAST_I64_I32,
+		CAST_I64_F32,
+		CAST_I64_F64,
+
+		CAST_F32_I32,
+		CAST_F32_I64,
+		CAST_F32_F64,
+		CAST_F64_I32,
+		CAST_F64_I64,
+		CAST_F64_F32,
+
+		CAST_I32_I8,
+		CAST_I32_CHR,
+		CAST_I32_I16,
+
+		CMP_I64,
+		CMP_F32_M,
+		CMP_F32_P,
+		CMP_F64_M,
+		CMP_F64_P,
+
+		IF_EQL,
+		IF_NEQ,
+		IF_LT,
+		IF_GTE,
+		IF_GT,
+		IF_LTE,
+		IF_I32_EQL,
+		IF_I32_NEQ,
+		IF_I32_LT,
+		IF_I32_GTE,
+		IF_I32_GT,
+		IF_I32_LTE,
+
+		IF_OBJ_EQL,
+		IF_OBJ_NEQ,
+
+		I_GOTO16,
+		I_DEPR_JSR16,
+		I_DEPR_GOTO_VAR_U16,
+
+		TABLE_SWITCH,
+		LOOKUP_SWITCH,
+
+		RET_I32,
+		RET_I64,
+		RET_F32,
+		RET_F64,
+		RET_OBJ,
+		RET,
+
+		PUSH_GET_STATIC,
+		SAVE_STATIC,
+		PUSH_GET_FIELD,
+		SAVE_FIELD,
+
+		PUSH_RUN_VIRTUAL,
+		PUSH_RUN_SPECIAL,
+		PUSH_RUN_STATIC,
+		PUSH_RUN_INTERFACE,
+		PUSH_RUN_DYN,
+
+		PUSH_OBJ,
+		PUSH_ARR,
+		PUSH_OBJARR_1,
+
+		PUSH_ARRLEN,
+
+		THROW,
+
+		CHECK_CAST,
+		IS_OF,
+
+		SYNC_ON,
+		SYNC_OFF,
+
+		I_WIDE,
+
+		PUSH_OBJARR_U8,
+
+		IF_NIL,
+		IF_NNIL,
+
+		I_GOTO32,
+		I_DEPR_JSR32,
 	};
 
 	struct SwitchCase
@@ -666,6 +857,9 @@ namespace cpp_jcfu
 
 	static_assert( 
 		INSTR_OP_CODE<InstrType::I_DEPR_JSR32> == InstrId::I_DEPR_JSR32
+	);
+	static_assert( 
+		INSTR_OP_CODE<InstrType::ADD_I32> == InstrId::ADD_I32
 	);
 
 	constexpr InstrId invertIfInstr(const InstrId id) {
