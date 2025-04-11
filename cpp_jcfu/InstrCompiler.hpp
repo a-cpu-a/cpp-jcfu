@@ -435,6 +435,7 @@ namespace cpp_jcfu
 			}
 			);
 		}
+		size_t ppOffset = 0;
 		for (PatchPoint& pp : instrPatchPoints)
 		{
 			const uint16_t relPoint = (instrOffsets.size()>= pp.instrIdx-1) 
@@ -445,21 +446,35 @@ namespace cpp_jcfu
 
 			if (pp.is32Bit)
 			{//Ez
-				u32Patch(out, pp.byteOffset, movement);
+				u32Patch(out, pp.byteOffset + ppOffset, movement);
 				continue;
 			}
 
 			if (movement >= INT16_MIN && movement <= INT16_MAX)
 			{//Ez 16 bit move
-				u16Patch(out, pp.byteOffset, (int16_t)movement);
+				u16Patch(out, pp.byteOffset + ppOffset, (int16_t)movement);
 				continue;
 			}
 			// Uh oh!!! need to upsize!
 
 			//TODO: upscale instruction
 
-			//TODO: goto16 -> goto32
 			//TODO: if__ -> if!__+goto32
+
+			InstrId& instr = reinterpret_cast<InstrId&>(out[pp.byteOffset + ppOffset - 1]);
+
+			if (instr == InstrId::I_GOTO16)
+			{
+				instr = InstrId::I_GOTO32;
+
+				out.insert(out.begin() + (pp.byteOffset + ppOffset), 2, 0);
+				for (size_t i = pp.instrIdx+1; i < instrOffsets.size(); i++)
+					instrOffsets[i] += 2;
+				u32Patch(out, pp.byteOffset + ppOffset, movement+2);//+2, for added size, since calculation
+				ppOffset += 2;
+				continue;
+			}
+			// Its an if
 		}
 
 		return out;
