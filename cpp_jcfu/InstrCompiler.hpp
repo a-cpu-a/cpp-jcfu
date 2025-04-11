@@ -143,27 +143,35 @@ namespace cpp_jcfu
 
 			varcase(const BaseRefed auto&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-				//TODO
+				constPoolIdxPushW(out, poolSize, consts, *var.ref);
 			},
 
 			varcase(const InstrType::PUSH_RUN_INTERFACE&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-				//TODO
+				constPoolIdxPushW(out, poolSize, consts, *var.ref);
+				out.push_back(var.argCount);
+				out.push_back(0);
 			},
 			varcase(const InstrType::PUSH_RUN_DYN&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-				//TODO
+				constPoolIdxPushW(out, poolSize, consts, *var.ref);
+				out.push_back(0);
+				out.push_back(0);
 			},
 
 			varcase(const InstrType::PUSH_ARR) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-				//TODO
+				out.push_back((uint8_t)var.type);
 			},
 			varcase(const InstrType::PUSH_OBJARR_U8&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-				//TODO
+				constPoolIdxPushW(out, poolSize, consts, *var.ref);
+				out.push_back(var.dims);
 			},
 
+			varcase(const BaseBranched32 auto) {
+				//TODO
+			},
 
 			// Wide
 
@@ -172,10 +180,6 @@ namespace cpp_jcfu
 			},
 
 			varcase(const InstrType::ADD_I32_VAR_U16_CI16) {
-				//TODO
-			},
-
-			varcase(const BaseBranched32 auto) {
 				//TODO
 			},
 
