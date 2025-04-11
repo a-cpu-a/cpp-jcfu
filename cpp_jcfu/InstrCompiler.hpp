@@ -453,8 +453,8 @@ namespace cpp_jcfu
 			}
 			);
 		}
-
-		instrOffsets.push_back(curInstrOffset);//Prevent oob
+		_ASSERT(curInstrOffset <= UINT16_MAX);
+		instrOffsets.push_back((uint16_t)curInstrOffset);//Prevent oob
 
 		size_t ppOffset = 0;
 		for (const PatchPoint& pp : instrPatchPoints)
