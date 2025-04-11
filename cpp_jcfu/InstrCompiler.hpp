@@ -438,7 +438,7 @@ namespace cpp_jcfu
 		size_t ppOffset = 0;
 		for (const PatchPoint& pp : instrPatchPoints)
 		{
-			const uint16_t relPoint = (instrOffsets.size()>= pp.instrIdx-1) 
+			const uint16_t relPoint = (instrOffsets.size()>= pp.instrIdx) 
 				? (uint16_t)out.size() 
 				: instrOffsets[pp.instrIdx + 1];
 
