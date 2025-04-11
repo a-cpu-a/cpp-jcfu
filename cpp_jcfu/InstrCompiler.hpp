@@ -4,6 +4,7 @@
 #pragma once
 
 #include <vector>
+#include <span>
 #include <bit>
 
 #include "State.hpp"
@@ -166,7 +167,7 @@ namespace cpp_jcfu
 
 	inline std::vector<uint8_t> compileInstrs(
 		size_t& poolSize, ConstPool& consts,
-		const std::vector<Instr>& instrs
+		std::span<const Instr> instrs
 	)
 	{
 		_ASSERT(instrs.size() < UINT16_MAX);
@@ -443,7 +444,7 @@ namespace cpp_jcfu
 				: instrOffsets[pp.instrIdx + 1];
 
 			const int32_t instrOffset = int32_t(pp.instrOffset << 1)>>1;//carry top bit
-			const int32_t movement = int32_t(relPoint) - instrOffsets[pp.instrIdx+instrOffset];
+			const int32_t movement = instrOffsets[pp.instrIdx+instrOffset] - int32_t(relPoint);
 
 			if (pp.is32Bit)
 			{//Ez
