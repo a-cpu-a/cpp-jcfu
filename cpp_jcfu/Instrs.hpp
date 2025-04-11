@@ -262,24 +262,24 @@ namespace cpp_jcfu
 		struct CMP_F64_M {};
 		struct CMP_F64_P {};
 
-		struct I_IF_EQL :BaseBranch16 {};
-		struct I_IF_NEQ :BaseBranch16 {};
-		struct I_IF_LT :BaseBranch16 {};
-		struct I_IF_GT :BaseBranch16 {};
-		struct I_IF_LTE :BaseBranch16 {};
-		struct I_IF_GTE :BaseBranch16 {};
+		struct IF_EQL :BaseBranch {};
+		struct IF_NEQ :BaseBranch {};
+		struct IF_LT :BaseBranch {};
+		struct IF_GT :BaseBranch {};
+		struct IF_LTE :BaseBranch {};
+		struct IF_GTE :BaseBranch {};
 
-		struct I_IF_I32_EQL :BaseBranch16 {};
-		struct I_IF_I32_NEQ :BaseBranch16 {};
-		struct I_IF_I32_LT :BaseBranch16 {};
-		struct I_IF_I32_GT :BaseBranch16 {};
-		struct I_IF_I32_LTE :BaseBranch16 {};
-		struct I_IF_I32_GTE :BaseBranch16 {};
+		struct IF_I32_EQL :BaseBranch {};
+		struct IF_I32_NEQ :BaseBranch {};
+		struct IF_I32_LT :BaseBranch {};
+		struct IF_I32_GT :BaseBranch {};
+		struct IF_I32_LTE :BaseBranch {};
+		struct IF_I32_GTE :BaseBranch {};
 
-		struct I_IF_OBJ_EQL :BaseBranch16 {};
-		struct I_IF_OBJ_NEQ :BaseBranch16 {};
-		struct I_IF_NIL :BaseBranch16 {};
-		struct I_IF_NNIL :BaseBranch16 {};
+		struct IF_OBJ_EQL :BaseBranch {};
+		struct IF_OBJ_NEQ :BaseBranch {};
+		struct IF_NIL :BaseBranch {};
+		struct IF_NNIL :BaseBranch {};
 
 		struct I_GOTO16 :BaseBranch16 {};
 		struct I_DEPR_JSR16 :BaseBranch16 {};
@@ -366,25 +366,6 @@ namespace cpp_jcfu
 		using PUSH_F64_F64 = double;	//Will be converted
 
 		struct GOTO :BaseBranch {};
-
-		struct IF_EQL :BaseBranch {};
-		struct IF_NEQ :BaseBranch {};
-		struct IF_LT :BaseBranch {};
-		struct IF_GT :BaseBranch {};
-		struct IF_LTE :BaseBranch {};
-		struct IF_GTE :BaseBranch {};
-
-		struct IF_I32_EQL :BaseBranch {};
-		struct IF_I32_NEQ :BaseBranch {};
-		struct IF_I32_LT :BaseBranch {};
-		struct IF_I32_GT :BaseBranch {};
-		struct IF_I32_LTE :BaseBranch {};
-		struct IF_I32_GTE :BaseBranch {};
-
-		struct IF_OBJ_EQL :BaseBranch {};
-		struct IF_OBJ_NEQ :BaseBranch {};
-		struct IF_NIL :BaseBranch {};
-		struct IF_NNIL :BaseBranch {};
 	}
 	using Instr = std::variant<
 		InstrType::NOP,
@@ -572,21 +553,22 @@ namespace cpp_jcfu
 		InstrType::CMP_F64_M,
 		InstrType::CMP_F64_P,
 
-		InstrType::I_IF_EQL,
-		InstrType::I_IF_NEQ,
-		InstrType::I_IF_LT,
-		InstrType::I_IF_GTE,
-		InstrType::I_IF_GT,
-		InstrType::I_IF_LTE,
-		InstrType::I_IF_I32_EQL,
-		InstrType::I_IF_I32_NEQ,
-		InstrType::I_IF_I32_LT,
-		InstrType::I_IF_I32_GTE,
-		InstrType::I_IF_I32_GT,
-		InstrType::I_IF_I32_LTE,
+		//Note: if's may build a jump pad, to achive >16 bit jumps
+		InstrType::IF_EQL,
+		InstrType::IF_NEQ,
+		InstrType::IF_LT,
+		InstrType::IF_GTE,
+		InstrType::IF_GT,
+		InstrType::IF_LTE,
+		InstrType::IF_I32_EQL,
+		InstrType::IF_I32_NEQ,
+		InstrType::IF_I32_LT,
+		InstrType::IF_I32_GTE,
+		InstrType::IF_I32_GT,
+		InstrType::IF_I32_LTE,
 
-		InstrType::I_IF_OBJ_EQL,
-		InstrType::I_IF_OBJ_NEQ,
+		InstrType::IF_OBJ_EQL,
+		InstrType::IF_OBJ_NEQ,
 
 		InstrType::I_GOTO16,
 		InstrType::I_DEPR_JSR16,
@@ -631,8 +613,8 @@ namespace cpp_jcfu
 
 		InstrType::PUSH_OBJARR_U8,
 
-		InstrType::I_IF_NIL,
-		InstrType::I_IF_NNIL,
+		InstrType::IF_NIL,
+		InstrType::IF_NNIL,
 
 		InstrType::I_GOTO32,
 		InstrType::I_DEPR_JSR32,
@@ -664,27 +646,8 @@ namespace cpp_jcfu
 		InstrType::PUSH_F32_F32, //Will be converted
 		InstrType::PUSH_F64_F64, //Will be converted
 
-		InstrType::GOTO, //Either goto, or goto_w
+		InstrType::GOTO //Either goto, or goto_w
 
-		//Note: BaseBranch based if's may build a jump pad, to achive >16 bit jumps
-		InstrType::IF_EQL,
-		InstrType::IF_NEQ,
-		InstrType::IF_LT,
-		InstrType::IF_GTE,
-		InstrType::IF_GT,
-		InstrType::IF_LTE,
-
-		InstrType::IF_I32_EQL,
-		InstrType::IF_I32_NEQ,
-		InstrType::IF_I32_LT,
-		InstrType::IF_I32_GTE,
-		InstrType::IF_I32_GT,
-		InstrType::IF_I32_LTE,
-
-		InstrType::IF_OBJ_EQL,
-		InstrType::IF_OBJ_NEQ,
-		InstrType::IF_NIL,
-		InstrType::IF_NNIL
 
 	>;
 
