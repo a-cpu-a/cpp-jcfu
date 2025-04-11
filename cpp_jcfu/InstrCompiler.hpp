@@ -171,8 +171,6 @@ namespace cpp_jcfu
 	{
 		_ASSERT(instrs.size() < UINT16_MAX);
 
-		//TODO: solve relative instr sizes
-
 		std::vector<PatchPoint> instrPatchPoints;
 		std::vector<uint16_t> instrOffsets(instrs.size());
 		size_t curInstrOffset = 0;
@@ -437,6 +435,33 @@ namespace cpp_jcfu
 			}
 			);
 		}
+		for (PatchPoint& pp : instrPatchPoints)
+		{
+			const uint16_t relPoint = (instrOffsets.size()>= pp.instrIdx-1) 
+				? out.size() 
+				: instrOffsets[pp.instrIdx + 1];
+
+			const int32_t movement = int32_t(relPoint) - instrOffsets[pp.instrIdx+pp.instrOffset];
+
+			if (pp.is32Bit)
+			{//Ez
+				u32Patch(out, pp.byteOffset, movement);
+				continue;
+			}
+
+			if (movement >= INT16_MIN && movement <= INT16_MAX)
+			{//Ez 16 bit move
+				u16Patch(out, pp.byteOffset, (int16_t)movement);
+				continue;
+			}
+			// Uh oh!!! need to upsize!
+
+			//TODO: upscale instruction
+
+			//TODO: goto16 -> goto32
+			//TODO: if__ -> if!__+goto32
+		}
+
 		return out;
 	}
 }
