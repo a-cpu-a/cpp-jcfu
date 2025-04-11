@@ -53,15 +53,15 @@ namespace cpp_jcfu
 		};
 		struct BaseFieldRef
 		{
-			std::unique_ptr<ConstPoolItmType::FIELD_REF> field;
+			std::unique_ptr<ConstPoolItmType::FIELD_REF> ref;
 		};
 		struct BaseFuncRef
 		{
-			std::unique_ptr<ConstPoolItmType::FUNC_REF> func;
+			std::unique_ptr<ConstPoolItmType::FUNC_REF> ref;
 		};
 		struct BaseClassRef
 		{
-			std::unique_ptr<ConstPoolItmType::CLASS> func;
+			std::unique_ptr<ConstPoolItmType::CLASS> ref;
 		};
 
 		using NOP = std::monostate;
@@ -599,7 +599,7 @@ namespace cpp_jcfu
 		InstrType::PUSH_RUN_SPECIAL,
 		InstrType::PUSH_RUN_STATIC,
 		InstrType::PUSH_RUN_INTERFACE,
-		InstrType::PUSH_RUN_DYN,
+		InstrType::PUSH_RUN_DYN, //Has 2 zero bytes
 
 		InstrType::PUSH_OBJ,
 		InstrType::PUSH_ARR,
