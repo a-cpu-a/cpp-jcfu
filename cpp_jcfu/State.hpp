@@ -289,6 +289,28 @@ namespace cpp_jcfu
 		uint16_t idx;
 	};
 
+	namespace SlotKindType
+	{
+		using  PAD = std::monostate;
+		struct I32 {};
+		struct F32 {};
+		struct I64 {};
+		struct F64 {};
+		struct NIL {};
+		using  OBJ = ConstPoolItmType::CLASS;
+		using  RAW_OBJ = uint16_t;//The instruction index of a new, that made this variable
+	}
+	using SlotKind = std::variant<
+		SlotKindType::PAD,
+		SlotKindType::I32,
+		SlotKindType::F32,
+		SlotKindType::I64,
+		SlotKindType::F64,
+		SlotKindType::NIL,
+		SlotKindType::OBJ,
+		SlotKindType::RAW_OBJ
+	>;
+
 	//https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
 	struct StackFrame
 	{
