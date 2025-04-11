@@ -213,7 +213,6 @@ namespace cpp_jcfu
 				u16w(out, var);
 				curInstrOffset += 2;
 			},
-
 			varcase(const InstrType::I_PUSH_CONST_U8) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				out.push_back(var.poolIdx);
@@ -247,7 +246,6 @@ namespace cpp_jcfu
 				{
 					writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, jmpOffset);
 				}
-
 			},
 			varcase(const InstrType::LOOKUP_SWITCH&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
@@ -275,7 +273,6 @@ namespace cpp_jcfu
 				constPoolIdxPushW(out, poolSize, consts, *var.ref);
 				curInstrOffset += 2;
 			},
-
 			varcase(const InstrType::PUSH_RUN_INTERFACE&) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				constPoolIdxPushW(out, poolSize, consts, *var.ref);
@@ -323,7 +320,6 @@ namespace cpp_jcfu
 				u16w(out, var.varIdx);
 				curInstrOffset += 2;
 			},
-
 			varcase(const InstrType::ADD_I32_VAR_U16_CI16) {
 				if (var.varIdx <= UINT8_MAX
 					&& var.val <= INT8_MAX
@@ -351,7 +347,6 @@ namespace cpp_jcfu
 					poolSize, consts, 
 					ConstPoolItm(*var));
 			},
-
 			varcase(const InstrType::PUSH_I32_I32) {
 				if (var <= INT8_MAX
 					&& var >= INT8_MIN)
@@ -380,12 +375,10 @@ namespace cpp_jcfu
 					return;
 				}
 				// Not i16 !!
-
 				pushConstPoolInstrW(out,
 					instrOffsets, curInstrOffset, i,
 					poolSize, consts,
 					ConstPoolItmType::I32(var));
-
 			},
 			varcase(const InstrType::PUSH_F32_F32) {
 				if (var == 0.0f || var == 1.0f || var == 2.0f)
@@ -394,7 +387,6 @@ namespace cpp_jcfu
 						InstrId((uint8_t)InstrId::PUSH_F32_0 + (uint8_t)var));
 					return;
 				}
-
 				pushConstPoolInstrW(out,
 					instrOffsets, curInstrOffset, i,
 					poolSize, consts,
@@ -407,7 +399,6 @@ namespace cpp_jcfu
 						InstrId((uint8_t)InstrId::PUSH_I64_0 + (uint8_t)var));
 					return;
 				}
-
 				pushConstPoolInstrW(out,
 					instrOffsets, curInstrOffset, i,
 					poolSize, consts,
@@ -440,7 +431,6 @@ namespace cpp_jcfu
 					InstrId::I_GOTO16);
 				writePatchPoint16(out, curInstrOffset, i, instrPatchPoints, var.jmpOffset);
 			},
-
 			varcase(const BaseBranched auto) {
 
 				if (var.jmpOffset > INT16_MAX || var.jmpOffset < INT16_MIN)
@@ -457,7 +447,6 @@ namespace cpp_jcfu
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				// Hope for 16
 				writePatchPoint16(out,curInstrOffset,i, instrPatchPoints,var.jmpOffset);
-
 			}
 			);
 		}
