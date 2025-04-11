@@ -657,8 +657,6 @@ namespace cpp_jcfu
 		InstrType::PUSH_F64_F64, //Will be converted
 
 		InstrType::GOTO //Either goto, or goto_w
-
-
 	>;
 
 	//TODO: switch to something better than variant, as it is not optimal (no packing, uses short tag)
@@ -666,10 +664,9 @@ namespace cpp_jcfu
 	template<class T>
 	constexpr InstrId INSTR_OP_CODE = (InstrId)aca::variant_index_v<T, Instr>;
 
-	static_assert(
-		INSTR_OP_CODE<InstrType::I_DEPR_JSR32>
-		== InstrId::I_DEPR_JSR32);
-
+	static_assert( 
+		INSTR_OP_CODE<InstrType::I_DEPR_JSR32> == InstrId::I_DEPR_JSR32
+	);
 
 	constexpr InstrId invertIfInstr(const InstrId id) {
 		switch (id)
@@ -696,6 +693,5 @@ namespace cpp_jcfu
 		}
 		_ASSERT(false);
 		std::abort();//Error lol
-
 	}
 }

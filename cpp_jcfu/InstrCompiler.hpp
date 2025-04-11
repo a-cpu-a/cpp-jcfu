@@ -79,7 +79,6 @@ namespace cpp_jcfu
 			curInstrOffset += 2;
 			return;
 		}
-
 		if (idx <= UINT8_MAX)
 		{
 			pushOpCodeId(out, instrOffsets, curInstrOffset, i,
@@ -88,7 +87,6 @@ namespace cpp_jcfu
 			curInstrOffset++;
 			return;
 		}
-
 		pushOpCodeId(out, instrOffsets, curInstrOffset, i,
 			InstrId::I_PUSH_CONST_U16);
 		u16w(out, idx);
@@ -103,7 +101,6 @@ namespace cpp_jcfu
 		uint16_t instrIdx;
 		uint16_t byteOffset;
 	};
-
 	inline void writePatchPoint32(
 		std::vector<uint8_t>& out,
 		size_t& curInstrOffset,
@@ -120,7 +117,6 @@ namespace cpp_jcfu
 		);
 		curInstrOffset += 4;
 	}
-
 	inline void writePatchPoint16(
 		std::vector<uint8_t>& out,
 		size_t& curInstrOffset,
@@ -175,7 +171,6 @@ namespace cpp_jcfu
 	{
 		_ASSERT(instrs.size() < UINT16_MAX);
 
-		//TODO: build list of bytes to patch into relative instr offsets: (switch, 32bit if's)
 		//TODO: solve relative instr sizes
 
 		std::vector<PatchPoint> instrPatchPoints;
@@ -185,17 +180,11 @@ namespace cpp_jcfu
 		std::vector<uint8_t> out;
 		out.reserve(instrs.size() + (instrs.size() >> 3)); // 1.125X scaling
 
-
 		for (uint16_t i = 0; i < instrs.size(); i++)
 		{
 			const Instr& instr = instrs[i];
 
-			//std::visit([out](const auto& v) mutable {out.push_back(INSTR_OP_CODE<decltype(v)>); }, instr);
-			//_ASSERT(curInstrOffset < UINT16_MAX);
-			//instrOffsets[i] = uint16_t(curInstrOffset++);
-
 			ezmatch(instr)(
-
 			// Easy 1 byte instructions
 			varcase(const BasicOpCode auto) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
@@ -411,7 +400,6 @@ namespace cpp_jcfu
 						InstrId((uint8_t)InstrId::PUSH_F64_0 + (uint8_t)var));
 					return;
 				}
-
 				pushConstPoolInstrW(out,
 					instrOffsets, curInstrOffset, i,
 					poolSize, consts,
@@ -432,7 +420,6 @@ namespace cpp_jcfu
 				writePatchPoint16(out, curInstrOffset, i, instrPatchPoints, var.jmpOffset);
 			},
 			varcase(const BaseBranched auto) {
-
 				if (var.jmpOffset > INT16_MAX || var.jmpOffset < INT16_MIN)
 				{// Always 32
 
@@ -450,7 +437,6 @@ namespace cpp_jcfu
 			}
 			);
 		}
-
 		return out;
 	}
 }
