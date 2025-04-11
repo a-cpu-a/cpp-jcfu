@@ -16,6 +16,21 @@ namespace cpp_jcfu
 	template<class T>
 	constexpr uint8_t INSTR_OP_CODE = aca::variant_index_v<T, Instr>;
 
+	inline void pushOpCodeByte(
+		std::vector<uint8_t>& out,
+		std::vector<uint16_t>& instrOffsets,
+		size_t& curInstrOffset,
+		const size_t i,
+		const auto& var)
+	{
+		constexpr uint8_t op = INSTR_OP_CODE<decltype(var)>;
+		static_assert(op <= 0xc9);
+		out.push_back(op);
+		_ASSERT(curInstrOffset < UINT16_MAX);
+		instrOffsets[i] = uint16_t(curInstrOffset++);
+	}
+
+
 	template<class T>
 	concept BaseBranched16 = std::derived_from<T, InstrType::BaseBranch16>;
 	template<class T>
@@ -188,11 +203,7 @@ namespace cpp_jcfu
 
 				// Easy 1 byte instructions
 			varcase(const BasicOpCode auto) {
-				constexpr uint8_t op = INSTR_OP_CODE<decltype(var)>;
-				static_assert(op <= 0xc9);
-				out.push_back(op);
-				_ASSERT(curInstrOffset < UINT16_MAX);
-				instrOffsets[i] = uint16_t(curInstrOffset++);
+				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 			}
 			);
 		}
