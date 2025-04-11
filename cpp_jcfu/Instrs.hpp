@@ -14,10 +14,14 @@ namespace cpp_jcfu
 {
 	enum class InstrId : uint8_t
 	{
-		GOTO16 = 0xa7,
+		I_ADD_I32_VAR_U8_CI8 = 0x84,
 
-		GOTO32 = 0xc8,
-		DEPR_JSR32 = 0xc9,
+		I_GOTO16 = 0xa7,
+
+		I_WIDE = 0xc4,
+
+		I_GOTO32 = 0xc8,
+		I_DEPR_JSR32 = 0xc9,
 	};
 
 	struct SwitchCase

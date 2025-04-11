@@ -38,6 +38,19 @@ namespace cpp_jcfu
 		static_assert(op <= (uint8_t)InstrId::DEPR_JSR32);
 		pushOpCodeId(out, instrOffsets, curInstrOffset, i, (InstrId)op);
 	}
+	inline void pushWideOpCodeId(
+		std::vector<uint8_t>& out,
+		std::vector<uint16_t>& instrOffsets,
+		size_t& curInstrOffset,
+		const uint16_t i,
+		const InstrId id)
+	{
+		out.push_back((uint8_t)InstrId::I_WIDE);
+		out.push_back((uint8_t)id);
+		_ASSERT(curInstrOffset < (UINT16_MAX - 1));
+		instrOffsets[i] = uint16_t(curInstrOffset);
+		curInstrOffset += 2;
+	}
 
 
 	template<class T>
@@ -214,6 +227,9 @@ namespace cpp_jcfu
 			},
 
 			varcase(const InstrType::ADD_I32_VAR_U16_CI16) {
+				//TODO: check if it fits in non-wide form
+				pushWideOpCodeId(out, instrOffsets, curInstrOffset, i,
+					InstrId::I_ADD_I32_VAR_U8_CI8);
 				//TODO
 			},
 
@@ -240,7 +256,7 @@ namespace cpp_jcfu
 				if (var.jmpOffset > INT16_MAX || var.jmpOffset < INT16_MIN)
 				{// Always 32
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i, 
-						InstrId::GOTO32);
+						InstrId::I_GOTO32);
 					u32w(out, 0);
 					instrPatchPoints.push_back(PatchPoint{
 						.instrOffset=var.jmpOffset,
@@ -253,7 +269,7 @@ namespace cpp_jcfu
 				else
 				{// Hope for 16
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i,
-						InstrId::GOTO16);
+						InstrId::I_GOTO16);
 					u16w(out, 0);
 					instrPatchPoints.push_back(PatchPoint{
 						.instrOffset = var.jmpOffset,
