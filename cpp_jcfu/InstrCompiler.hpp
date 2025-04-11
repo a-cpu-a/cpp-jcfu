@@ -64,9 +64,6 @@ namespace cpp_jcfu
 			|| std::derived_from<T, InstrType::BaseFuncRef>
 			|| std::derived_from<T, InstrType::BaseClassRef>);
 	template<class T>
-	concept BaseVarInstred = sizeof(T) == 1
-		&& std::derived_from<T, InstrType::BaseVarInstr>;
-	template<class T>
 	concept BaseVar16Instred = sizeof(T) == 2
 		&& std::derived_from<T, InstrType::BaseVar16Instr>;
 	template<class T>
@@ -82,7 +79,6 @@ namespace cpp_jcfu
 		&& !BaseBranched16<T>
 		&& !BaseBranched32<T>
 		&& !BaseRefed<T>
-		&& !BaseVarInstred<T>
 		&& !BaseVar16Instred<T>
 		&& !BaseBranched<T>
 		&& !PushConstXed<T>;
@@ -151,19 +147,6 @@ namespace cpp_jcfu
 			varcase(const PushConstXed auto) {
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
 				u16w(out, var.poolIdx);
-				curInstrOffset += 2;
-			},
-
-			varcase(const BaseVarInstred auto) {
-				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-				out.push_back(var.varIdx);
-				curInstrOffset++;
-			},
-
-			varcase(const InstrType::I_ADD_I32_VAR_U8_CI8) {
-				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
-				out.push_back(var.varIdx);
-				out.push_back(var.val);
 				curInstrOffset += 2;
 			},
 
