@@ -7,12 +7,40 @@
 #include "cpp_jcfu/Gen.hpp"
 #include "cpp_jcfu/InstrCompiler.hpp"
 
+
+template<class... Ts>
+std::vector<cpp_jcfu::Instr> buildInstrVec(Ts&&... instrs)
+{
+	std::vector<cpp_jcfu::Instr> ret;
+	ret.resize(sizeof...(instrs));
+
+	(ret.emplace_back(std::forward<decltype(instrs)>(instrs)), ...);
+	return ret;
+}
+
+
 int main()
 {
 	std::cout << "Hello World!\n";
 
 	cpp_jcfu::ConstPool consts{};
 	size_t poolSize = 1;
+
+
+	const std::vector<cpp_jcfu::Instr> instrs = buildInstrVec(
+		cpp_jcfu::InstrType::PUSH_RUN_STATIC{std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
+			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
+			.classIdx = {"StaticHolder"},
+			.refDesc = {"fname","()LGlobeObject;"}
+		}})},
+		cpp_jcfu::InstrType::DUP_1{},
+		cpp_jcfu::InstrType::PUSH_RUN_VIRTUAL{std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
+			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
+			.classIdx = {"GlobeObject"},
+			.refDesc = {"fname","()V"}
+		}})},
+		cpp_jcfu::InstrType::RET_OBJ{}
+	);
 
 	const std::vector<uint8_t> out = cpp_jcfu::gen(
 		cpp_jcfu::ClassFlags_SUPER | cpp_jcfu::ClassFlags_PUBLIC,
@@ -22,16 +50,13 @@ int main()
 		{
 			cpp_jcfu::FuncInfo{
 				.tags = {cpp_jcfu::compileCode(poolSize, consts, {
-					.instrs = {{
-							cpp_jcfu::InstrType::GOTO{0},
-							cpp_jcfu::InstrType::RET{}
-					}},
-					.maxStack = 0,
-					.maxLocals = 1
+					.instrs = instrs,
+					.maxStack = 2,
+					.maxLocals = 0
 				})
 				},
 				.name = "main",
-				.desc = "([Ljava/lang/String;)V",
+				.desc = "([Ljava/lang/String;)LGlobeObject;",
 				.flags = cpp_jcfu::FuncFlags_PUBLIC | cpp_jcfu::FuncFlags_STATIC
 			}
 		},

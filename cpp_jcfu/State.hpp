@@ -10,6 +10,14 @@
 
 namespace cpp_jcfu
 {
+#ifdef _MSC_VER
+#define _JcfuNoUniqAddr [[msvc::no_unique_address]]
+#else
+#define _JcfuNoUniqAddr [[no_unique_address]]
+#endif // _MSC_VER
+
+
+
 	using AccessFlags = uint16_t;
 	enum AccessFlags_ : uint16_t
 	{

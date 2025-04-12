@@ -10,7 +10,7 @@
 #include "State.hpp"
 #include "ext/CppMatch.hpp"
 #include "WriteBin.hpp"
-#include "Instrs.hpp"
+#include "InstrVariant.hpp"
 
 namespace cpp_jcfu
 {

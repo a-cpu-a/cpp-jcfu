@@ -313,6 +313,8 @@ namespace cpp_jcfu
 			std::unique_ptr<ConstPoolItmType::CLASS> ref;
 		};
 
+		// Variant elements:
+
 		using NOP = std::monostate;
 
 		struct PUSH_OBJ_NULL {};
@@ -553,13 +555,19 @@ namespace cpp_jcfu
 		struct PUSH_RUN_VIRTUAL :BaseFuncRef {};
 		struct PUSH_RUN_SPECIAL :BaseFuncRef {};
 		struct PUSH_RUN_STATIC :BaseFuncRef {};
-		struct PUSH_RUN_INTERFACE :BaseFuncRef { uint8_t argCount; };
+		//Pack, to allow for smaller sizeof(), in reality it should still be aligned to 8
+#pragma pack(push, 4)
+		struct alignas(4) PUSH_RUN_INTERFACE :BaseFuncRef { uint8_t argCount; };
+#pragma pack(pop)
 		struct PUSH_RUN_DYN :BaseFuncRef {};
 
 		struct PUSH_OBJ :BaseClassRef {};
 		struct PUSH_ARR { ArrayType type; };
 		struct PUSH_OBJARR_1 :BaseClassRef {};
-		struct PUSH_OBJARR_U8 :BaseClassRef { uint8_t dims; };
+		//Pack, to allow for smaller sizeof(), in reality it should still be aligned to 8
+#pragma pack(push, 4)
+		struct alignas(4) PUSH_OBJARR_U8 :BaseClassRef { uint8_t dims; };
+#pragma pack(pop)
 		struct PUSH_ARRLEN {};
 
 		struct THROW {};
@@ -586,281 +594,6 @@ namespace cpp_jcfu
 
 		struct GOTO :BaseBranch {};
 	}
-	using Instr = std::variant<
-		InstrType::NOP,
-		InstrType::PUSH_OBJ_NULL,
-
-		InstrType::PUSH_I32_M1,
-		InstrType::PUSH_I32_0,
-		InstrType::PUSH_I32_1,
-		InstrType::PUSH_I32_2,
-		InstrType::PUSH_I32_3,
-		InstrType::PUSH_I32_4,
-		InstrType::PUSH_I32_5,
-
-		InstrType::PUSH_I64_0,
-		InstrType::PUSH_I64_1,
-
-		InstrType::PUSH_F32_0,
-		InstrType::PUSH_F32_1,
-		InstrType::PUSH_F32_2,
-
-		InstrType::PUSH_F64_0,
-		InstrType::PUSH_F64_1,
-
-		InstrType::I_PUSH_I32_I8,
-		InstrType::I_PUSH_I32_I16,
-
-		InstrType::I_PUSH_CONST_U8,//ldc
-		InstrType::I_PUSH_CONST_U16,//ldc_w(for constants > ff)
-		InstrType::I_PUSH_CONST2_U16,//ldc2_w (for long / double)
-
-		InstrType::PUSH_I32_VAR_U16,//iload
-		InstrType::PUSH_I64_VAR_U16,//lload
-		InstrType::PUSH_F32_VAR_U16,//fload
-		InstrType::PUSH_F64_VAR_U16,//dload
-		InstrType::PUSH_OBJ_VAR_U16,//aload
-
-		InstrType::I_PUSH_I32_VAR_0,
-		InstrType::I_PUSH_I32_VAR_1,
-		InstrType::I_PUSH_I32_VAR_2,
-		InstrType::I_PUSH_I32_VAR_3,
-		InstrType::I_PUSH_I64_VAR_0,
-		InstrType::I_PUSH_I64_VAR_1,
-		InstrType::I_PUSH_I64_VAR_2,
-		InstrType::I_PUSH_I64_VAR_3,
-
-		InstrType::I_PUSH_F32_VAR_0,
-		InstrType::I_PUSH_F32_VAR_1,
-		InstrType::I_PUSH_F32_VAR_2,
-		InstrType::I_PUSH_F32_VAR_3,
-		InstrType::I_PUSH_F64_VAR_0,
-		InstrType::I_PUSH_F64_VAR_1,
-		InstrType::I_PUSH_F64_VAR_2,
-		InstrType::I_PUSH_F64_VAR_3,
-
-		InstrType::I_PUSH_OBJ_VAR_0,
-		InstrType::I_PUSH_OBJ_VAR_1,
-		InstrType::I_PUSH_OBJ_VAR_2,
-		InstrType::I_PUSH_OBJ_VAR_3,
-
-		InstrType::PUSH_I32_ARR,
-		InstrType::PUSH_I64_ARR,
-		InstrType::PUSH_F32_ARR,
-		InstrType::PUSH_F64_ARR,
-		InstrType::PUSH_OBJ_ARR,
-
-		InstrType::PUSH_BI8_ARR,
-		InstrType::PUSH_CHR_ARR,
-		InstrType::PUSH_I16_ARR,
-
-		InstrType::SAVE_I32_VAR_U16,
-		InstrType::SAVE_I64_VAR_U16,
-		InstrType::SAVE_F32_VAR_U16,
-		InstrType::SAVE_F64_VAR_U16,
-		InstrType::SAVE_OBJ_VAR_U16,
-
-		InstrType::I_SAVE_I32_VAR_0,
-		InstrType::I_SAVE_I32_VAR_1,
-		InstrType::I_SAVE_I32_VAR_2,
-		InstrType::I_SAVE_I32_VAR_3,
-		InstrType::I_SAVE_I64_VAR_0,
-		InstrType::I_SAVE_I64_VAR_1,
-		InstrType::I_SAVE_I64_VAR_2,
-		InstrType::I_SAVE_I64_VAR_3,
-
-		InstrType::I_SAVE_F32_VAR_0,
-		InstrType::I_SAVE_F32_VAR_1,
-		InstrType::I_SAVE_F32_VAR_2,
-		InstrType::I_SAVE_F32_VAR_3,
-		InstrType::I_SAVE_F64_VAR_0,
-		InstrType::I_SAVE_F64_VAR_1,
-		InstrType::I_SAVE_F64_VAR_2,
-		InstrType::I_SAVE_F64_VAR_3,
-
-		InstrType::I_SAVE_OBJ_VAR_0,
-		InstrType::I_SAVE_OBJ_VAR_1,
-		InstrType::I_SAVE_OBJ_VAR_2,
-		InstrType::I_SAVE_OBJ_VAR_3,
-
-		InstrType::SAVE_I32_ARR,
-		InstrType::SAVE_I64_ARR,
-		InstrType::SAVE_F32_ARR,
-		InstrType::SAVE_F64_ARR,
-		InstrType::SAVE_OBJ_ARR,
-
-		InstrType::SAVE_BI8_ARR,
-		InstrType::SAVE_CHR_ARR,
-		InstrType::SAVE_I16_ARR,
-
-		InstrType::POP_1,
-		InstrType::POP_2,
-
-		InstrType::DUP_1,
-		InstrType::DUP_1_X,
-		InstrType::DUP_1_X2,
-		InstrType::DUP_2,
-		InstrType::DUP_2_X,
-		InstrType::DUP_2_X2,
-
-		InstrType::SWAP,
-
-		InstrType::ADD_I32,
-		InstrType::ADD_I64,
-		InstrType::ADD_F32,
-		InstrType::ADD_F64,
-		InstrType::SUB_I32,
-		InstrType::SUB_I64,
-		InstrType::SUB_F32,
-		InstrType::SUB_F64,
-
-		InstrType::MUL_I32,
-		InstrType::MUL_I64,
-		InstrType::MUL_F32,
-		InstrType::MUL_F64,
-		InstrType::DIV_I32,
-		InstrType::DIV_I64,
-		InstrType::DIV_F32,
-		InstrType::DIV_F64,
-		InstrType::REM_I32,
-		InstrType::REM_I64,
-		InstrType::REM_F32,
-		InstrType::REM_F64,
-
-		InstrType::NEG_I32,
-		InstrType::NEG_I64,
-		InstrType::NEG_F32,
-		InstrType::NEG_F64,
-
-		InstrType::SHL_I32,
-		InstrType::SHL_I64,
-		InstrType::SRC_I32,
-		InstrType::SRC_I64,
-		InstrType::SHR_I32,
-		InstrType::SHR_I64,
-
-		InstrType::AND_I32,
-		InstrType::AND_I64,
-		InstrType::OR_I32,
-		InstrType::OR_I64,
-		InstrType::XOR_I32,
-		InstrType::XOR_I64,
-
-		InstrType::ADD_I32_VAR_U16_CI16,
-
-		InstrType::CAST_I32_I64,
-		InstrType::CAST_I32_F32,
-		InstrType::CAST_I32_F64,
-		InstrType::CAST_I64_I32,
-		InstrType::CAST_I64_F32,
-		InstrType::CAST_I64_F64,
-
-		InstrType::CAST_F32_I32,
-		InstrType::CAST_F32_I64,
-		InstrType::CAST_F32_F64,
-		InstrType::CAST_F64_I32,
-		InstrType::CAST_F64_I64,
-		InstrType::CAST_F64_F32,
-
-		InstrType::CAST_I32_I8,
-		InstrType::CAST_I32_CHR,
-		InstrType::CAST_I32_I16,
-
-		InstrType::CMP_I64,
-		InstrType::CMP_F32_M,
-		InstrType::CMP_F32_P,
-		InstrType::CMP_F64_M,
-		InstrType::CMP_F64_P,
-
-		//Note: if's may build a jump pad, to achive >16 bit jumps
-		InstrType::IF_EQL,
-		InstrType::IF_NEQ,
-		InstrType::IF_LT,
-		InstrType::IF_GTE,
-		InstrType::IF_GT,
-		InstrType::IF_LTE,
-		InstrType::IF_I32_EQL,
-		InstrType::IF_I32_NEQ,
-		InstrType::IF_I32_LT,
-		InstrType::IF_I32_GTE,
-		InstrType::IF_I32_GT,
-		InstrType::IF_I32_LTE,
-
-		InstrType::IF_OBJ_EQL,
-		InstrType::IF_OBJ_NEQ,
-
-		InstrType::I_GOTO16,
-		InstrType::I_DEPR_JSR16,
-		InstrType::I_DEPR_GOTO_VAR_U16,
-
-		InstrType::TABLE_SWITCH,
-		InstrType::LOOKUP_SWITCH,
-
-		InstrType::RET_I32,
-		InstrType::RET_I64,
-		InstrType::RET_F32,
-		InstrType::RET_F64,
-		InstrType::RET_OBJ,
-		InstrType::RET,
-
-		InstrType::PUSH_GET_STATIC,
-		InstrType::SAVE_STATIC,
-		InstrType::PUSH_GET_FIELD,
-		InstrType::SAVE_FIELD,
-
-		InstrType::PUSH_RUN_VIRTUAL,
-		InstrType::PUSH_RUN_SPECIAL,
-		InstrType::PUSH_RUN_STATIC,
-		InstrType::PUSH_RUN_INTERFACE,
-		InstrType::PUSH_RUN_DYN, //Has 2 zero bytes
-
-		InstrType::PUSH_OBJ,
-		InstrType::PUSH_ARR,
-		InstrType::PUSH_OBJARR_1,
-
-		InstrType::PUSH_ARRLEN,
-
-		InstrType::THROW,
-
-		InstrType::CHECK_CAST,
-		InstrType::IS_OF,
-
-		InstrType::SYNC_ON,
-		InstrType::SYNC_OFF,
-
-		InstrType::I_WIDE,
-
-		InstrType::PUSH_OBJARR_U8,
-
-		InstrType::IF_NIL,
-		InstrType::IF_NNIL,
-
-		InstrType::I_GOTO32,
-		InstrType::I_DEPR_JSR32,
-
-		// Utility
-
-		InstrType::PUSH_CONST,//ldc, ldc_w(for constants > ff), ldc2_w (for long / double)
-
-		InstrType::PUSH_I32_I32, //Will be converted
-		InstrType::PUSH_I64_I64, //Will be converted
-		InstrType::PUSH_F32_F32, //Will be converted
-		InstrType::PUSH_F64_F64, //Will be converted
-
-		InstrType::GOTO //Either goto, or goto_w
-	>;
-
-	//TODO: switch to something better than variant, as it is not optimal (no packing, uses short tag)
-
-	template<class T>
-	constexpr InstrId INSTR_OP_CODE = (InstrId)aca::variant_index_v<std::remove_cvref_t<T>, Instr>;
-
-	static_assert( 
-		INSTR_OP_CODE<InstrType::I_DEPR_JSR32> == InstrId::I_DEPR_JSR32
-	);
-	static_assert( 
-		INSTR_OP_CODE<InstrType::ADD_I32> == InstrId::ADD_I32
-	);
 
 	constexpr InstrId invertIfInstr(const InstrId id) {
 #ifdef __clang__
