@@ -6,6 +6,7 @@
 #include <vector>
 #include <span>
 #include <bit>
+#include <map>
 
 #include "State.hpp"
 #include "ext/CppMatch.hpp"
@@ -169,7 +170,7 @@ namespace cpp_jcfu
 
 
 	//https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
-	namespace StackFrameType
+	/*namespace StackFrameType
 	{
 		using STACK_0 = std::monostate;
 
@@ -204,7 +205,18 @@ namespace cpp_jcfu
 		StackFrameType::LOCAL_ADD3_STACK_0,
 
 		StackFrameType::LOCAL_STACK
-	>;
+	>;*/
+	
+	//Required on every ErrorHandler::startInstr, and every Goto/If/Switch target
+	// add it to (.instructionFrames)
+	// 
+	//Additionaly: if a 'if' could ever jump >32k bytes, it needs it too,
+	// but to keep things optimized, you only need it on (.ifInstructionFrames)
+	struct StackFrame
+	{
+		std::vector<SlotKind> stack;
+		std::vector<SlotKind> local;
+	};
 
 	struct ErrorHandler
 	{
@@ -218,6 +230,8 @@ namespace cpp_jcfu
 		std::span<const Instr> instrs;
 		std::span<const ErrorHandler> errorHandlers;
 		std::vector<CodeTag> extraTags;
+		std::map<uint16_t, StackFrame> instructionFrames;
+		std::map<uint16_t, StackFrame> ifInstructionFrames;
 		uint16_t maxStack;
 		uint16_t maxLocals;
 	};
