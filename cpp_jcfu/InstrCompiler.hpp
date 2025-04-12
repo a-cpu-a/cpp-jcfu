@@ -96,8 +96,9 @@ namespace cpp_jcfu
 
 	struct PatchPoint
 	{
-		uint32_t instrOffset : 31;//Packed!!!
+		uint32_t instrOffset : 30;//Packed!!!
 		uint32_t is32Bit : 1 = false;
+		uint32_t isIf : 1 = false;
 
 		uint16_t instrIdx;
 		uint16_t byteOffset;
@@ -107,13 +108,14 @@ namespace cpp_jcfu
 		size_t& curInstrOffset,
 		const uint16_t i,
 		std::vector<PatchPoint>& instrPatchPoints,
-		const int32_t jmpOffset)
+		const int32_t jmpOffset,
+		const bool isIf=false)
 	{
 		_ASSERT(curInstrOffset <= UINT16_MAX - 4);
 		u32w(out, 0);
 		instrPatchPoints.emplace_back(
 			(uint32_t)jmpOffset,
-			true, i,
+			true, isIf, i,
 			(uint16_t)curInstrOffset
 		);
 		curInstrOffset += 4;
@@ -129,7 +131,7 @@ namespace cpp_jcfu
 		u16w(out, 0);
 		instrPatchPoints.emplace_back(
 			(uint32_t)jmpOffset,
-			false, i,
+			false,false, i,
 			(uint16_t)curInstrOffset
 		);
 		curInstrOffset += 2;
@@ -479,11 +481,11 @@ namespace cpp_jcfu
 				{// Always 32
 
 					pushOpCodeId(out, instrOffsets, curInstrOffset, i, invertIfInstr(INSTR_OP_CODE<decltype(var)>));
-					u16w(out, 1+4);//skip goto32
+					u16w(out, 1 + 2 +1+4);//skip thisInstr, goto32
 
 					out.push_back((uint8_t)InstrId::I_GOTO32);
 					curInstrOffset += 3;
-					writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, var.jmpOffset);
+					writePatchPoint32(out, curInstrOffset, i, instrPatchPoints, var.jmpOffset,true);
 					return;
 				}
 				pushOpCodeByte(out, instrOffsets, curInstrOffset, i, var);
@@ -498,9 +500,9 @@ namespace cpp_jcfu
 		size_t ppOffset = 0;
 		for (const PatchPoint& pp : instrPatchPoints)
 		{
-			const uint16_t relPoint = instrOffsets[pp.instrIdx + 1];
+			const uint16_t relPoint = instrOffsets[pp.instrIdx] + (pp.isIf?3:0);
 
-			const int32_t instrOffset = int32_t(pp.instrOffset << 1)>>1;//carry top bit
+			const int32_t instrOffset = int32_t(pp.instrOffset << 2)>>2;//carry top bit
 			const int32_t movement = instrOffsets[pp.instrIdx+instrOffset] - int32_t(relPoint);
 
 			if (pp.is32Bit)
@@ -509,7 +511,7 @@ namespace cpp_jcfu
 				continue;
 			}
 
-			if (movement >= INT16_MIN && movement <= INT16_MAX)
+			if (movement <= INT16_MAX && movement >= INT16_MIN)
 			{//Ez 16 bit move
 				u16Patch(out, pp.byteOffset + ppOffset, (int16_t)movement);
 				continue;
@@ -523,7 +525,7 @@ namespace cpp_jcfu
 				instr = InstrId::I_GOTO32;
 
 				out.insert(out.begin() + (pp.byteOffset + ppOffset), 2, 0);
-				u32Patch(out, pp.byteOffset + ppOffset, movement+2);//+2, for added size, since calculation
+				u32Patch(out, pp.byteOffset + ppOffset, movement);
 
 				for (size_t i = pp.instrIdx+1; i < instrOffsets.size(); i++)
 					instrOffsets[i] += 2;
@@ -533,14 +535,14 @@ namespace cpp_jcfu
 			// Its an if
 
 			instr = invertIfInstr(instr);
-			u16Patch(out, pp.byteOffset + ppOffset, 1+4);//skip injected goto32
+			u16Patch(out, pp.byteOffset + ppOffset, 1+2+1+4);//skip thisInstr, injected goto32
 
 			out.insert(out.begin() + (pp.byteOffset + ppOffset+2), 5, 
 				(uint8_t)InstrId::I_GOTO32);//use goto32, to auto fill in the opcode
 
 			u32Patch(out, 
 				pp.byteOffset + ppOffset+3, //+3, cuz we writing to the goto32's offset
-				movement + 5);//+5, for added size, since calculation
+				movement -3);// -3, for if-instr size
 
 			for (size_t i = pp.instrIdx + 1; i < instrOffsets.size(); i++)
 				instrOffsets[i] += 5;
