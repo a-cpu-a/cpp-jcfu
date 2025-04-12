@@ -351,12 +351,12 @@ namespace cpp_jcfu
 
 	namespace CodeSlotKindType
 	{
-		using  PAD = std::monostate;
-		struct I32 {};
-		struct F32 {};
-		struct I64 {};
-		struct F64 {};
-		struct NIL {};
+		using  PAD = SlotKindType::PAD;
+		using  I32 = SlotKindType::I32;
+		using  F32 = SlotKindType::F32;
+		using  I64 = SlotKindType::I64;
+		using  F64 = SlotKindType::F64;
+		using  NIL = SlotKindType::NIL;
 		struct OBJ { uint16_t constPoolIdx; };
 		using  RAW_OBJ = uint16_t;//The instruction index of a new, that made this variable
 	}
