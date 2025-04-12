@@ -699,7 +699,34 @@ namespace cpp_jcfu
 						{
 							if (detail::isVecPrefix(*_prevFrameLocals, frame.local))
 							{//ADD
-								//TODO
+								if (addCount == 1)
+								{
+									stackFrames.push_back(CodeStackFrameType::ADD1_NO_STACK{
+										{delta},
+										{slotKind2CodeSlotKind(poolSize,consts,instrOffsets,frame.local.back())}
+									});
+								}
+								else if (addCount == 2)
+								{
+									stackFrames.push_back(CodeStackFrameType::ADD2_NO_STACK{
+										{delta},
+										{
+											slotKind2CodeSlotKind(poolSize,consts,instrOffsets,*(frame.local.rbegin() + 1)),
+											slotKind2CodeSlotKind(poolSize,consts,instrOffsets,frame.local.back())
+										}
+									});
+								}
+								else if (addCount == 3)
+								{
+									stackFrames.push_back(CodeStackFrameType::ADD3_NO_STACK{
+										{delta},
+										{
+											slotKind2CodeSlotKind(poolSize,consts,instrOffsets,*(frame.local.rbegin() + 2)),
+											slotKind2CodeSlotKind(poolSize,consts,instrOffsets,*(frame.local.rbegin() + 1)),
+											slotKind2CodeSlotKind(poolSize,consts,instrOffsets,frame.local.back())
+										}
+									});
+								}
 								goto continueLoop;
 							}
 						}
