@@ -191,6 +191,7 @@ namespace cpp_jcfu
 
 				_TRY_MOVE_TYPE(InstrType::PUSH_CONST);
 			default:
+				std::copy_n(other.storage, sizeof(storage), storage);
 				break;
 			}
 #undef _TRY_MOVE_TYPE
