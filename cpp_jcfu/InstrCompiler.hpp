@@ -230,8 +230,13 @@ namespace cpp_jcfu
 		std::span<const Instr> instrs;
 		std::span<const ErrorHandler> errorHandlers;
 		std::vector<CodeTag> extraTags;
+
+		// Will not be added to binary, only used to optimize out some instructionFrames, that dont need to exist
+		StackFrame startFrame;
 		std::map<uint16_t, StackFrame> instructionFrames;
+		//Only ones that jump >32k will be used! (will error, if missing)
 		std::map<uint16_t, StackFrame> ifInstructionFrames;
+
 		uint16_t maxStack;
 		uint16_t maxLocals;
 	};
