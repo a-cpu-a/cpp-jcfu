@@ -229,7 +229,7 @@ namespace cpp_jcfu
 	{
 		std::span<const Instr> instrs;
 		std::span<const ErrorHandler> errorHandlers;
-		std::vector<CodeTag> extraTags;
+		std::vector<BasicCodeTag> extraTags;
 
 		// Will not be added to binary, only used to optimize out some instructionFrames, that dont need to exist
 		std::vector<SlotKind> startFrameLocals;
@@ -573,7 +573,15 @@ namespace cpp_jcfu
 		ret.maxLocals = data.maxLocals;
 		ret.maxStack = data.maxStack;
 
-		ret.tags = data.extraTags;
+		ret.tags.reserve(data.extraTags.size());//TODO +1 for stack map table, but only when needed
+		for (const BasicCodeTag& tag : data.extraTags)
+		{
+			ezmatch(tag)(
+			varcase(const auto&){
+				ret.tags.push_back(var);
+			}
+			);
+		}
 
 		ret.errorHandlers.resize(data.errorHandlers.size());
 		for (size_t i = 0; i < data.errorHandlers.size(); i++)

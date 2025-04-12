@@ -7,6 +7,7 @@
 #include <string>
 #include <variant>
 #include <optional>
+#include <memory>
 
 namespace cpp_jcfu
 {
@@ -305,7 +306,7 @@ namespace cpp_jcfu
 		struct I64 {};
 		struct F64 {};
 		struct NIL {};
-		using  OBJ = ConstPoolItmType::CLASS;
+		using  OBJ = std::unique_ptr<ConstPoolItmType::CLASS>;
 		using  RAW_OBJ = uint16_t;//The instruction index of a new, that made this variable
 	}
 	using SlotKind = std::variant<
@@ -318,19 +319,86 @@ namespace cpp_jcfu
 		SlotKindType::OBJ,
 		SlotKindType::RAW_OBJ
 	>;
+	namespace CodeSlotKindType
+	{
+		using  PAD = std::monostate;
+		struct I32 {};
+		struct F32 {};
+		struct I64 {};
+		struct F64 {};
+		struct NIL {};
+		struct OBJ { uint16_t constPoolIdx; };
+		using  RAW_OBJ = uint16_t;//The instruction index of a new, that made this variable
+	}
+	using CodeSlotKind = std::variant<
+		CodeSlotKindType::PAD,
+		CodeSlotKindType::I32,
+		CodeSlotKindType::F32,
+		CodeSlotKindType::I64,
+		CodeSlotKindType::F64,
+		CodeSlotKindType::NIL,
+		CodeSlotKindType::OBJ,
+		CodeSlotKindType::RAW_OBJ
+	>;
+
+	namespace CodeStackFrameType
+	{
+		struct BaseDelta { uint16_t delta; };
+
+		using SAME_NO_STACK = uint16_t;
+		struct SAME_1_STACK : BaseDelta
+		{
+			CodeSlotKind stackKind;
+		};
+
+		struct CHOP1_NO_STACK : BaseDelta {};
+		struct CHOP2_NO_STACK : BaseDelta {};
+		struct CHOP3_NO_STACK : BaseDelta {};
+
+		struct ADD1_NO_STACK : BaseDelta { CodeSlotKind localKinds[1]; };
+		struct ADD2_NO_STACK : BaseDelta { CodeSlotKind localKinds[2]; };
+		struct ADD3_NO_STACK : BaseDelta { CodeSlotKind localKinds[3]; };
+
+		struct BaseFull
+		{
+			std::vector<CodeSlotKind> localKinds;
+			std::vector<CodeSlotKind> stackKinds;
+		};
+		using FULL = std::unique_ptr<CodeStackFrameType::BaseFull>;
+	}
+
+	using CodeStackFrame = std::variant<
+		CodeStackFrameType::SAME_NO_STACK,
+		CodeStackFrameType::SAME_1_STACK,
+
+		CodeStackFrameType::CHOP1_NO_STACK,
+		CodeStackFrameType::CHOP2_NO_STACK,
+		CodeStackFrameType::CHOP3_NO_STACK,
+
+		CodeStackFrameType::ADD1_NO_STACK,
+		CodeStackFrameType::ADD2_NO_STACK,
+		CodeStackFrameType::ADD3_NO_STACK,
+
+		CodeStackFrameType::FULL
+	>;
 
 	namespace CodeTagType
 	{
 		using LINE_NUMS = std::vector<LineNumEntry>;
 		using LOCALS = std::vector<LocalEntry>;
 		using LOCAL_TYPES = std::vector<LocalTypeEntry>;
-		using STACK_FRAMES = std::vector<int>;	//TODO
+		using STACK_FRAMES = std::vector<CodeStackFrame>;
 	}
 	using CodeTag = std::variant<
 		CodeTagType::LINE_NUMS,
 		CodeTagType::LOCALS,
 		CodeTagType::LOCAL_TYPES,
 		CodeTagType::STACK_FRAMES
+	>;
+	using BasicCodeTag = std::variant<
+		CodeTagType::LINE_NUMS,
+		CodeTagType::LOCALS,
+		CodeTagType::LOCAL_TYPES
 	>;
 
 	struct CodeTagErrorHandler
