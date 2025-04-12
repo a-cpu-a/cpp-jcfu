@@ -681,22 +681,27 @@ namespace cpp_jcfu
 					}
 					else if(frame.stack.size()==1)
 					{//SAME_1_STACK
-
-						//TODO: check if stack same
-						//TODO: push
+						stackFrames.push_back(CodeStackFrameType::SAME_1_STACK{
+							{delta},
+							slotKind2CodeSlotKind(poolSize,consts,instrOffsets,frame.stack[0]) 
+						});
 						goto continueLoop;
 					}
 					//FULL :(
 				}
-				else
+				else if(frame.stack.empty())//add & chop require 0 stack items
 				{//CHOP, ADD, FULL?
 
 					if (frame.local.size() > _prevFrameLocals->size())
 					{//maybe add?
-						if (detail::isVecPrefix(*_prevFrameLocals, frame.local))
-						{//ADD
-							//TODO
-							goto continueLoop;
+						const size_t addCount = frame.local.size() - _prevFrameLocals->size();
+						if (addCount <= 3)//only add 1...3 exist
+						{
+							if (detail::isVecPrefix(*_prevFrameLocals, frame.local))
+							{//ADD
+								//TODO
+								goto continueLoop;
+							}
 						}
 					}
 					else
