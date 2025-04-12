@@ -61,14 +61,12 @@ int main()
 					cpp_jcfu::compileCode(poolSize, consts, {
 					.instrs = instrs,
 					.startFrameLocals = newVec<cpp_jcfu::SlotKind>(
-						cpp_jcfu::newObjSlotKind(
-							"[Ljava/lang/String;"
-						)
+						cpp_jcfu::newObjSlotKind("[Ljava/lang/String;")
 					),
 					.instructionFrames = newMap<uint16_t,cpp_jcfu::StackFrame>(
 						5,
 						cpp_jcfu::StackFrame{.stack = newVec<cpp_jcfu::SlotKind>(
-								cpp_jcfu::newObjSlotKind("LGlobeObject;")
+							cpp_jcfu::newObjSlotKind("LGlobeObject;")
 						)}
 					),
 					.maxStack = 2,
