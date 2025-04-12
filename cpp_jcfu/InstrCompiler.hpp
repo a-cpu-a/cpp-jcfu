@@ -30,6 +30,25 @@ namespace cpp_jcfu
 		}
 	}
 
+	inline CodeSlotKind slotKind2CodeSlotKind(
+		size_t& poolSize, ConstPool& consts,
+		const std::vector<uint16_t>& instrOffsets,
+		const SlotKind& slot
+		)
+	{
+		ezmatch(slot)(
+		varcase(const auto&){
+			return var;
+		},
+		varcase(const SlotKindType::OBJ&){
+			return CodeSlotKindType::OBJ{ constPoolPush(poolSize,consts,{*var}) };
+		},
+		varcase(const SlotKindType::RAW_OBJ&){
+			return CodeSlotKindType::RAW_OBJ{instrOffsets[var]};
+		}
+		);
+	}
+
 	inline void pushOpCodeId(
 		std::vector<uint8_t>& out,
 		std::vector<uint16_t>& instrOffsets,
