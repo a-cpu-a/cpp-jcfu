@@ -47,5 +47,8 @@
     <ClInclude Include="cpp_jcfu\InstrCompiler.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="cpp_jcfu\InstrVariant.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
