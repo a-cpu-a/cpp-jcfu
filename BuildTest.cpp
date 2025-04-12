@@ -36,9 +36,9 @@ int main()
 		cpp_jcfu::InstrType::PUSH_RUN_STATIC{ std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
 			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
 			.classIdx = {"StaticHolder"},
-			.refDesc = {"isTrue","()B"}
+			.refDesc = {"isTrue","()Z"}
 		}}) },
-		cpp_jcfu::InstrType::IF_GT{3},
+		cpp_jcfu::InstrType::IF_EQL{3},
 		cpp_jcfu::InstrType::DUP_1{},
 		cpp_jcfu::InstrType::PUSH_RUN_VIRTUAL{std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
 			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
