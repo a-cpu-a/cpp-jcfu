@@ -42,23 +42,11 @@ int main()
 
 
 	const std::vector<cpp_jcfu::Instr> instrs = newVec<cpp_jcfu::Instr>(
-		cpp_jcfu::InstrType::PUSH_RUN_STATIC{std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
-			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
-			.classIdx = {"StaticHolder"},
-			.refDesc = {"fname","()LGlobeObject;"}
-		}})},
-		cpp_jcfu::InstrType::PUSH_RUN_STATIC{ std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
-			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
-			.classIdx = {"StaticHolder"},
-			.refDesc = {"isTrue","()Z"}
-		}}) },
+		cpp_jcfu::newPushRunStatic("StaticHolder", { "fname","()LGlobeObject;" }),
+		cpp_jcfu::newPushRunStatic("StaticHolder", { "isTrue","()Z" }),
 		cpp_jcfu::InstrType::IF_EQL{3},
 		cpp_jcfu::InstrType::DUP_1{},
-		cpp_jcfu::InstrType::PUSH_RUN_VIRTUAL{std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
-			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
-			.classIdx = {"GlobeObject"},
-			.refDesc = {"fname","()V"}
-		}})},
+		cpp_jcfu::newPushRunVirtual("GlobeObject", { "fname","()V" }),
 		cpp_jcfu::InstrType::RET_OBJ{}
 	);
 

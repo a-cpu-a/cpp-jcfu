@@ -629,4 +629,24 @@ namespace cpp_jcfu
 		std::abort();//Error lol
 	}
 
+	inline InstrType::PUSH_RUN_STATIC newPushRunStatic(
+		const std::string& klass,
+		const ConstPoolItmType::NAME_AND_DESC& nameAndDesc)
+	{
+		return cpp_jcfu::InstrType::PUSH_RUN_STATIC{ std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
+			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
+			.classIdx = {klass},
+			.refDesc = nameAndDesc
+		}}) };
+	}
+	inline InstrType::PUSH_RUN_VIRTUAL newPushRunVirtual(
+		const std::string& klass,
+		const ConstPoolItmType::NAME_AND_DESC& nameAndDesc)
+	{
+		return cpp_jcfu::InstrType::PUSH_RUN_VIRTUAL{ std::make_unique<cpp_jcfu::ConstPoolItmType::FUNC_REF>(
+			cpp_jcfu::ConstPoolItmType::FUNC_REF{cpp_jcfu::ConstPoolItmType::RefBase{
+			.classIdx = {klass},
+			.refDesc = nameAndDesc
+		}}) };
+	}
 }
