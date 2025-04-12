@@ -29,26 +29,35 @@ namespace cpp_jcfu
 						ConstPoolItmType::JUTF8(var.name));
 				},
 
-				varcase(const ConstPoolItmType::FIELD_REF&) {
+				varcase(ConstPoolItmType::FIELD_REF&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::FIELD_REF);
+
+					const ConstPoolItmType::NAME_AND_DESC refDescSteal = std::move(var.refDesc);
+
 					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::CLASS(var.classIdx));
 					constPoolIdxPushW(poolOut, poolSize, consts,
-						ConstPoolItmType::NAME_AND_DESC(var.refDesc));//USE AFTER FREE
+						ConstPoolItmType::NAME_AND_DESC(refDescSteal));
 				},
-				varcase(const ConstPoolItmType::FUNC_REF&) {
+				varcase(ConstPoolItmType::FUNC_REF&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::FUNC_REF);
+
+					const ConstPoolItmType::NAME_AND_DESC refDescSteal = std::move(var.refDesc);
+
 					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::CLASS(var.classIdx));
 					constPoolIdxPushW(poolOut, poolSize, consts,
-						ConstPoolItmType::NAME_AND_DESC(var.refDesc));//USE AFTER FREE
+						ConstPoolItmType::NAME_AND_DESC(refDescSteal));
 				},
-				varcase(const ConstPoolItmType::INTERFACE_FUNC_REF&) {
+				varcase(ConstPoolItmType::INTERFACE_FUNC_REF&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::INTERFACE_FUNC_REF);
+
+					const ConstPoolItmType::NAME_AND_DESC refDescSteal = std::move(var.refDesc);
+
 					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::CLASS(var.classIdx));
 					constPoolIdxPushW(poolOut, poolSize, consts,
-						ConstPoolItmType::NAME_AND_DESC(var.refDesc));//USE AFTER FREE
+						ConstPoolItmType::NAME_AND_DESC(refDescSteal));
 				},
 
 				varcase(const ConstPoolItmType::STR&) {
@@ -73,12 +82,15 @@ namespace cpp_jcfu
 					u64w(poolOut, std::bit_cast<uint64_t>(var));
 				},
 
-				varcase(const ConstPoolItmType::NAME_AND_DESC&) {
+				varcase(ConstPoolItmType::NAME_AND_DESC&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::NAME_AND_DESC);
+
+					const std::string descSteal = std::move(var.desc);
+
 					constPoolIdxPushW(poolOut, poolSize, consts,
 						ConstPoolItmType::JUTF8(var.name));
 					constPoolIdxPushW(poolOut, poolSize, consts,
-						ConstPoolItmType::JUTF8(var.desc));//USE AFTER FREE
+						ConstPoolItmType::JUTF8(descSteal));
 				},
 				varcase(const ConstPoolItmType::JUTF8&) {
 					poolOut.push_back((uint8_t)ConstPoolItmId::JUTF8);
