@@ -573,7 +573,22 @@ namespace cpp_jcfu
 		ret.maxLocals = data.maxLocals;
 		ret.maxStack = data.maxStack;
 
-		ret.tags.reserve(data.extraTags.size());//TODO +1 for stack map table, but only when needed
+		CodeTagType::STACK_FRAMES stackFrames;
+		if(!data.instructionFrames.empty() || !data.ifInstructionFrames.empty())
+		{
+			stackFrames.reserve(
+				(data.ifInstructionFrames.size() >> 7) // (data.ifInstructionFrames.size / 128)
+				// (0.75 * data.instructionFrames.size)
+				+ (data.instructionFrames.size() >> 2)
+				+ (data.instructionFrames.size() >> 1)
+			);
+
+			//TODO!!!
+			//TODO: figure out which ifInstructionFrames are needed,
+			//	and add them to the instructionFrames
+		}
+
+		ret.tags.reserve(data.extraTags.size() + (stackFrames.empty()?0:1));
 		for (const BasicCodeTag& tag : data.extraTags)
 		{
 			ezmatch(tag)(
@@ -582,6 +597,8 @@ namespace cpp_jcfu
 			}
 			);
 		}
+		if(!stackFrames.empty())
+			ret.tags.push_back(std::move(stackFrames));
 
 		ret.errorHandlers.resize(data.errorHandlers.size());
 		for (size_t i = 0; i < data.errorHandlers.size(); i++)
