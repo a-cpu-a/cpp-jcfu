@@ -57,6 +57,9 @@ int main()
 			cpp_jcfu::FuncInfo{
 				.tags = {cpp_jcfu::compileCode(poolSize, consts, {
 					.instrs = instrs,
+					.startFrameLocals = {
+						cpp_jcfu::SlotKindType::OBJ{"[Ljava/lang/String;"}
+					},
 					.maxStack = 2,
 					.maxLocals = 0
 				})
