@@ -12,7 +12,7 @@ template<class... Ts>
 std::vector<cpp_jcfu::Instr> buildInstrVec(Ts&&... instrs)
 {
 	std::vector<cpp_jcfu::Instr> ret;
-	ret.resize(sizeof...(instrs));
+	ret.reserve(sizeof...(instrs));
 
 	(ret.emplace_back(std::forward<decltype(instrs)>(instrs)), ...);
 	return ret;
