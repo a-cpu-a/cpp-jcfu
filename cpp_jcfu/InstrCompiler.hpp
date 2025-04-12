@@ -7,6 +7,7 @@
 #include <span>
 #include <bit>
 #include <map>
+#include <set>
 
 #include "State.hpp"
 #include "ext/CppMatch.hpp"
@@ -99,7 +100,7 @@ namespace cpp_jcfu
 	{
 		uint32_t instrOffset : 30;//Packed!!!
 		uint32_t is32Bit : 1 = false;
-		uint32_t isIf : 1 = false;
+		uint32_t isLongIf : 1 = false;
 
 		uint16_t instrIdx;
 		uint16_t byteOffset;
@@ -110,13 +111,13 @@ namespace cpp_jcfu
 		const uint16_t i,
 		std::vector<PatchPoint>& instrPatchPoints,
 		const int32_t jmpOffset,
-		const bool isIf=false)
+		const bool isLongIf=false)
 	{
 		_ASSERT(curInstrOffset <= UINT16_MAX - 4);
 		u32w(out, 0);
 		instrPatchPoints.emplace_back(
 			(uint32_t)jmpOffset,
-			true, isIf, i,
+			true, isLongIf, i,
 			(uint16_t)curInstrOffset
 		);
 		curInstrOffset += 4;
@@ -517,9 +518,9 @@ namespace cpp_jcfu
 		instrOffsets.push_back((uint16_t)curInstrOffset);//Prevent oob
 
 		size_t ppOffset = 0;
-		for (const PatchPoint& pp : instrPatchPoints)
+		for (PatchPoint& pp : instrPatchPoints)
 		{
-			const uint16_t relPoint = instrOffsets[pp.instrIdx] + (pp.isIf?3:0);
+			const uint16_t relPoint = instrOffsets[pp.instrIdx] + (pp.isLongIf?3:0);
 
 			const int32_t instrOffset = int32_t(pp.instrOffset << 2)>>2;//carry top bit
 			const int32_t movement = instrOffsets[pp.instrIdx+instrOffset] - int32_t(relPoint);
@@ -553,6 +554,8 @@ namespace cpp_jcfu
 			}
 			// Its an if
 
+			pp.isLongIf = true;// Update, so stack frame calculator can do stuff
+
 			instr = invertIfInstr(instr);
 			u16Patch(out, pp.byteOffset + ppOffset, 1+2+1+4);//skip thisInstr, injected goto32
 
@@ -583,9 +586,65 @@ namespace cpp_jcfu
 				+ (data.instructionFrames.size() >> 1)
 			);
 
-			//TODO!!!
-			//TODO: figure out which ifInstructionFrames are needed,
-			//	and add them to the instructionFrames
+			std::set<uint16_t> neededIfFrames; // Unordered maybe?
+
+			// Figure out which ifInstructionFrames
+			//	are needed, and mark them as such
+			for (const PatchPoint& pp : instrPatchPoints)
+			{
+				if (!pp.isLongIf)
+					continue;//Not interesting
+				// !!! check for frame
+
+				if (!data.ifInstructionFrames.contains(pp.instrIdx))
+				{
+					_ASSERT(false && "Frame data (ifInstructionFrames) missing for long if!");
+					continue;//Nope, no frame
+				}
+				neededIfFrames.insert(pp.instrIdx);
+			}
+			auto itSet = neededIfFrames.begin();
+			auto itMap = data.instructionFrames.begin();
+
+
+			const std::vector<cpp_jcfu::SlotKind> _tmp;
+
+			const std::vector<cpp_jcfu::SlotKind>* _prevFrameLocals = &data.startFrameLocals;
+			const std::vector<cpp_jcfu::SlotKind>* _prevFrameStack = &_tmp;
+			uint16_t prevFrameInstrIdx = 0;
+
+			//TODO: build optimized STACK_FRAMES list
+
+			while (itSet != neededIfFrames.end() || itMap != data.instructionFrames.end())
+			{
+				uint16_t instrIdx;
+				const cpp_jcfu::StackFrame* _frame=nullptr;
+				if (itSet != neededIfFrames.end() && (*itSet < itMap->first))
+				{
+					instrIdx = *itSet;
+					_frame = &data.ifInstructionFrames.at(instrIdx);
+					++itSet;
+				}
+				else
+				{
+					instrIdx = itMap->first;
+					_frame = &itMap->second;
+					++itMap;
+				}
+				const cpp_jcfu::StackFrame& frame = *_frame;
+
+				//TODO: check if its locals are the same as last
+				//TODO: check if it has 0 stack items
+				//TODO: check if it has 1 stack item
+				//TODO: check if it has less locals
+				//TODO: check if it has more locals
+
+				//TODO handle it
+
+				prevFrameInstrIdx = instrIdx;
+				_prevFrameLocals = &frame.local;
+				_prevFrameStack = &frame.stack;
+			}
 		}
 
 		ret.tags.reserve(data.extraTags.size() + (stackFrames.empty()?0:1));
