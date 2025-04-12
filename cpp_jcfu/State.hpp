@@ -319,6 +319,14 @@ namespace cpp_jcfu
 		SlotKindType::OBJ,
 		SlotKindType::RAW_OBJ
 	>;
+	inline SlotKind newObjSlotKind(const std::string& klass)
+	{
+		return std::make_unique<cpp_jcfu::ConstPoolItmType::CLASS>(
+			cpp_jcfu::ConstPoolItmType::CLASS{ klass }
+		);
+	}
+
+
 	namespace CodeSlotKindType
 	{
 		using  PAD = std::monostate;

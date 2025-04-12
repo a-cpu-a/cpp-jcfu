@@ -18,6 +18,20 @@ std::vector<T> newVec(Ts&&... instrs)
 	return ret;
 }
 
+template<typename Kt, typename Vt>
+std::map<Kt, Vt> newMap() {
+	return {};
+}
+
+template<typename Kt, typename Vt, typename Key, typename Value, typename... Rest>
+std::map<Kt, Vt> newMap(Key&& key, Value&& value, Rest&&... rest) {
+	std::map<Kt, Vt> result;
+	result.emplace(std::forward<Key>(key), std::forward<Value>(value));
+	auto restMap = newMap<Kt, Vt>(std::forward<Rest>(rest)...);
+	result.insert(std::make_move_iterator(restMap.begin()), std::make_move_iterator(restMap.end()));
+	return result;
+}
+
 
 int main()
 {
@@ -59,9 +73,15 @@ int main()
 					cpp_jcfu::compileCode(poolSize, consts, {
 					.instrs = instrs,
 					.startFrameLocals = newVec<cpp_jcfu::SlotKind>(
-						std::make_unique<cpp_jcfu::ConstPoolItmType::CLASS>(
-							cpp_jcfu::ConstPoolItmType::CLASS{"[Ljava/lang/String;"}
+						cpp_jcfu::newObjSlotKind(
+							"[Ljava/lang/String;"
 						)
+					),
+					.instructionFrames = newMap<uint16_t,cpp_jcfu::StackFrame>(
+						5,
+						cpp_jcfu::StackFrame{.stack = newVec<cpp_jcfu::SlotKind>(
+								cpp_jcfu::newObjSlotKind("LGlobeObject;")
+						)}
 					),
 					.maxStack = 2,
 					.maxLocals = 0
