@@ -38,15 +38,17 @@ namespace cpp_jcfu
 	{
 		ezmatch(slot)(
 		varcase(const auto&){
-			return var;
+			return CodeSlotKind(var);
 		},
 		varcase(const SlotKindType::OBJ&){
-			return CodeSlotKindType::OBJ{ constPoolPush(poolSize,consts,{*var}) };
+			return CodeSlotKind(CodeSlotKindType::OBJ{ constPoolPush(poolSize,consts,{*var}) });
 		},
 		varcase(const SlotKindType::RAW_OBJ&){
-			return CodeSlotKindType::RAW_OBJ{instrOffsets[var]};
+			return CodeSlotKind(CodeSlotKindType::RAW_OBJ{ instrOffsets[var] });
 		}
 		);
+		_ASSERT(false && "Should be unreachable?");
+		std::abort();
 	}
 
 	inline void pushOpCodeId(
@@ -643,7 +645,6 @@ namespace cpp_jcfu
 			const std::vector<cpp_jcfu::SlotKind> _tmp;
 
 			const std::vector<cpp_jcfu::SlotKind>* _prevFrameLocals = &data.startFrameLocals;
-			const std::vector<cpp_jcfu::SlotKind>* _prevFrameStack = &_tmp;
 
 			//TODO: build optimized STACK_FRAMES list
 
@@ -767,7 +768,6 @@ namespace cpp_jcfu
 				//TODO handle it
 			continueLoop:
 				_prevFrameLocals = &frame.local;
-				_prevFrameStack = &frame.stack;
 			}
 		}
 
