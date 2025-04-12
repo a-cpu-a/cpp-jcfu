@@ -16,6 +16,20 @@
 
 namespace cpp_jcfu
 {
+	namespace detail {
+		/// @returns if prefix is same
+		constexpr bool isVecPrefix(const std::vector<SlotKind>& prefix, const std::vector<SlotKind>& full) {
+
+			for (size_t i = 0; i < prefix.size(); ++i)
+			{
+				if (prefix[i] != full[i])
+					return false; // mismatch
+			}
+
+			return true; // valid prefix
+		}
+	}
+
 	inline void pushOpCodeId(
 		std::vector<uint8_t>& out,
 		std::vector<uint16_t>& instrOffsets,
@@ -611,18 +625,19 @@ namespace cpp_jcfu
 
 			const std::vector<cpp_jcfu::SlotKind>* _prevFrameLocals = &data.startFrameLocals;
 			const std::vector<cpp_jcfu::SlotKind>* _prevFrameStack = &_tmp;
-			uint16_t prevFrameInstrIdx = 0;
 
 			//TODO: build optimized STACK_FRAMES list
 
 			while (itSet != neededIfFrames.end() || itMap != data.instructionFrames.end())
 			{
+				bool is32If = false;// Adds a 3 byte offset, as thats the size of a 'if' instr
 				uint16_t instrIdx;
 				const cpp_jcfu::StackFrame* _frame=nullptr;
 				if (itSet != neededIfFrames.end() && (*itSet < itMap->first))
 				{
 					instrIdx = *itSet;
 					_frame = &data.ifInstructionFrames.at(instrIdx);
+					is32If = true;
 					++itSet;
 				}
 				else
@@ -633,15 +648,73 @@ namespace cpp_jcfu
 				}
 				const cpp_jcfu::StackFrame& frame = *_frame;
 
-				//TODO: check if its locals are the same as last
-				//TODO: check if it has 0 stack items
-				//TODO: check if it has 1 stack item
-				//TODO: check if it has less locals
-				//TODO: check if it has more locals
+				const uint16_t delta = instrOffsets[instrIdx] + (is32If ? 3 : 0);
+
+				const bool sameLocals = frame.local == *_prevFrameLocals;
+
+				if (sameLocals)
+				{
+					if (frame.stack.empty())
+					{//SAME_NO_STACK
+
+						stackFrames.push_back(CodeStackFrameType::SAME_NO_STACK{ delta });
+						goto continueLoop;
+					}
+					else if(frame.stack.size()==1)
+					{//SAME_1_STACK
+
+						//TODO: check if stack same
+						//TODO: push
+						goto continueLoop;
+					}
+					//FULL :(
+				}
+				else
+				{//CHOP, ADD, FULL?
+
+					if (frame.local.size() > _prevFrameLocals->size())
+					{//maybe add?
+						if (detail::isVecPrefix(*_prevFrameLocals, frame.local))
+						{//ADD
+							//TODO
+							goto continueLoop;
+						}
+					}
+					else
+					{//maybe chop?
+						const size_t chopCount = _prevFrameLocals->size() - frame.local.size();
+						if(chopCount > 0 && chopCount <= 3)//only chop 1...3 exist
+						{
+							if (detail::isVecPrefix(frame.local, *_prevFrameLocals))
+							{//CHOP
+								if(chopCount==1)
+									stackFrames.push_back(CodeStackFrameType::CHOP1_NO_STACK{ delta });
+								else if(chopCount == 2)
+									stackFrames.push_back(CodeStackFrameType::CHOP2_NO_STACK{ delta });
+								else if(chopCount == 3)
+									stackFrames.push_back(CodeStackFrameType::CHOP3_NO_STACK{ delta });
+								goto continueLoop;
+							}
+						}
+					}
+					//FULL :(
+				}
+				//Do full
+
+				{
+					CodeStackFrameType::BaseFull fullTag;
+
+					//TODO
+					fullTag.localKinds = {};
+					fullTag.stackKinds = {};
+					fullTag.delta = delta;
+
+					stackFrames.push_back(
+						std::make_unique<CodeStackFrameType::BaseFull>(std::move(fullTag)));
+				}
 
 				//TODO handle it
-
-				prevFrameInstrIdx = instrIdx;
+			continueLoop:
 				_prevFrameLocals = &frame.local;
 				_prevFrameStack = &frame.stack;
 			}

@@ -9,6 +9,8 @@
 #include <optional>
 #include <memory>
 
+#include "ext/MorLib.hpp"
+
 namespace cpp_jcfu
 {
 #ifdef _MSC_VER
@@ -17,6 +19,25 @@ namespace cpp_jcfu
 #define _JcfuNoUniqAddr [[no_unique_address]]
 #endif // _MSC_VER
 
+
+	template<class T>
+	struct CppBox
+	{
+		std::unique_ptr<T> v;
+		constexpr bool operator==(const CppBox& o) const {
+			return *v == *o;
+		}
+		constexpr T& operator*()const  {
+			return *v;
+		}
+		constexpr T* operator->() const {
+			return v.get();
+		}
+	};
+	template<class T>
+	constexpr CppBox<T> newCppBox(T&& in) {
+		return CppBox(std::make_unique<T>(in));
+	}
 
 
 	using AccessFlags = uint16_t;
@@ -185,6 +206,7 @@ namespace cpp_jcfu
 		struct CLASS
 		{
 			std::string name;
+			Mor_cmp_op(CLASS);
 		};
 
 		struct STR
@@ -300,13 +322,13 @@ namespace cpp_jcfu
 
 	namespace SlotKindType
 	{
-		using  PAD = std::monostate;
-		struct I32 {};
-		struct F32 {};
-		struct I64 {};
-		struct F64 {};
-		struct NIL {};
-		using  OBJ = std::unique_ptr<ConstPoolItmType::CLASS>;
+		struct PAD { Mor_cmp_op(PAD); };
+		struct I32 { Mor_cmp_op(I32); };
+		struct F32 { Mor_cmp_op(F32); };
+		struct I64 { Mor_cmp_op(I64); };
+		struct F64 { Mor_cmp_op(F64); };
+		struct NIL { Mor_cmp_op(NIL); };
+		using  OBJ = CppBox<ConstPoolItmType::CLASS>;
 		using  RAW_OBJ = uint16_t;//The instruction index of a new, that made this variable
 	}
 	using SlotKind = std::variant<
@@ -321,7 +343,7 @@ namespace cpp_jcfu
 	>;
 	inline SlotKind newObjSlotKind(const std::string& klass)
 	{
-		return std::make_unique<cpp_jcfu::ConstPoolItmType::CLASS>(
+		return newCppBox(
 			cpp_jcfu::ConstPoolItmType::CLASS{ klass }
 		);
 	}
@@ -367,7 +389,7 @@ namespace cpp_jcfu
 		struct ADD2_NO_STACK : BaseDelta { CodeSlotKind localKinds[2]; };
 		struct ADD3_NO_STACK : BaseDelta { CodeSlotKind localKinds[3]; };
 
-		struct BaseFull
+		struct BaseFull : BaseDelta
 		{
 			std::vector<CodeSlotKind> localKinds;
 			std::vector<CodeSlotKind> stackKinds;
