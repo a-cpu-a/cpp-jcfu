@@ -202,7 +202,7 @@ namespace cpp_jcfu
 			_ASSERT(var.tags.size() < UINT16_MAX);
 			u16w(tagOut, (uint16_t)var.tags.size());
 			for (const CodeTag& ct : var.tags)
-				codeTagW(out, poolSize, consts, ct);
+				codeTagW(tagOut, poolSize, consts, ct);
 
 			_ASSERT(tagOut.size() < UINT32_MAX);
 			u32w(out, (uint32_t)tagOut.size());
