@@ -8,6 +8,7 @@
 #include <variant>
 #include <optional>
 #include <memory>
+#include <array>
 
 #include "ext/MorLib.hpp"
 
@@ -385,13 +386,13 @@ namespace cpp_jcfu
 			CodeSlotKind stackKind;
 		};
 
-		struct CHOP1_NO_STACK : BaseDelta {};
-		struct CHOP2_NO_STACK : BaseDelta {};
-		struct CHOP3_NO_STACK : BaseDelta {};
+		struct CHOP1_NO_STACK : BaseDelta {inline static uint8_t binId = 250;};
+		struct CHOP2_NO_STACK : BaseDelta {inline static uint8_t binId = 249;};
+		struct CHOP3_NO_STACK : BaseDelta {inline static uint8_t binId = 248;};
 
-		struct ADD1_NO_STACK : BaseDelta { CodeSlotKind localKinds[1]; };
-		struct ADD2_NO_STACK : BaseDelta { CodeSlotKind localKinds[2]; };
-		struct ADD3_NO_STACK : BaseDelta { CodeSlotKind localKinds[3]; };
+		struct ADD1_NO_STACK : BaseDelta { std::array<CodeSlotKind,1> localKinds; };
+		struct ADD2_NO_STACK : BaseDelta { std::array<CodeSlotKind,2> localKinds; };
+		struct ADD3_NO_STACK : BaseDelta { std::array<CodeSlotKind,3> localKinds; };
 
 		struct BaseFull : BaseDelta
 		{
