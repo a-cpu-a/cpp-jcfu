@@ -406,12 +406,13 @@ namespace cpp_jcfu
 
 		CodeStackFrameType::FULL
 	>;
-
+	//TODO: move over to compiler
 	struct LineNumEntry
 	{
 		uint16_t startPc;
 		uint16_t line;
 	};
+	//TODO: move over to compiler
 	struct LocalEntry
 	{
 		std::string name;
@@ -420,6 +421,7 @@ namespace cpp_jcfu
 		uint16_t len;
 		uint16_t idx;
 	};
+	//TODO: move over to compiler
 	struct LocalTypeEntry
 	{
 		std::string name;
