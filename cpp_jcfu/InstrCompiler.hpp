@@ -611,6 +611,7 @@ namespace cpp_jcfu
 		ret.maxLocals = data.maxLocals;
 		ret.maxStack = data.maxStack;
 
+		//https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
 		CodeTagType::STACK_FRAMES stackFrames;
 		if(!data.instructionFrames.empty() || !data.ifInstructionFrames.empty())
 		{
@@ -645,8 +646,7 @@ namespace cpp_jcfu
 			const std::vector<cpp_jcfu::SlotKind> _tmp;
 
 			const std::vector<cpp_jcfu::SlotKind>* _prevFrameLocals = &data.startFrameLocals;
-
-			//TODO: build optimized STACK_FRAMES list
+			uint16_t bcOffset = 0;
 
 			while (itSet != neededIfFrames.end() || itMap != data.instructionFrames.end())
 			{
@@ -668,8 +668,10 @@ namespace cpp_jcfu
 				}
 				const cpp_jcfu::StackFrame& frame = *_frame;
 
-				const uint16_t delta = instrOffsets[instrIdx] + (is32If ? 3 : 0);
-				//TODO: handle first instr oddity + off by 1
+				const uint16_t deltaTarget = instrOffsets[instrIdx] + (is32If ? 3 : 0);
+
+				const uint16_t delta = deltaTarget - bcOffset;
+				bcOffset += delta+1;// +1, implicitly added by spec
 
 				const bool sameLocals = frame.local == *_prevFrameLocals;
 
