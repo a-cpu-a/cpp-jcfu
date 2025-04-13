@@ -299,28 +299,6 @@ namespace cpp_jcfu
 		struct TYPE_ANNOTATIONS {};			//TODO
 	}
 
-	struct LineNumEntry
-	{
-		uint16_t startPc;
-		uint16_t line;
-	};
-	struct LocalEntry
-	{
-		std::string name;
-		std::string desc;
-		uint16_t startPc;
-		uint16_t len;
-		uint16_t idx;
-	};
-	struct LocalTypeEntry
-	{
-		std::string name;
-		std::string sig;
-		uint16_t startPc;
-		uint16_t len;
-		uint16_t idx;
-	};
-
 	namespace SlotKindType
 	{
 		struct PAD { Mor_cmp_op(PAD); };
@@ -428,6 +406,28 @@ namespace cpp_jcfu
 
 		CodeStackFrameType::FULL
 	>;
+
+	struct LineNumEntry
+	{
+		uint16_t startPc;
+		uint16_t line;
+	};
+	struct LocalEntry
+	{
+		std::string name;
+		std::string desc;
+		uint16_t startPc;
+		uint16_t len;
+		uint16_t idx;
+	};
+	struct LocalTypeEntry
+	{
+		std::string name;
+		std::string sig;
+		uint16_t startPc;
+		uint16_t len;
+		uint16_t idx;
+	};
 
 	namespace CodeTagType
 	{
