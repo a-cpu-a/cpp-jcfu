@@ -36,7 +36,7 @@ namespace cpp_jcfu
 		const SlotKind& slot
 		)
 	{
-		ezmatch(slot)(
+		return ezmatch(slot)(
 		varcase(const auto&){
 			return CodeSlotKind(var);
 		},
@@ -47,8 +47,6 @@ namespace cpp_jcfu
 			return CodeSlotKind(CodeSlotKindType::RAW_OBJ{ instrOffsets[var] });
 		}
 		);
-		_ASSERT(false && "Should be unreachable?");
-		std::abort();
 	}
 
 	inline void pushOpCodeId(
