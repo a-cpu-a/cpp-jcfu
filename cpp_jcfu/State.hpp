@@ -399,6 +399,18 @@ namespace cpp_jcfu
 			std::vector<CodeSlotKind> stackKinds;
 		};
 		using FULL = std::unique_ptr<CodeStackFrameType::BaseFull>;
+
+		template<class T>
+		concept AnyCodeChopStackFrame =
+			std::same_as<T, CodeStackFrameType::CHOP1_NO_STACK>
+			|| std::same_as<T, CodeStackFrameType::CHOP2_NO_STACK>
+			|| std::same_as<T, CodeStackFrameType::CHOP3_NO_STACK>;
+
+		template<class T>
+		concept AnyCodeAddStackFrame =
+			std::same_as<T, CodeStackFrameType::ADD1_NO_STACK>
+			|| std::same_as<T, CodeStackFrameType::ADD2_NO_STACK>
+			|| std::same_as<T, CodeStackFrameType::ADD3_NO_STACK>;
 	}
 
 	using CodeStackFrame = std::variant<
