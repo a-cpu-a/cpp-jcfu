@@ -328,6 +328,7 @@ namespace cpp_jcfu
 		struct I64 { Mor_cmp_op(I64); };
 		struct F64 { Mor_cmp_op(F64); };
 		struct NIL { Mor_cmp_op(NIL); };
+		struct RAW_THIS { Mor_cmp_op(RAW_THIS); };
 		using  OBJ = CppBox<ConstPoolItmType::CLASS>;
 		using  RAW_OBJ = uint16_t;//The instruction index of a new, that made this variable
 	}
@@ -338,6 +339,7 @@ namespace cpp_jcfu
 		SlotKindType::I64,
 		SlotKindType::F64,
 		SlotKindType::NIL,
+		SlotKindType::RAW_THIS,
 		SlotKindType::OBJ,
 		SlotKindType::RAW_OBJ
 	>;
@@ -357,6 +359,7 @@ namespace cpp_jcfu
 		using  I64 = SlotKindType::I64;
 		using  F64 = SlotKindType::F64;
 		using  NIL = SlotKindType::NIL;
+		using  RAW_THIS = SlotKindType::RAW_THIS;
 		struct OBJ { uint16_t constPoolIdx; };
 		using  RAW_OBJ = uint16_t;//The instruction index of a new, that made this variable
 	}
@@ -367,6 +370,7 @@ namespace cpp_jcfu
 		CodeSlotKindType::I64,
 		CodeSlotKindType::F64,
 		CodeSlotKindType::NIL,
+		CodeSlotKindType::RAW_THIS,
 		CodeSlotKindType::OBJ,
 		CodeSlotKindType::RAW_OBJ
 	>;
