@@ -6,6 +6,7 @@
 #include <vector>
 #include <bit>
 
+#include "ext/ExtendVariant.hpp"
 #include "State.hpp"
 #include "Utf8ToJutf8.hpp"
 #include "StateUtils.hpp"
@@ -76,9 +77,95 @@ namespace cpp_jcfu
 			ConstPoolItmType::CLASS(className));
 	}
 
+	inline void codeSlotKindW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, const CodeSlotKind& itm)
+	{
+		ezmatch(itm)(
+		varcase(const auto){
+			out.push_back(aca::variant_index_v<decltype(var),CodeSlotKind>);
+
+		},
+		varcase(const CodeSlotKindType::OBJ){
+			out.push_back(7);
+			u16w(out, var.constPoolIdx);
+		},
+		varcase(const CodeSlotKindType::RAW_OBJ){
+			out.push_back(8);
+			u16w(out, var);
+		}
+		);
+	}
+	inline void codeStackFrameW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, const CodeStackFrame& itm)
+	{
+		ezmatch(itm)(
+		varcase(const CodeStackFrameType::SAME_NO_STACK){
+			if (var <= 63)
+				out.push_back(var);
+			else
+			{
+				out.push_back(251);
+				u16w(out, var);
+			}
+		},
+		varcase(const CodeStackFrameType::SAME_1_STACK){
+			if (var.delta <= 63)
+				out.push_back(var.delta+64);
+			else
+			{
+				out.push_back(247);
+				u16w(out, var.delta);
+			}
+			codeSlotKindW(out, poolSize, consts, var.stackKind);
+		},
+		varcase(const CodeStackFrameType::AnyCodeChopStackFrame auto){
+			out.push_back(var.binId);
+			u16w(out, var.delta);
+		},
+		varcase(const CodeStackFrameType::AnyCodeAddStackFrame auto) {
+			out.push_back(251+ var.localKinds.size());
+			u16w(out, var.delta);
+			for (const CodeSlotKind k : var.localKinds)
+				codeSlotKindW(out, poolSize, consts, k);
+		},
+		varcase(const CodeStackFrameType::FULL&){
+			out.push_back(255);
+			u16w(out, var->delta);
+
+			u16w(out, var->localKinds.size());
+			for (const CodeSlotKind k : var->localKinds)
+				codeSlotKindW(out, poolSize, consts, k);
+			u16w(out, var->stackKinds.size());
+			for (const CodeSlotKind k : var->stackKinds)
+				codeSlotKindW(out, poolSize, consts, k);
+		}
+		);
+	}
 	inline void codeTagW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, const CodeTag& itm)
 	{
-		//TODO
+		ezmatch(itm)(
+		varcase(const CodeTagType::LINE_NUMS&){
+			//TODO
+		},
+		varcase(const CodeTagType::LOCALS&){
+			//TODO
+		},
+		varcase(const CodeTagType::LOCAL_TYPES&){
+			//TODO
+		},
+		// https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
+		varcase(const CodeTagType::STACK_FRAMES&){
+			pushJutf8IdxW(out, poolSize, consts, "StackMapTable");
+			std::vector<uint8_t> tagOut;
+
+			_ASSERT(var.size() < UINT16_MAX);
+			u16w(tagOut, (uint16_t)var.size());
+			for (const CodeStackFrame& frame : var)
+				codeStackFrameW(tagOut, poolSize, consts, frame);
+
+			_ASSERT(tagOut.size() < UINT32_MAX);
+			u32w(out, (uint32_t)tagOut.size());
+			out.insert(out.end(), tagOut.begin(), tagOut.end());
+		}
+		);
 	}
 	inline void funcTagW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, const FuncTag& itm)
 	{
@@ -122,6 +209,7 @@ namespace cpp_jcfu
 			out.insert(out.end(), tagOut.begin(), tagOut.end());
 
 		},
+			//TODO
 		varcase(const FuncTagType::EXCEPTIONS&){
 		},
 		varcase(const FuncTagType::SHOWN_PARAM_ANNOTATIONS&){
@@ -133,6 +221,7 @@ namespace cpp_jcfu
 		varcase(const FuncTagType::PARAMS&){
 		},
 
+			//TODO
 		varcase(const FuncTagType::SYNTHETIC&){
 		},
 		varcase(const FuncTagType::DEPRECATED&){
@@ -152,9 +241,11 @@ namespace cpp_jcfu
 	inline void fieldTagW(std::vector<uint8_t>& out, size_t& poolSize, ConstPool& consts, const FieldTag& itm)
 	{
 		ezmatch(itm)(
+			//TODO
 		varcase(const FieldTagType::CONST_VAL&){
 		},
 
+			//TODO
 		varcase(const FieldTagType::SYNTHETIC&){
 		},
 		varcase(const FieldTagType::DEPRECATED&){
