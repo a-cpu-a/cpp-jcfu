@@ -669,6 +669,7 @@ namespace cpp_jcfu
 				const cpp_jcfu::StackFrame& frame = *_frame;
 
 				const uint16_t delta = instrOffsets[instrIdx] + (is32If ? 3 : 0);
+				//TODO: handle first instr oddity + off by 1
 
 				const bool sameLocals = frame.local == *_prevFrameLocals;
 
@@ -756,16 +757,28 @@ namespace cpp_jcfu
 				{
 					CodeStackFrameType::BaseFull fullTag;
 
-					//TODO
-					fullTag.localKinds = {};
-					fullTag.stackKinds = {};
+					fullTag.localKinds.reserve(frame.local.size());
+					fullTag.stackKinds.reserve(frame.stack.size());
+
+					for (size_t i = 0; i < frame.local.size(); i++)
+					{
+						fullTag.localKinds.push_back(
+							slotKind2CodeSlotKind(poolSize, consts, instrOffsets, 
+								frame.local[i]
+						));
+					}
+					for (size_t i = 0; i < frame.stack.size(); i++)
+					{
+						fullTag.stackKinds.push_back(
+							slotKind2CodeSlotKind(poolSize, consts, instrOffsets,
+								frame.stack[i]
+							));
+					}
 					fullTag.delta = delta;
 
 					stackFrames.push_back(
 						std::make_unique<CodeStackFrameType::BaseFull>(std::move(fullTag)));
 				}
-
-				//TODO handle it
 			continueLoop:
 				_prevFrameLocals = &frame.local;
 			}
