@@ -407,13 +407,13 @@ namespace cpp_jcfu
 		CodeStackFrameType::FULL
 	>;
 	//TODO: move over to compiler
-	struct LineNumEntry
+	struct CodeTagLineNumEntry
 	{
 		uint16_t startPc;
 		uint16_t line;
 	};
 	//TODO: move over to compiler
-	struct LocalEntry
+	struct CodeTagLocalEntry
 	{
 		std::string name;
 		std::string desc;
@@ -422,7 +422,7 @@ namespace cpp_jcfu
 		uint16_t idx;
 	};
 	//TODO: move over to compiler
-	struct LocalTypeEntry
+	struct CodeTagLocalTypeEntry
 	{
 		std::string name;
 		std::string sig;
@@ -433,9 +433,9 @@ namespace cpp_jcfu
 
 	namespace CodeTagType
 	{
-		using LINE_NUMS = std::vector<LineNumEntry>;
-		using LOCALS = std::vector<LocalEntry>;
-		using LOCAL_TYPES = std::vector<LocalTypeEntry>;
+		using LINE_NUMS = std::vector<CodeTagLineNumEntry>;
+		using LOCALS = std::vector<CodeTagLocalEntry>;
+		using LOCAL_TYPES = std::vector<CodeTagLocalTypeEntry>;
 		using STACK_FRAMES = std::vector<CodeStackFrame>;
 	}
 	using CodeTag = std::variant<
