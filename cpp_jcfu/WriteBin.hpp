@@ -168,8 +168,8 @@ namespace cpp_jcfu
 			{
 				u16w(tagOut, e.startPc);
 				u16w(tagOut, e.len);
-				pushJutf8IdxW(out, poolSize, consts, e.name);
-				pushJutf8IdxW(out, poolSize, consts, e.desc);
+				pushJutf8IdxW(tagOut, poolSize, consts, e.name);
+				pushJutf8IdxW(tagOut, poolSize, consts, e.desc);
 				u16w(tagOut, e.idx);
 			}
 			_ASSERT(tagOut.size() < UINT32_MAX);
@@ -186,8 +186,8 @@ namespace cpp_jcfu
 			{
 				u16w(tagOut, e.startPc);
 				u16w(tagOut, e.len);
-				pushJutf8IdxW(out, poolSize, consts, e.name);
-				pushJutf8IdxW(out, poolSize, consts, e.sig);
+				pushJutf8IdxW(tagOut, poolSize, consts, e.name);
+				pushJutf8IdxW(tagOut, poolSize, consts, e.sig);
 				u16w(tagOut, e.idx);
 			}
 			_ASSERT(tagOut.size() < UINT32_MAX);
