@@ -159,7 +159,22 @@ namespace cpp_jcfu
 			out.insert(out.end(), tagOut.begin(), tagOut.end());
 		},
 		varcase(const CodeTagType::LOCALS&){
-			//TODO
+			pushJutf8IdxW(out, poolSize, consts, "LocalVariableTable");
+			std::vector<uint8_t> tagOut;
+
+			_ASSERT(var.size() < UINT16_MAX);
+			u16w(tagOut, (uint16_t)var.size());
+			for (const CodeTagLocalEntry& e : var)
+			{
+				u16w(tagOut, e.startPc);
+				u16w(tagOut, e.len);
+				pushJutf8IdxW(out, poolSize, consts, e.name);
+				pushJutf8IdxW(out, poolSize, consts, e.desc);
+				u16w(tagOut, e.idx);
+			}
+			_ASSERT(tagOut.size() < UINT32_MAX);
+			u32w(out, (uint32_t)tagOut.size());
+			out.insert(out.end(), tagOut.begin(), tagOut.end());
 		},
 		varcase(const CodeTagType::LOCAL_TYPES&){
 			//TODO
