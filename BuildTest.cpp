@@ -69,8 +69,16 @@ int main()
 							cpp_jcfu::newObjSlotKind("LGlobeObject;")
 						)}
 					),
+					.lineNums = {{1,9},{2,10},{4,11}},
+					.localVars = {cpp_jcfu::LocalEntry{
+						.name = "helloWorld",
+						.desc="[Ljava/lang/String;",
+						.startInstr=0,
+						.instrCount=6,
+						.idx=0
+					}},
 					.maxStack = 2,
-					.maxLocals = 0
+					.maxLocals = 1
 				})
 				),
 				.name = "main",
