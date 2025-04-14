@@ -411,7 +411,6 @@ namespace cpp_jcfu
 		uint16_t startPc;
 		uint16_t line;
 	};
-	//TODO: move over to compiler
 	struct CodeTagLocalEntry
 	{
 		std::string name;

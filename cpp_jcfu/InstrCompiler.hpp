@@ -257,6 +257,14 @@ namespace cpp_jcfu
 		uint16_t startInstr;
 		uint16_t line;
 	};
+	struct LocalEntry
+	{
+		std::string name;
+		std::string desc;
+		uint16_t startInstr;
+		uint16_t instrCount;
+		uint16_t idx;
+	};
 	struct ErrorHandler
 	{
 		std::optional<ConstPoolItmType::CLASS> catchType; // None -> catch all
@@ -270,6 +278,7 @@ namespace cpp_jcfu
 		std::span<const ErrorHandler> errorHandlers;
 		std::vector<BasicCodeTag> extraTags;
 		std::vector<LineNumEntry> lineNums;
+		std::vector<LocalEntry> localVars;
 
 		// Will not be added to binary, only used to optimize out some instructionFrames, that dont need to exist
 		std::vector<SlotKind> startFrameLocals;
@@ -814,6 +823,23 @@ namespace cpp_jcfu
 				);
 			}
 			ret.tags.push_back(std::move(lnums));
+		}
+		if (!data.localVars.empty())
+		{
+			CodeTagType::LOCALS locs;
+			locs.reserve(data.localVars.size());
+
+			for (const LocalEntry& e : data.localVars)
+			{
+				locs.push_back( {
+					e.name,
+					e.desc,
+					instrOffsets[e.startInstr],
+					instrOffsets[e.startInstr+e.instrCount],
+					e.idx
+				});
+			}
+			ret.tags.push_back(std::move(locs));
 		}
 
 		ret.errorHandlers.resize(data.errorHandlers.size());
