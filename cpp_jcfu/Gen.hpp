@@ -40,7 +40,6 @@ namespace cpp_jcfu
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.5
 		// Fields
 		{
-
 			for (const FieldInfo& info : fields)
 			{
 				u16w(fieldOut, info.flags);
@@ -55,7 +54,6 @@ namespace cpp_jcfu
 					fieldTagW(fieldOut, poolSize, consts, tag);
 			}
 		}
-
 		std::vector<uint8_t> funcOut;
 
 		//https://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html#jvms-4.6

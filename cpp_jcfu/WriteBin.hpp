@@ -177,7 +177,22 @@ namespace cpp_jcfu
 			out.insert(out.end(), tagOut.begin(), tagOut.end());
 		},
 		varcase(const CodeTagType::LOCAL_TYPES&){
-			//TODO
+			pushJutf8IdxW(out, poolSize, consts, "LocalVariableTypeTable");
+			std::vector<uint8_t> tagOut;
+
+			_ASSERT(var.size() < UINT16_MAX);
+			u16w(tagOut, (uint16_t)var.size());
+			for (const CodeTagLocalTypeEntry& e : var)
+			{
+				u16w(tagOut, e.startPc);
+				u16w(tagOut, e.len);
+				pushJutf8IdxW(out, poolSize, consts, e.name);
+				pushJutf8IdxW(out, poolSize, consts, e.sig);
+				u16w(tagOut, e.idx);
+			}
+			_ASSERT(tagOut.size() < UINT32_MAX);
+			u32w(out, (uint32_t)tagOut.size());
+			out.insert(out.end(), tagOut.begin(), tagOut.end());
 		},
 		// https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
 		varcase(const CodeTagType::STACK_FRAMES&){
