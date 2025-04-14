@@ -406,7 +406,6 @@ namespace cpp_jcfu
 
 		CodeStackFrameType::FULL
 	>;
-	//TODO: move over to compiler
 	struct CodeTagLineNumEntry
 	{
 		uint16_t startPc;
@@ -505,7 +504,7 @@ namespace cpp_jcfu
 
 	namespace FieldTagType
 	{
-		using CONST_VAL = std::vector<LineNumEntry>;
+		using CONST_VAL = std::vector<int>;//TODO
 
 		using SYNTHETIC = CommonTagType::SYNTHETIC;
 		using DEPRECATED = CommonTagType::DEPRECATED;
