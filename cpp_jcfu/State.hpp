@@ -524,6 +524,41 @@ namespace cpp_jcfu
 		FieldTagType::TYPE_ANNOTATIONS
 	>;
 
+	namespace ClassTagType
+	{
+		using SRC_FILE = std::string;
+		using INNER_CLASSES = std::vector<int>;//TODO
+		struct ANON_INFO
+		{
+			//TODO class,func pair
+		};
+		using DBG_INFO = std::vector<uint8_t>;
+		using BOOTSTRAP_FUNCS = std::vector<short>;//TODO
+
+		using SYNTHETIC = CommonTagType::SYNTHETIC;
+		using DEPRECATED = CommonTagType::DEPRECATED;
+		using SIGNATURE = CommonTagType::SIGNATURE;
+		using SHOWN_ANNOTATIONS = CommonTagType::SHOWN_ANNOTATIONS;
+		using ANNOTATIONS = CommonTagType::ANNOTATIONS;
+		using SHOWN_TYPE_ANNOTATIONS = CommonTagType::SHOWN_TYPE_ANNOTATIONS;
+		using TYPE_ANNOTATIONS = CommonTagType::TYPE_ANNOTATIONS;
+	}
+	using ClassTag = std::variant<
+		ClassTagType::SRC_FILE,
+		ClassTagType::INNER_CLASSES,
+		ClassTagType::ANON_INFO,
+		ClassTagType::DBG_INFO,
+		ClassTagType::BOOTSTRAP_FUNCS,
+
+		ClassTagType::SYNTHETIC,
+		ClassTagType::DEPRECATED,
+		ClassTagType::SIGNATURE,
+		ClassTagType::SHOWN_ANNOTATIONS,
+		ClassTagType::ANNOTATIONS,
+		ClassTagType::SHOWN_TYPE_ANNOTATIONS,
+		ClassTagType::TYPE_ANNOTATIONS
+	>;
+
 	struct FuncInfo
 	{
 		std::vector<FuncTag> tags;
