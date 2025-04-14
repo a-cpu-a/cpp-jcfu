@@ -242,7 +242,6 @@ namespace cpp_jcfu
 	{
 		std::span<const Instr> instrs;
 		std::span<const ErrorHandler> errorHandlers;
-		std::vector<BasicCodeTag> extraTags;
 		std::vector<LineNumEntry> lineNums;
 		std::vector<LocalEntry> localVars;
 		std::vector<LocalTypeEntry> localVarTypes;
@@ -761,15 +760,12 @@ namespace cpp_jcfu
 				_prevFrameLocals = &frame.local;
 			}
 		}
-		ret.tags.reserve(data.extraTags.size() + (stackFrames.empty()?0:1));
-		for (const BasicCodeTag& tag : data.extraTags)
-		{
-			ezmatch(tag)(
-			varcase(const auto&){
-				ret.tags.push_back(var);
-			}
-			);
-		}
+		ret.tags.reserve(
+			  (data.lineNums		.empty() ? 0 : 1)
+			+ (data.localVars		.empty() ? 0 : 1)
+			+ (data.localVarTypes	.empty() ? 0 : 1)
+			+ (stackFrames			.empty() ? 0 : 1)
+		);
 		if(!stackFrames.empty())
 			ret.tags.push_back(std::move(stackFrames));
 
