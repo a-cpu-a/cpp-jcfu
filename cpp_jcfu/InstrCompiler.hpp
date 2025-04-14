@@ -18,14 +18,13 @@ namespace cpp_jcfu
 {
 	namespace detail {
 		/// @returns if prefix is same
-		constexpr bool isVecPrefix(const std::vector<SlotKind>& prefix, const std::vector<SlotKind>& full) {
-
+		constexpr bool isVecPrefix(const std::vector<SlotKind>& prefix, const std::vector<SlotKind>& full) 
+		{
 			for (size_t i = 0; i < prefix.size(); ++i)
 			{
 				if (prefix[i] != full[i])
 					return false; // mismatch
 			}
-
 			return true; // valid prefix
 		}
 	}
@@ -48,7 +47,6 @@ namespace cpp_jcfu
 		}
 		);
 	}
-
 	inline void pushOpCodeId(
 		std::vector<uint8_t>& out,
 		std::vector<uint16_t>& instrOffsets,
@@ -171,7 +169,6 @@ namespace cpp_jcfu
 		);
 		curInstrOffset += 2;
 	}
-
 	template<class T>
 	concept BaseBranched16 = std::derived_from<T, InstrType::BaseBranch16>;
 	template<class T>
@@ -202,45 +199,7 @@ namespace cpp_jcfu
 		&& !BaseBranched<T>
 		&& !PushConstXed<T>;
 
-
 	//https://docs.oracle.com/javase/specs/jvms/se24/html/jvms-4.html#jvms-4.7.4
-	/*namespace StackFrameType
-	{
-		using STACK_0 = std::monostate;
-
-		struct STACK_1
-		{
-			SlotKind stack[1];
-		};
-		struct LOCAL_REM_1_STACK_0 {};
-		struct LOCAL_REM_2_STACK_0 {};
-		struct LOCAL_REM_3_STACK_0 {};
-
-		struct LOCAL_ADD1_STACK_0 { SlotKind locals[1]; };
-		struct LOCAL_ADD2_STACK_0 { SlotKind locals[2]; };
-		struct LOCAL_ADD3_STACK_0 { SlotKind locals[3]; };
-
-		struct LOCAL_STACK
-		{
-			std::vector<SlotKind> stack;
-			std::vector<SlotKind> local;
-		};
-	}
-	using StackFrame = std::variant<
-		StackFrameType::STACK_0,
-		StackFrameType::STACK_1,
-
-		StackFrameType::LOCAL_REM_1_STACK_0,
-		StackFrameType::LOCAL_REM_2_STACK_0,
-		StackFrameType::LOCAL_REM_3_STACK_0,
-
-		StackFrameType::LOCAL_ADD1_STACK_0,
-		StackFrameType::LOCAL_ADD2_STACK_0,
-		StackFrameType::LOCAL_ADD3_STACK_0,
-
-		StackFrameType::LOCAL_STACK
-	>;*/
-	
 	//Required on every ErrorHandler::startInstr, and every Goto/If/Switch target
 	// add it to (.instructionFrames)
 	// 
@@ -251,7 +210,6 @@ namespace cpp_jcfu
 		std::vector<SlotKind> stack;
 		std::vector<SlotKind> local;
 	};
-
 	struct LineNumEntry
 	{
 		uint16_t startInstr;
@@ -627,7 +585,6 @@ namespace cpp_jcfu
 				instrOffsets[i] += 5;
 			ppOffset += 5;
 		}
-
 		FuncTagType::CODE ret;
 		ret.bytecode = std::move(out);
 		ret.maxLocals = data.maxLocals;
@@ -643,7 +600,6 @@ namespace cpp_jcfu
 				+ (data.instructionFrames.size() >> 2)
 				+ (data.instructionFrames.size() >> 1)
 			);
-
 			std::set<uint16_t> neededIfFrames; // Unordered maybe?
 
 			// Figure out which ifInstructionFrames
@@ -663,7 +619,6 @@ namespace cpp_jcfu
 			}
 			auto itSet = neededIfFrames.begin();
 			auto itMap = data.instructionFrames.begin();
-
 
 			const std::vector<cpp_jcfu::SlotKind> _tmp;
 
@@ -777,7 +732,6 @@ namespace cpp_jcfu
 					//FULL :(
 				}
 				//Do full
-
 				{
 					CodeStackFrameType::BaseFull fullTag;
 
@@ -807,7 +761,6 @@ namespace cpp_jcfu
 				_prevFrameLocals = &frame.local;
 			}
 		}
-
 		ret.tags.reserve(data.extraTags.size() + (stackFrames.empty()?0:1));
 		for (const BasicCodeTag& tag : data.extraTags)
 		{
@@ -867,7 +820,6 @@ namespace cpp_jcfu
 			}
 			ret.tags.push_back(std::move(locs));
 		}
-
 		ret.errorHandlers.resize(data.errorHandlers.size());
 		for (size_t i = 0; i < data.errorHandlers.size(); i++)
 		{
@@ -879,7 +831,6 @@ namespace cpp_jcfu
 			eh.afterEndByte = instrOffsets[mh.endInstr+1];
 			eh.handlerByte = instrOffsets[mh.handlerInstr];
 		}
-
 		return ret;
 	}
 }
