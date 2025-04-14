@@ -419,7 +419,6 @@ namespace cpp_jcfu
 		uint16_t len;
 		uint16_t idx;
 	};
-	//TODO: move over to compiler
 	struct CodeTagLocalTypeEntry
 	{
 		std::string name;
